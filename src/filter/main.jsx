@@ -11,7 +11,10 @@ const MainFilter = () => {
       youtube: false,
       tiktok: false,
       instagram: false,
-      facebook: false
+      facebook: false,
+      transportation: false,
+      event: false,
+      print: false,
     },
     country: ''
   });
@@ -127,6 +130,24 @@ const MainFilter = () => {
                     <input class="accent-blue-600 peer mt-1.5" type="checkbox" name="facebook" id="facebook" checked={filterOptions.mediaFilters.facebook} onChange={handleInputChange} />
                     <label class="text-gray-900 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black" for="facebook">
                       <h1 class="text-sm md:text-base md:text-start pl-1 md:pl-3 mt-1 md:mt-0.5">Facebook</h1>
+                    </label>
+                  </div>
+                  <div class="flex font-medium text-gray-700 ">
+                    <input class="accent-blue-600 peer mt-1.5" type="checkbox" name="transportation" id="transportation" checked={filterOptions.mediaFilters.transportation} onChange={handleInputChange} />
+                    <label class="text-gray-900 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black" for="transportation">
+                      <h1 class="text-sm md text-base md:text-start pl-1 md:pl-3 mt-1 md:mt-0.5">Transportation</h1>
+                    </label>
+                  </div>
+                  <div class="flex font-medium text-gray-700 ">
+                    <input class="accent-blue-600 peer mt-1.5" type="checkbox" name="event" id="event" checked={filterOptions.mediaFilters.event} onChange={handleInputChange} />
+                    <label class="text-gray-900 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black" for="event">
+                      <h1 class="text-sm md text-base md:text-start pl-1 md:pl-3 mt-1 md:mt-0.5">Event</h1>
+                    </label>
+                  </div>
+                  <div class="flex font-medium text-gray-700 ">
+                    <input class="accent-blue-600 peer mt-1.5" type="checkbox" name="print" id="print" checked={filterOptions.mediaFilters.print} onChange={handleInputChange} />
+                    <label class="text-gray-900 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black" for="print">
+                      <h1 class="text-sm md text-base md:text-start pl-1 md:pl-3 mt-1 md:mt-0.5">Print</h1>
                     </label>
                   </div>
                 </div>

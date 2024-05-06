@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 const Footer = ({ authenticated }) => {
   return (
     <div>
-      <footer class="mt-8 footer bg-[#18181B]">
+      <footer class="mt-0 footer bg-[#18181B]">
         <div
           class="mx-auto max-w-screen-xl space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8"
         >
@@ -24,6 +24,11 @@ const Footer = ({ authenticated }) => {
               <div>
                 <p class="font-medium text-white text-base font-light text-base font-light">Services</p>
                 <ul class="mt-6 space-y-4 text-sm">
+                  <li>
+                    <Link to="/register" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
+                      Sign Up
+                    </Link>
+                  </li>
                   <li>
                     <Link to="" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
                       About Us

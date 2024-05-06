@@ -103,18 +103,18 @@ const About = () => {
                         <div class="flex flex-col text-center gap-4 mb-8 p-4">
                             <div class="text-purple-600 text-sm font-bold">
                                 <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-4xl lg:text-5xl xl:text-5xl">
-                                    <span class="block xl:inline">Our </span>
-                                    <span class="block text-indigo-600 xl:inline">Team </span>
+                                    {/* <span class="block xl:inline">Our </span> */}
+                                    <span class="block text-indigo-600 xl:inline">CEO / Founder </span>
                                 </h1>
                             </div>
                         </div>
                         <div class="flex items-center justify-center flex-wrap gap-4 p-4">
                             <div class="card flex items-center justify-center flex-col w-full sm:w-72 h-full rounded-2xl">
-                                <img src={img7} class="w-24 h-24 rounded-full object-cover transition duration-200 hover:scale-110" alt='' />
-                                <div class="text-gray-900 text-lg font-medium">Jacob Birn</div>
-                                <div class="text-neutral-500 text-base font-light">CEO/Founder</div>
+                                <img src={img7} class="w-30 h-30 rounded-full object-cover transition duration-200 hover:scale-110" alt='' />
+                                <div class="text-gray-900 text-lg font-medium mt-2">Jacob Birn</div>
+                                {/* <div class="text-neutral-500 text-base font-light">CEO/Founder</div> */}
                             </div>
-                            <div class="card flex items-center justify-center flex-col w-full sm:w-72 h-full rounded-2xl">
+                            {/* <div class="card flex items-center justify-center flex-col w-full sm:w-72 h-full rounded-2xl">
                                 <img src={img8} class="w-24 h-24 rounded-full object-cover transition duration-200 hover:scale-110" alt='' />
                                 <div class="text-gray-900 text-lg font-medium ">Floran Jordan</div>
                                 <div class="text-neutral-500 text-base font-light">Founder</div>
@@ -128,7 +128,7 @@ const About = () => {
                                 <img src={img9} class="w-24 h-24 rounded-full object-cover transition duration-200 hover:scale-110" alt='' />
                                 <div class="text-gray-900 text-lg font-medium">John David</div>
                                 <div class="text-neutral-500 text-base font-light">Engineering Manager</div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

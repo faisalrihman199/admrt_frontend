@@ -211,7 +211,7 @@ const EditeUser = () => {
                   </div>
                 </div>
                 <div id="expertiseContainer" className="mt-4">
-                  <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Experitise: </span>{experitise.join(', ') || "none"}</h1>
+                  <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
                 </div>
               </div>
               <p className="text-center">Maximum ten topics may be added</p>
@@ -342,7 +342,7 @@ const EditeUser = () => {
         <div className=''>
           <h1 className='font-medium text-lg md:text-2xl'>{fullName}</h1>
           <div className="flex">
-            <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Experitise: </span>{experitise.join(', ') || "none"}</h1>
+            <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
             <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
               <img src={edit_svg_blue} alt="" />
             </div>

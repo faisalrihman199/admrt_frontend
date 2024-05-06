@@ -141,7 +141,7 @@ export const Specification = () => {
                             </div>
                         }
                         <ul className="menu gap-5">
-                           
+
                             <li className="menu-item flex justify-between">
                                 <div
                                     className="flex justify-center items-center text-xs md:text-sm md:font-semibold text-gray-400">
@@ -153,7 +153,7 @@ export const Specification = () => {
                                     <h1>{formData.experitise ? formData.experitise.join(', ') : "none"}</h1>
                                 </div>
                             </li>
-                            <li className="menu-item flex justify-between">
+                            {/* <li className="menu-item flex justify-between">
                                 <div
                                     className="flex justify-center items-center text-xs md:text-sm md:font-semibold text-gray-400">
                                     <img className='h-6 my-2 mr-1' src={typicalSvg} alt='' />
@@ -163,7 +163,7 @@ export const Specification = () => {
                                     className='text-xs md:text-sm md:font-semibold text-[#2B59FF] flex items-center justify-center'>
                                     <h1>{formData.topicalTime || 'none'} <span className='text-gray-500'>hours</span></h1>
                                 </div>
-                            </li>
+                            </li> */}
                             <li className="menu-item flex justify-between">
                                 <div
                                     className="flex justify-center items-center text-xs md:text-sm md:font-semibold text-gray-400">
@@ -210,7 +210,7 @@ export const Specification = () => {
                             </div>
                             <form onSubmit={handleSaveDatabase}>
                                 <div className='mx-8 mt-5'>
-                                
+
                                     {(formData.experitise || []).map((item, index) => (
                                         <div className='m-1 flex gap-4' key={index}>
                                             <input type="text"

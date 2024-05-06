@@ -266,23 +266,26 @@
   margin: auto;
 }
  
- .card .hover_content {
+.card .hover_content {
   overflow: hidden;
   max-height: 0;
   transform: translateY(1em);
-  transition: all .5s ease;
- }
- 
- .card .hover_content p {
+  transition: max-height 0.5s ease, transform 0.5s ease;
+}
+
+.card .hover_content p {
   margin: 1.5em 0 0;
   line-height: 1.4em;
- }
- 
- .card:hover .hover_content {
-  max-height: 10em;
-  transform: none;
- }
- 
+}
+
+.card:hover .hover_content {
+  max-height: 15em;
+  transform: translateY(0);
+}
+
+.card .content {
+  overflow: hidden;
+}
  .number:hover h1 {
     background: #2469EB;
     color: white;

@@ -14,6 +14,7 @@ const Settings = () => {
   const [modal, setModal] = useState(false);
   const [, setIsFormValid] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false)
+  const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,10 +25,12 @@ const Settings = () => {
           const userDoc = await getDoc(doc(usersCollection, user.uid));
           if (userDoc.exists()) {
             const data = userDoc.data();
+            console.log(data);
             setFullName(data.fullName || '');
             setEmail(data.email || '');
             setDateBirthday(data.dateBirthday || '');
             setPhoneNumber(data.phoneNumber || '');
+            setImageUrl(data.imageUrl || null);
           }
         } catch (err) {
           console.log(err);
@@ -172,15 +175,19 @@ const Settings = () => {
             </div>
             <div className="mx-auto">
               <div className="">
-                <button className="flex mt-8 w-full text-lg font-medium p-4 rounded-2xl mb-2.5 bg-gray-100">
-                  <img className="mr-4" src="./account.svg" alt="" />
+                <button className="flex items-center justify-center mt-8 w-full text-lg font-medium p-4 rounded-2xl mb-2.5 bg-gray-100">
+                  <img className="mr-4 w-10 h-10" src={imageUrl} alt="" />
                   Account
                 </button>
-                <button onClick={handleLogout} className="border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-red-500"
+                <button className="border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-blue-500"
+                >
+                  Notification
+                </button>
+                <button onClick={handleLogout} className="border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-blue-500"
                 >
                   Logout
                 </button>
-                <button onClick={() => setDeleteModal(true)} className="border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-red-500"
+                <button onClick={() => setDeleteModal(true)} className="border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-blue-500"
                 >
                   Delete account
                 </button>

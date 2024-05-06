@@ -29,7 +29,7 @@ const Home = () => {
   };
 
   return (
-    <div className="home-con h-full">
+    <div className="home-con h-full ">
       <div className="items-center max-w-screen-2xl px-4 md:px-8 py-4 mx-auto xl:px-5">
         <div className="flex flex-wrap items-center my-10 md:my-20 sm:-mx-3">
           <div className="w-full md:w-3/5 md:px-3">
