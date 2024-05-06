@@ -1,0 +1,388 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+.home-con {
+  background-image: url('../src/Layout/AuthPage/images/bg.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-position: center;
+}
+
+.bg_1 {
+  background-color: #F3F7FF;
+}
+
+.bg_2 {
+   background-color: #2C59FE;
+}
+
+.bg-2 img{
+  width: 600px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800&display=swap');
+
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
+.bg {
+  max-width: 990px;
+}
+
+.bg .img-fluid{
+  height: auto;
+  width: 990px;
+}
+
+.bg .button1{
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.bg .button2{
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+
+}
+
+.menu-icon {
+  width: 30px;
+}
+
+.modal_sidebar{
+  
+}
+
+
+
+.img {
+  transform: translateY(-3rem);
+}
+
+ button{
+  color: #222;
+}
+
+
+.container {
+  width: 300px; 
+  height: 200px; /* Высота блока по вашему выбору */
+  overflow: hidden; /* Скрыть содержимое, которое не помещается */
+}
+
+.content {
+  overflow-y: auto; /* Добавить вертикальную прокрутку */
+  height: 100%; /* Сделать блок content занимающим всю доступную высоту */
+}
+
+.show-more-less-clickable {
+  color: blue;
+}
+
+.hideMenuNav {
+  display: none;
+}
+.showMenuNav {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: white;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar {
+  height: 60px;
+  background-color: #fef7e5;
+  position: relative;
+}
+
+.nav-elements ul {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+}
+
+.nav-elements ul li:not(:last-child) {
+  margin-right: 60px;
+}
+
+.nav-elements ul a {
+  font-size: 16px;
+  font-weight: 400;
+  color: #2f234f;
+  text-decoration: none;
+}
+
+.nav-elements ul a.active {
+  color: #574c4c;
+  font-weight: 500;
+  position: relative;
+}
+
+.nav-elements ul a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #574c4c;
+}
+
+
+.select-menu .select-btn {
+  display: flex;
+  height: 55px;
+  background: #fff;
+  padding: 20px;
+  font-size: 18px;
+  font-weight: 400;
+  border-radius: 8px;
+  align-items: center;
+  cursor: pointer;
+  justify-content: space-between;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.select-btn i {
+  font-size: 25px;
+  transition: 0.3s;
+}
+
+.select-menu.active .select-btn i {
+  transform: rotate(-180deg);
+}
+
+.select-menu .options {
+  position: relative;
+  padding: 20px;
+  margin-top: 10px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.select-menu.active .options {
+  display: block;
+}
+
+.options .option {
+  display: flex;
+  height: 55px;
+  cursor: pointer;
+  padding: 0 16px;
+  border-radius: 8px;
+  align-items: center;
+  background: #fff;
+}
+
+.options .option:hover {
+  background: #F2F2F2;
+}
+
+.option i {
+  font-size: 25px;
+  margin-right: 12px;
+}
+
+.option .option-text {
+  font-size: 18px;
+  color: #333;
+}
+
+
+@media (max-width: 600px) {
+  .menu-icon {
+    display: block;
+    cursor: pointer;
+  }
+
+  .nav-elements {
+    position: absolute;
+    right: 0;
+    top: 60px;
+    background-color: #fef7e5;
+    width: 0px;
+    height: calc(100vh - 60px);
+    transition: all 0.3s ease-in;
+    overflow: hidden;
+  }
+
+  .nav-elements.active {
+    width: 270px;
+  }
+
+  .nav-elements ul {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-elements ul li {
+    margin-right: unset;
+    margin-top: 22px;
+  }
+}
+
+.bg .button1{
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.bg .button2{
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+
+}
+
+.img {
+  transform: translateY(-3rem);
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+}
+ 
+ .card .hover_content {
+  overflow: hidden;
+  max-height: 0;
+  transform: translateY(1em);
+  transition: all .5s ease;
+ }
+ 
+ .card .hover_content p {
+  margin: 1.5em 0 0;
+  line-height: 1.4em;
+ }
+ 
+ .card:hover .hover_content {
+  max-height: 10em;
+  transform: none;
+ }
+ 
+ .number:hover h1 {
+    background: #2469EB;
+    color: white;
+    border: none;
+    transition: ease-in 0.5s;
+ }
+
+.buttonSign {
+
+  gap: 2px;
+}
+
+.buttonSignIn {
+    border-radius: 200px 0px 0px 200px;
+    -webkit-border-radius: 200px 0px 0px 200px;
+    -moz-border-radius: 200px 0px 0px 200px;
+}
+
+.buttonSignUp {
+    border-radius: 0px 200px 200px 0px;
+    -webkit-border-radius: 0px 200px 200px 0px;
+    -moz-border-radius: 0px 200px 200px 0px;
+}
+
+.buttonSign button{
+   /* padding: 15px; */
+   border: 1px solid darkblue;
+   color: #2B59FF;
+}
+
+.signIndiv {
+    /* padding: 15px; */
+    display: flex;
+    border: 1px solid darkblue;
+    border-radius: 200px 0px 0px 200px;
+    -webkit-border-radius: 200px 0px 0px 200px;
+    -moz-border-radius: 200px 0px 0px 200px;
+}
+
+.search-input:focus{
+   border: solid #2B59FF;
+   outline: none;
+}
+
+.signIndiv h1 {
+    color: #2B59FF;
+}
+
+.input {
+  border-bottom: 1px solid #000;
+}
+
+.input:hover {
+  border-bottom: 1px solid blue;
+  cursor: pointer;
+}
+
+.input:focus {
+  outline: none;
+}
+
+label:focus {
+  outline: none;
+}
+
+div .textarea {
+  border-bottom: 1px solid #000;
+}
+
+.textarea:focus {
+  outline: none;
+}
+
+.app-frame {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  height: 100vh;
+  max-height: 100%;
+  background: #ffffff;
+  box-shadow: 8px 2px 32px -2px rgba(0, 0, 0, 0.25);
+  border-radius: 0px 10px 10px 0px;
+  z-index: 1;
+}
+
+.app-sidebar .app-sidebar-content {
+  flex: 1;
+}
+
+.app-sidebar .app-sidebar-resizer {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 6px;
+  justify-self: flex-end;
+  cursor: col-resize;
+  resize: horizontal;
+}
+
+.app-sidebar .app-sidebar-resizer:hover {
+  width: 3px;
+  background: #c1c3c5b4;
+}

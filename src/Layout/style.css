@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800&display=swap');
+
+body h1, h2, h3, p, span, label, input, textarea{
+  font-family: 'Outfit', sans-serif;
+}
+
+.login-container {
+  height: 100%;
+}
+
+ .onboarding {
+   height: 100%;
+   background: url(./AuthPage/images/laptop-computer.jpg);
+   background-position: center;
+   background-size: cover;
+   background-repeat: no-repeat;
+   display: none;
+   flex: 1;
+  }
+
+.card-slide {
+   height: 100%;
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+  }
+
+  .verify-footer h1 {
+    font-family: 'Outfit', sans-serif;
+  }
+
+
+  .box-shadow-emailBox {
+    box-shadow: 0px 50px 100px 0px #0000001A;
+}
+
+@media screen and (min-width: 768px) {
+  .login-container .onboarding {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .login-container {
+    height: 100vh;
+  }
+}
+
+@media screen and (width: 768px) {
+  .login-container .onboarding {
+    order: 0;
+  }
+  .login-container .login-form {
+    order: 1;
+  }
+  .login-container {
+    height: 100vh;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .login-container .login-form {
+    padding: 20px;
+  }
+  .login-container .login-form-group {
+    margin-bottom: 16px;
+  }
+  .login-container {
+    margin: 0;
+  }
+} 
+
+
+
+
+  @media screen and (min-width: 768px) {
+    .login-container .onboarding {
+      display: flex;
+    }
+  }
+
+  @media screen and (width: 768px) {
+    .login-container .onboarding {
+      order: 0;
+    }
+
+  }

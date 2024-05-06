@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;500&family=Poppins:wght@100;200;300;400&display=swap');
+
+* {
+    font-family: 'Outfit', sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.input {
+    border-bottom: 1px solid #000;
+}
+
+.input:hover {
+    border-bottom: 1px solid blue;
+    cursor: pointer;
+}
+
+.input:focus {
+    outline: none;
+}
+
+label:focus {
+    outline: none;
+}
+
+div .textarea {
+    border-bottom: 1px solid #000;
+}
+
+.textarea:focus {
+    outline: none;
+}
