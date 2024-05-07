@@ -12,6 +12,11 @@ import Search from "./search/search";
 import Chek from '../svgs/chek.svg'
 import Close from '../svgs/close.svg'
 import RedNotification from '../images/redNotification.svg'
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { MdMessage } from 'react-icons/md';
+import { FaAd } from 'react-icons/fa';
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -28,35 +33,39 @@ function StickyNavbar({ authenticated }) {
   const [hasFalseRequests, setHasFalseRequests] = useState(false);
   const [lookingUserId, setLookingUserId] = useState(null);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const signOut = useSignOut()
+  const isAuthenticated = useIsAuthenticated()
+  const auth = useAuthUser()
 
-  useEffect(() => {
-    const unsebscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setUserId(user.uid);
+  console.log('authhhhh user ', auth)
+  // useEffect(() => {
+  //   const unsebscribe = auth.onAuthStateChanged(async (user) => {
+  //     if (user) {
+  //       setUserId(user.uid);
 
-        try {
-          const userDoc = await getDoc(doc(usersCollection, user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            const fullName = userData.fullName;
-            const splitCall = userData.split
-            const comeRequestCall = userData.requests;
-            setUserFullName(fullName);
-            setSplit(splitCall);
-            setComeRequest(comeRequestCall);
-            setHasFalseRequests(Object.values(comeRequestCall).includes(false));
-            setUnreadMessageCount(userData.seens);
-          }
-        } catch (error) {
-          console.error('Error getting user data:', error);
-        }
-      } else {
-        setUserId(null);
-      }
-    });
+  //       try {
+  //         const userDoc = await getDoc(doc(usersCollection, user.uid));
+  //         if (userDoc.exists()) {
+  //           const userData = userDoc.data();
+  //           const fullName = userData.fullName;
+  //           const splitCall = userData.split
+  //           const comeRequestCall = userData.requests;
+  //           setUserFullName(fullName);
+  //           setSplit(splitCall);
+  //           setComeRequest(comeRequestCall);
+  //           setHasFalseRequests(Object.values(comeRequestCall).includes(false));
+  //           setUnreadMessageCount(userData.seens);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error getting user data:', error);
+  //       }
+  //     } else {
+  //       setUserId(null);
+  //     }
+  //   });
 
-    return () => unsebscribe();
-  }, []);
+  //   return () => unsebscribe();
+  // }, []);
 
   useEffect(() => {
     const handleDropDown = (e) => {
@@ -95,9 +104,9 @@ function StickyNavbar({ authenticated }) {
     { title: "Profile", path: `/${split}/${userId}` },
     { title: "Settings", path: `/${split}/${userId}/settings` },
   ];
-
   const handleLogout = () => {
-    auth.signOut();
+    // auth.signOut();
+    signOut()
     navigate("/")
     window.location.reload();
   }
@@ -249,7 +258,7 @@ function StickyNavbar({ authenticated }) {
   const getUser = (
     <div className="flex items-center gap-2">
       <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center ml-8">
-        <Typography
+        {/* <Typography
           as="li"
           variant="small"
           className="p-1 text-black text-lg font-normal mr-3"
@@ -257,7 +266,7 @@ function StickyNavbar({ authenticated }) {
           <Link to="/" className="flex items-center max-[1280px]:text-base hover:text-blue-700 hover:duration-500 ">
             <h1>Home</h1>
           </Link>
-        </Typography>
+        </Typography> */}
 
         <Search />
 
@@ -267,10 +276,11 @@ function StickyNavbar({ authenticated }) {
           className="p-1 text-black max-[1280px]:text-base text-lg font-normal mr-3"
         >
           <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
+            <FaAd className="mr-1 self-start" />
             <h1>Find adspaces</h1>
           </Link>
         </Typography>
-        <Typography
+        {/* <Typography
           as="li"
           variant="small"
           className="p-1 text-black max-[1280px]:text-base text-lg font-normal mr-3"
@@ -278,14 +288,15 @@ function StickyNavbar({ authenticated }) {
           <Link to="/about" className="flex items-center hover:text-blue-700 hover:duration-500 ">
             <h1>About</h1>
           </Link>
-        </Typography>
+        </Typography> */}
         <Typography
           as="li"
           variant="small"
           className="p-1 text-black max-[1280px]:text-base text-lg font-normal"
         >
           <Link to={`/message`} className="flex items-center hover:text-blue-700 ">
-            <h1>Message</h1>
+            <MdMessage className="mr-1 self-start" />
+            <h1>Messages</h1>
           </Link>
         </Typography>
         <Typography
@@ -365,16 +376,20 @@ function StickyNavbar({ authenticated }) {
               className="hidden w-10 flex h-10 outline-none rounded-full  ring-offset-2 ring-blue-600 lg:focus:ring-2 lg:block"
               onClick={() => setState(!state)}
             >
-              {userImage ? (
-                <img src={userImage} alt="" className="w-full h-full rounded-full" />
+              {auth?.image_url ? (
+                <img src={auth.image_url} alt="" className="w-full h-full rounded-full" />
+              ) : auth?.first_name ? (
+                <div className="w-full h-full rounded-full flex items-center justify-center bg-orange-200 text-xl">
+                  {auth.first_name.charAt(0).toUpperCase()}
+                </div>
               ) : (
                 <img src={defaultAvate} alt="" className="w-full h-full rounded-full" />
               )}
             </button>
           )}
-          {userFullName ? (
+          {auth?.first_name ? (
             <>
-              <h1 className="max-[1280px]:hidden text-black text-center p-2">{userFullName}</h1>
+              <h1 className="max-[1280px]:hidden text-black text-center p-2">{auth?.first_name}</h1>
               <img src={down} alt="" className="w-9 max-[1280px]:hidden" />
             </>
           ) : (
@@ -383,14 +398,14 @@ function StickyNavbar({ authenticated }) {
 
         </div>
         <ul className={`bg-white top-16 mr-4 right-0 mt-6 space-y-6 lg:absolute lg:border lg:rounded-md lg:w-52 lg:shadow-md lg:space-y-0 lg:mt-0 ${state ? '' : 'lg:hidden'}`}>
-          {userFullName ? (
+          {/* {userFullName ? (
             <>
               <h1 className="min-[1280px]:hidden text-black text-lg text-center p-2">{userFullName}</h1>
               <div className="border"></div>
             </>
           ) : (
             <h1 className="text-black text-center p-2">Please enter name</h1>
-          )}
+          )} */}
           {navigation.map((item, idx) => (
             <li key={idx}>
               <Link className="block text-gray-600 hover:text-gray-900 lg:hover:bg-gray-50 lg:p-3" to={item.path}>
@@ -419,7 +434,7 @@ function StickyNavbar({ authenticated }) {
               <img className="w-36 md:w-44" src={Logo} alt="Logo" />
             </Typography>
             <div className="flex items-center gap-4">
-              <div className="mr-4 hidden lg:block">{authenticated ? getUser : ghostUser}</div>
+              <div className="mr-4 hidden lg:block">{isAuthenticated ? getUser : ghostUser}</div>
             </div>
           </div>
         </Navbar>
