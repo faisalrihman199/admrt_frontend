@@ -8,6 +8,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db, usersCollection } from '../../firebase/firebase';
 import { doc, setDoc } from 'firebase/firestore'
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { userRegisterApi } from '../../service/auth';
+import { useLogIn } from '../../hooks/useLogin';
 
 
 const CreateAnAcc = () => {
@@ -22,6 +24,7 @@ const CreateAnAcc = () => {
   const [loading, setLoading] = useState(false);
   const { split } = useParams();
   const navigate = useNavigate();
+  const logIn = useLogIn();
 
   const handleToggle = () => {
     if (type === 'password') {
@@ -54,29 +57,9 @@ const CreateAnAcc = () => {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const userId = userCredential.user.uid;
 
-      const infoRef = doc(usersCollection, userId);
-      const currentDate = new Date();
-      await setDoc(infoRef, {
-        fullName,
-        email,
-        split,
-        userId,
-        password,
-        phoneNumber,
-        country,
-        registrationDate: currentDate,
-      });
-
-      const usernameRef = doc(db, "search", fullName);
-      await setDoc(usernameRef, {
-        userId,
-        split,
-      })
-      setLoading(false)
-      navigate(`/`);
+      await userRegisterApi({ full_name: fullName, email, phone_number: phoneNumber, password, country, user_role: split });
+      await logIn(email, password);
     } catch (err) {
       console.error(err);
       setErrorMessage('The information you entered is available. Please try login');

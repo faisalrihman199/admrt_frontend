@@ -69,8 +69,8 @@ function App() {
   const isAuthenticated = useIsAuthenticated();
 
   const AuthUserRoutes = [
-    { id: 1, path: `/:split/:userUID`, element: <Profile /> },
-    { id: 2, path: `/:split/:userId/settings`, element: <Settings /> },
+    { id: 1, path: `/profile`, element: <Profile /> },
+    { id: 2, path: `/settings`, element: <Settings /> },
     {
       id: 3,
       path: `/profile/:split/:userUID`,
@@ -91,7 +91,7 @@ function App() {
     { id: 3, path: "/about", element: <About /> },
     { id: 4, path: "/contact", element: <Contact /> },
     { id: 5, path: "/continue", element: <Continue /> },
-    { id: 6, path: "/:split/registasion", element: <CreateAnAcc /> },
+    { id: 6, path: "/:split/registration", element: <CreateAnAcc /> },
     { id: 7, path: "/forgotPassword", element: <ForgotPassword /> },
     { id: 8, path: "/confirmPassword", element: <ConfirmPassword /> },
     { id: 9, path: "/checkEmail", element: <CheckEmail /> },

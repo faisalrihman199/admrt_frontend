@@ -13,12 +13,12 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
 root.render(
   <>
-    {/* <QueryClientProvider client={queryClient}> */}
     <AuthProvider store={authStore}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
     </AuthProvider>
-    {/* </QueryClientProvider> */}
   </>
 );

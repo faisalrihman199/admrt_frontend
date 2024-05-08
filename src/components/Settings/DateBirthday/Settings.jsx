@@ -186,9 +186,9 @@ const Settings = () => {
                 >
                   {auth?.imageUrl ? (
                     <img className="mr-4 w-10 h-10" src={auth.imageUrl} alt="" />
-                  ) : auth?.first_name ? (
+                  ) : auth?.full_name ? (
                     <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center bg-orange-200 text-xl">
-                      {auth.first_name.charAt(0).toUpperCase()}
+                      {auth.full_name.charAt(0).toUpperCase()}
                     </div>
                   ) : null}
                   Account

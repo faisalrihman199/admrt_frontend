@@ -16,31 +16,31 @@ const IntoDescription = () => {
     const [userId, setUserId] = useState(null);
     const { userId: userIdParam } = useParams();
 
-    useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUserId(user.uid);
-            } else {
-                setUserId(null);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
+    // useEffect(() => {
+    //     const auth = getAuth();
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         if (user) {
+    //             setUserId(user.uid);
+    //         } else {
+    //             setUserId(null);
+    //         }
+    //     });
+    //     return () => unsubscribe();
+    // }, []);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', userId || userIdParam));
-                const userData = userDoc.data();
-                setUserData(userData || {});
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const userDoc = await getDoc(doc(db, 'users', userId || userIdParam));
+    //             const userData = userDoc.data();
+    //             setUserData(userData || {});
+    //         } catch (error) {
+    //             console.error('Error fetching user data:', error);
+    //         }
+    //     };
 
-        fetchUserData();
-    }, [userId, userIdParam]);
+    //     fetchUserData();
+    // }, [userId, userIdParam]);
 
     const addNew = async () => {
         try {
@@ -56,7 +56,7 @@ const IntoDescription = () => {
             console.error('Error updating user data:', error);
         }
     };
-    
+
     return (
         <div>
             {showModal && (

@@ -8,12 +8,12 @@ import { usersCollection, storage, db } from "../../firebase/firebase";
 import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
 
-const EditeUser = () => {
+const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(null);
   const avatarUrl = useRef("https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
   const [modalOpen, setModalOpen] = useState(false);
-  const [fullName, setFullName] = useState("");
+  // const [fullName, setFullName] = useState("");
   const [croppedImage, setCroppedImage] = useState("");
   const [todoModal, setTodoModal] = useState(false);
   const [todoText, setTodoText] = useState("");
@@ -47,7 +47,7 @@ const EditeUser = () => {
       const userDoc = await getDoc(doc(usersCollection, userId));
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        setFullName(userData.fullName);
+        // setFullName(userData.fullName);
         setPrice(userData.hourlyRate);
         setSplit(userData.split);
       }
@@ -65,8 +65,8 @@ const EditeUser = () => {
       const userDocRef = doc(usersCollection, userId);
       await updateDoc(userDocRef, { imageUrl });
 
-      const usernameRef = doc(db, 'search', fullName);
-      await updateDoc(usernameRef, { imageUrl });
+      // const usernameRef = doc(db, 'search', fullName);
+      // await updateDoc(usernameRef, { imageUrl });
     } catch (error) {
       console.error("Error fetching user image:", error);
     }
@@ -340,7 +340,7 @@ const EditeUser = () => {
       )}
       <div className="flex justify-between ml-4 w-3/4 items-center">
         <div className=''>
-          <h1 className='font-medium text-lg md:text-2xl'>{fullName}</h1>
+          <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
           <div className="flex">
             <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
             <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>

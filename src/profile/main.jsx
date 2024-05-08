@@ -13,57 +13,42 @@ import { VscEmptyWindow } from "react-icons/vsc";
 import { Specification } from '../Layout/context/specification';
 import { MainAdSpace } from '../Layout/adSpace/main';
 import { ProductAdventiser } from '../Layout/context/adventiser/productAdventiser';
+import userProfile from '../service/user';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { useQuery } from '@tanstack/react-query';
 
 function SiplePages() {
+
+    const authHeader = useAuthHeader()
+
+    const { isPending, isError, data, error } = useQuery({
+        queryKey: ['loggedInUser', { authHeader }],
+        queryFn: userProfile,
+        staleTime: 5 * 60 * 1000,
+    })
+
     const [userId, setUserId] = useState(null);
     const [split, setSplit] = useState(null);
     const [advertiserProfile, setAdvertiserProfile] = useState(false);
     const [requests, setRequests] = useState('')
     const profile_amer = 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                setUserId(user.uid);
-                try {
-                    const getCall = await getDoc(doc(usersCollection, user.uid));
-                    if (getCall.exists()) {
-                        const userData = getCall.data();
-                        const splitCall = userData.split;
-                        const comeRequestCall = userData.requests;
-                        setSplit(splitCall);
-                        const filteredRequests = Object.fromEntries(Object.entries(comeRequestCall));
-                        setRequests(filteredRequests);
-                    }
-                } catch (error) {
-                    console.error(error);
-                }
-            } else {
-                setUserId(null);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
 
-    const handleUserAvater = useCallback(async (username) => {
-        console.log();
-    }, []);
+    console.log('profile data', data)
 
-    useEffect(() => {
-        Object.keys(requests).map(username => handleUserAvater(username));
-    }, [handleUserAvater, requests]);
+    if (isPending) {
+        return <span>Loading...</span>
+    }
 
+    if (isError) {
+        return <span>Error: {error.message}</span>
+    }
 
-    useEffect(() => {
-        const handleProfilAdvertiser = () => {
-            if (split === "advertiser") {
-                setAdvertiserProfile(true)
-            } else {
-                setAdvertiserProfile(false)
-            }
-        }
-        handleProfilAdvertiser()
-    }, [split])
+    const userInfo = {
+        name: data?.full_name,
+
+    };
+    console.log('userInfo', userInfo)
 
     return (
         <div className="App">
@@ -72,7 +57,7 @@ function SiplePages() {
                     <div className="w-full order-2 md:w-2/3 ">
                         <div className={"border p-2 md:p-5 rounded-xl"}>
                             <EditBackground userId={userId} split={split} />
-                            <EditeUser />
+                            <EditeUser userInfo={userInfo} />
                             <IntoDescription />
                         </div>
                         <Specification />

@@ -36,7 +36,6 @@ function StickyNavbar({ authenticated }) {
   const signOut = useSignOut()
   const isAuthenticated = useIsAuthenticated()
   const auth = useAuthUser()
-
   console.log('authhhhh user ', auth)
   // useEffect(() => {
   //   const unsebscribe = auth.onAuthStateChanged(async (user) => {
@@ -101,8 +100,8 @@ function StickyNavbar({ authenticated }) {
   }, [userId]);
 
   const navigation = [
-    { title: "Profile", path: `/${split}/${userId}` },
-    { title: "Settings", path: `/${split}/${userId}/settings` },
+    { title: "Profile", path: `/profile` },
+    { title: "Settings", path: `/settings` },
   ];
   const handleLogout = () => {
     // auth.signOut();
@@ -378,18 +377,18 @@ function StickyNavbar({ authenticated }) {
             >
               {auth?.image_url ? (
                 <img src={auth.image_url} alt="" className="w-full h-full rounded-full" />
-              ) : auth?.first_name ? (
+              ) : auth?.full_name ? (
                 <div className="w-full h-full rounded-full flex items-center justify-center bg-orange-200 text-xl">
-                  {auth.first_name.charAt(0).toUpperCase()}
+                  {auth.full_name.charAt(0).toUpperCase()}
                 </div>
               ) : (
                 <img src={defaultAvate} alt="" className="w-full h-full rounded-full" />
               )}
             </button>
           )}
-          {auth?.first_name ? (
+          {auth?.full_name ? (
             <>
-              <h1 className="max-[1280px]:hidden text-black text-center p-2">{auth?.first_name}</h1>
+              <h1 className="max-[1280px]:hidden text-black text-center p-2">{auth?.full_name}</h1>
               <img src={down} alt="" className="w-9 max-[1280px]:hidden" />
             </>
           ) : (

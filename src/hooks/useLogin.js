@@ -1,7 +1,7 @@
-import serverLogin from "../service/auth";
 import { useNavigate } from "react-router-dom";
 import { QUERY_KEY } from "../constants/queryKeys";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { userLoginApi } from "../service/auth";
 
 export function useLogIn() {
   const navigate = useNavigate();
@@ -9,13 +9,13 @@ export function useLogIn() {
 
   const logIn = async (email, password) => {
     try {
-      const data = await serverLogin(email, password);
+      const data = await userLoginApi(email, password);
       console.log("gdfsgdfsgdfsdfgs", data);
       if (data.access && data.refresh && data.user) {
         signIn({
           auth: {
             token: data.access,
-            type: "Bearer",
+            type: "JWT",
           },
           refresh: data.refresh,
           userState: data.user,
