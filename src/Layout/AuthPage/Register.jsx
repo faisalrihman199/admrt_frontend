@@ -19,24 +19,24 @@ function Register() {
   const [isAdSpaceHost, setIsAdSpaceHost] = useState(false);
   const [isAdvertiser, setIsAdvertiser] = useState(false);
 
-  const sendUserDataToFirebase = async (userId, email, fullName, userType) => {
-    const userRef = doc(usersCollection, userId);
-    
-    await setDoc(userRef, {
-      email: email,
-      fullName: fullName,
-      userId: userId,
-      split: userType,
-      registrationDate: new Date(),
-    });
-  };
+  // const sendUserDataToFirebase = async (userId, email, fullName, userType) => {
+  //   const userRef = doc(usersCollection, userId);
+
+  //   await setDoc(userRef, {
+  //     email: email,
+  //     fullName: fullName,
+  //     userId: userId,
+  //     split: userType,
+  //     registrationDate: new Date(),
+  //   });
+  // };
 
   const signInWithGoogle = async (userType) => {
     try {
       const result = await signInWithGooglePopup();
       const user = result.user;
 
-      sendUserDataToFirebase(user.uid, user.email, user.displayName, userType);
+      // sendUserDataToFirebase(user.uid, user.email, user.displayName, userType);  
 
       navigate("/");
     } catch (error) {

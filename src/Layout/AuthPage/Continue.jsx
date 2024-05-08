@@ -13,9 +13,9 @@ function Continue() {
     console.log('advertiser:', advertiser);
 
     if (adSpaceHost === 'googlePay') {
-      window.location.href = '/adSpaceHost/registasion';
+      window.location.href = '/space_host/registration';
     } else if (advertiser === 'applePay') {
-      window.location.href = '/advertiser/registasion';
+      window.location.href = '/advertiser/registration';
     }
   };
 

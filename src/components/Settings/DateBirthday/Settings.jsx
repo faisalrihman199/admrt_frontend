@@ -4,6 +4,9 @@ import { auth, usersCollection } from '../../../firebase/firebase';
 import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { VscChromeClose } from 'react-icons/vsc';
 import { deleteUser } from 'firebase/auth';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import AccountSettings from '../Account/AccountSetting';
+import NotificationSetting from '../Notification/NotificationSetting';
 
 const Settings = () => {
   const [userId, setUserId] = useState(null);
@@ -14,34 +17,36 @@ const Settings = () => {
   const [modal, setModal] = useState(false);
   const [, setIsFormValid] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false)
-  const [imageUrl, setImageUrl] = useState(null);
+  // const [imageUrl, setImageUrl] = useState(null);
+  const [selectedSettingsType, setSelectedSettingsType] = useState('Account');
   const navigate = useNavigate();
+  const auth = useAuthUser()
 
-  useEffect(() => {
-    const fetchUser = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setUserId(user.uid);
-        try {
-          const userDoc = await getDoc(doc(usersCollection, user.uid));
-          if (userDoc.exists()) {
-            const data = userDoc.data();
-            console.log(data);
-            setFullName(data.fullName || '');
-            setEmail(data.email || '');
-            setDateBirthday(data.dateBirthday || '');
-            setPhoneNumber(data.phoneNumber || '');
-            setImageUrl(data.imageUrl || null);
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      } else {
-        setUserId(null);
-      }
-    });
+  // useEffect(() => {
+  //   const fetchUser = auth.onAuthStateChanged(async (user) => {
+  //     if (user) {
+  //       setUserId(user.uid);
+  //       try {
+  //         const userDoc = await getDoc(doc(usersCollection, user.uid));
+  //         if (userDoc.exists()) {
+  //           const data = userDoc.data();
+  //           console.log(data);
+  //           setFullName(data.fullName || '');
+  //           setEmail(data.email || '');
+  //           setDateBirthday(data.dateBirthday || '');
+  //           setPhoneNumber(data.phoneNumber || '');
+  //           setImageUrl(data.imageUrl || null);
+  //         }
+  //       } catch (err) {
+  //         console.log(err);
+  //       }
+  //     } else {
+  //       setUserId(null);
+  //     }
+  //   });
 
-    return () => fetchUser();
-  }, []);
+  //   return () => fetchUser();
+  // }, []);
 
   const handleSaveChanges = async () => {
     try {
@@ -175,11 +180,22 @@ const Settings = () => {
             </div>
             <div className="mx-auto">
               <div className="">
-                <button className="flex items-center justify-center mt-8 w-full text-lg font-medium p-4 rounded-2xl mb-2.5 bg-gray-100">
-                  <img className="mr-4 w-10 h-10" src={imageUrl} alt="" />
+                <button
+                  onClick={() => setSelectedSettingsType('Account')}
+                  className={`flex items-center justify-center mt-8 w-full text-lg font-medium p-4 rounded-2xl mb-2.5 border ${selectedSettingsType === 'Account' ? 'border-blue-500 text-blue-500' : ''}`}
+                >
+                  {auth?.imageUrl ? (
+                    <img className="mr-4 w-10 h-10" src={auth.imageUrl} alt="" />
+                  ) : auth?.full_name ? (
+                    <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center bg-orange-200 text-xl">
+                      {auth.full_name.charAt(0).toUpperCase()}
+                    </div>
+                  ) : null}
                   Account
                 </button>
-                <button className="border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-blue-500"
+                <button
+                  onClick={() => setSelectedSettingsType('Notification')}
+                  className={`border mt-8 w-full text-lg bg-white rounded-2xl font-medium p-4 hover:text-blue-500 ${selectedSettingsType === 'Notification' ? 'border-blue-500 text-blue-500' : ''}`}
                 >
                   Notification
                 </button>
@@ -195,7 +211,7 @@ const Settings = () => {
             </div>
           </div>
         </div>
-        <div className="w-full md:w-2/3 md:ml-8 py-8 px-3 md:px-10 border border-gray-100 bg-white p-4 rounded-2xl">
+        {/* <div className="w-full md:w-2/3 md:ml-8 py-8 px-3 md:px-10 border border-gray-100 bg-white p-4 rounded-2xl">
           <div className="text-start">
             <div className="mb-6">
               <h3 className="font-bold text-xl">Account Settings</h3>
@@ -226,7 +242,8 @@ const Settings = () => {
               <button className="w-full md:w-64 rounded-lg py-3 bg-blue-500 text-white hover:shadow-lg font-medium font-medium text-sm md:text-base shadow-indigo-700/40 text-center" onClick={() => setModal(true)}>Save Change</button>
             </div>
           </div>
-        </div>
+        </div> */}
+        {selectedSettingsType === 'Account' ? <AccountSettings /> : <NotificationSetting />}
       </div>
     </div>
   );

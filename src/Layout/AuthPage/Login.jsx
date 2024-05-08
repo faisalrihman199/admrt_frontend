@@ -8,6 +8,8 @@ import SlideShow from "./../../Layout/SlideShow";
 import { signInWithGooglePopup, facebookProvider, auth } from "../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useLogIn } from "../../hooks/useLogin";
+import Alert from "../../components/allert";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,6 +20,11 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [icon, setIcon] = useState(eyeOff);
   const [loading, setLoading] = useState(false)
+  const [loginErrorMessage, setLoginErrorMessage] = useState('')
+
+
+
+  const logIn = useLogIn();
 
   const navigate = useNavigate();
 
@@ -51,11 +58,13 @@ function Login() {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false)
-      navigate(`/`);
+      // await signInWithEmailAndPassword(auth, email, password);
+
+      await logIn(email, password)
+
+      // setLoading(false)
+      // navigate(`/`);
     } catch (error) {
-      console.error(error);
       setErrorMessage("There was an error logging in. Please check your information and try again.");
       setLoading(false)
     }
@@ -96,8 +105,11 @@ function Login() {
                 Sign In
               </h1>
               <p className="my-4 text-sm md:text-base font-light md:my-8">Don’t have an account? <span className="text-blue-700 font-normal cursor-pointer"><a href="/register">Create an account</a></span></p>
+              {/* {loginErrorMessage && <p className="text-red-500">{loginErrorMessage}</p>} */}
               <form className="md:space-y-6" onSubmit={handleLogin}>
-                {errorMessage && <p className="error-message text-white p-2 bg-red-400 border-2 border-red-800 text-center rounded-lg">{errorMessage}</p>}
+                {errorMessage &&
+                  <Alert type="error" message={errorMessage} />
+                }
                 <div>
                   <h3 className="text-base font-medium">Email Address</h3>
                   <input
