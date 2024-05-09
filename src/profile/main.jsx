@@ -13,7 +13,7 @@ import { VscEmptyWindow } from "react-icons/vsc";
 import { Specification } from '../Layout/context/specification';
 import { MainAdSpace } from '../Layout/adSpace/main';
 import { ProductAdventiser } from '../Layout/context/adventiser/productAdventiser';
-import userProfile from '../service/user';
+import { userProfile } from '../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useQuery } from '@tanstack/react-query';
 
@@ -26,6 +26,7 @@ function SiplePages() {
         queryFn: userProfile,
         staleTime: 5 * 60 * 1000,
     })
+
 
     const [userId, setUserId] = useState(null);
     const [split, setSplit] = useState(null);

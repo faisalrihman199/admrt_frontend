@@ -7,6 +7,10 @@ import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { usersCollection, storage, db } from "../../firebase/firebase";
 import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
+import { MdDelete } from "react-icons/md";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import { addProfileTopic } from "../../service/profile";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
@@ -78,28 +82,31 @@ const EditeUser = ({ userInfo }) => {
     window.location.reload();
   };
 
+  const mutation = useMutation({
+    mutationFn: addProfileTopic,
+    onSuccess: () => {
+      // Invalidate and refetch
+      QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+    },
+  })
+  const authHeader = useAuthHeader()
   const handleAddTodo = () => {
-    if (todos.length < 3 && todoText.trim() !== "") {
-      const newTodo = {
-        id: todos.length + 1,
-        text: todoText
-      };
-      setTodos([...todos, newTodo]);
-      setExperitise([...experitise, newTodo.text]);
-      setTodoText("");
-    }
+    const newTodo = {
+      id: todos.length + 1,
+      text: todoText
+    };
+    setTodos([...todos, newTodo]);
+    setExperitise([...experitise, newTodo.text]);
+    mutation.mutate({
+      authHeader,
+      data: { title: todoText }
+    })
+    setTodoText("");
   };
 
   const handleDeleteTodo = async (id) => {
     try {
-      const updatedTodos = todos.filter(todo => todo.id !== id);
-      setTodos(updatedTodos);
-
-      const updatedExperitise = updatedTodos.map(todo => todo.text);
-      setExperitise(updatedExperitise);
-
-      const userDocRef = doc(usersCollection, currentUser.uid);
-      await updateDoc(userDocRef, { todos: updatedTodos });
+      // to be implemented
     } catch (error) {
       console.error("Error deleting todo:", error);
     }
@@ -120,8 +127,9 @@ const EditeUser = ({ userInfo }) => {
 
   const updateExperitise = async () => {
     try {
-      const userDocRef = doc(usersCollection, currentUser.uid);
-      await setDoc(userDocRef, { experitise }, { merge: true });
+      // const userDocRef = doc(usersCollection, currentUser.uid);
+      // await setDoc(userDocRef, { experitise }, { merge: true });
+
       setTodoModal(false)
     } catch (error) {
       console.error("Error updating experitise data:", error);
@@ -186,37 +194,39 @@ const EditeUser = ({ userInfo }) => {
               </div>
               <div className="relative p-2 md:p-6 justify-center items-start">
                 <div>
-                  <h1 className='text-center mb-6 text-2xl md:text-3xl font-semibold'>Add topics you speak about or have advertises in the past</h1>
+                  <p className='text-center mb-6 text-xl md:text-xl font-semibold'>Add topics you speak about or have advertises in the past</p>
                 </div>
                 <div className="">
-                  <div className="">
-                    <div className="mb-4">
-                      <div className="flex mt-4">
-                        <input className="border rounded-lg w-full py-2 px-3 mr-1 text-grey-darker" placeholder="Add social" value={todoText} onChange={(e) => setTodoText(e.target.value)} />
-                        <button type="submit" className={`p-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 w-20 ${todos.length >= 10 ? 'cursor-not-allowed opacity-50' : ''}`} onClick={handleAddTodo} disabled={todos.length >= 3}>Add</button>
-                      </div>
+                  <div className="mb-4">
+                    <div className="flex mt-5">
+                      <input className="border rounded-lg w-full py-2 px-3 mr-1 text-grey-darker" placeholder="Add topic" value={todoText} onChange={(e) => setTodoText(e.target.value)} />
+                      <button type="submit" className={`p-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 w-20 ${todos.length >= 10 ? 'cursor-not-allowed opacity-50' : ''}`} onClick={handleAddTodo}  >Add</button>
                     </div>
-                    <div>
-                      <div>
-                        {todos.map(todo => (
-                          <div className="flex items-center border-b" key={todo.id}>
-                            <p className="w-full text-grey-50 ">{todo.text}</p>
-                            <button onClick={() => handleDeleteTodo(todo.id)}>
-                              <VscChromeClose />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                  </div>
+                  <div>
+                    <div className="border-t">
+                      <h2 className="text-md font-bold mb-4 pt-5">Your Topics</h2>
+                      {todos.map((todo, index) => (
+                        <div className="flex items-center" key={todo.id}>
+                          <p className="w-full text-grey-50">
+                            <span className="mr-2">{index + 1}.</span>
+                            {todo.text}
+                          </p>
+                          <button onClick={() => handleDeleteTodo(todo.id)}>
+                            <MdDelete />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-                <div id="expertiseContainer" className="mt-4">
+                {/* <div id="expertiseContainer" className="mt-4">
                   <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
-                </div>
+                </div> */}
               </div>
-              <p className="text-center">Maximum ten topics may be added</p>
-              <div className="flex items-center justify-center p-2 md:p-6 border-t border-solid gap-4 border-blue Gray-200 rounded-b">
-                <button className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              {/* <p className="text-center">Maximum ten topics may be added</p> */}
+              <div className="flex items-center justify-center p-2 md:p-6   border-solid gap-4 border-blue Gray-200 rounded-b">
+                {/* <button className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   onClick={() => setTodoModal(false)}>
                   <h1 className='text-xs md:text-sm'>
@@ -228,7 +238,7 @@ const EditeUser = ({ userInfo }) => {
                   onClick={updateExperitise}
                 >
                   Save
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

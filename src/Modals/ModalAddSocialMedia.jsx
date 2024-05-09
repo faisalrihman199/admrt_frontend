@@ -71,7 +71,12 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia, userId }) => {
                                                 ))}
                                             </ul>
                                         </div>
-                                        <p className='my-6 text-center'>Link your Selected Social Media with AdMrt.</p>
+                                        <div className="my-6">
+                                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="social-media-link">
+                                                Social Media Link
+                                            </label>
+                                            <input type="text" id="social-media-link" className="w-full px-3 py-2 placeholder-gray-500 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600" placeholder="Enter your social media link here" />
+                                        </div>
                                     </div>
                                 </div>
 
