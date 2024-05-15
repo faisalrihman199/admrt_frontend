@@ -3,7 +3,6 @@ import 'flowbite';
 import EditBackground from "../Layout/context/editeBackground";
 import EditeUser from "../Layout/context/user";
 import IntoDescription from "../Layout/context/intoDescription";
-import { auth, usersCollection } from "../firebase/firebase";
 import AboutHim from '../Layout/context/aboutHim/aboutHim';
 import SocialMedia from '../Layout/context/socialMedia/socialMedia';
 import { doc, getDoc } from 'firebase/firestore';
@@ -16,10 +15,13 @@ import { ProductAdventiser } from '../Layout/context/adventiser/productAdventise
 import { userProfile } from '../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useQuery } from '@tanstack/react-query';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 function SiplePages() {
 
     const authHeader = useAuthHeader()
+    const authUser = useAuthUser()
+
 
     const { isPending, isError, data, error } = useQuery({
         queryKey: ['loggedInUser', { authHeader }],
@@ -47,6 +49,17 @@ function SiplePages() {
 
     const userInfo = {
         name: data?.full_name,
+        topics: data?.topics,
+        description: data?.description,
+        socialMedias: data?.socials,
+        location: data?.location,
+        website: data?.website,
+        joinDate: data?.joined,
+        long_term_service_availability: data?.long_term_service_availability,
+        profileImage: data?.profile_image,
+        coverImageUrl: data?.banner_image,
+        products: data?.products,
+        portfolios: data?.portfolios,
 
     };
     console.log('userInfo', userInfo)
@@ -57,13 +70,19 @@ function SiplePages() {
                 <div className="md:flex">
                     <div className="w-full order-2 md:w-2/3 ">
                         <div className={"border p-2 md:p-5 rounded-xl"}>
-                            <EditBackground userId={userId} split={split} />
+                            <EditBackground userId={userId} split={split} coverImageUrl={userInfo.coverImageUrl} />
                             <EditeUser userInfo={userInfo} />
-                            <IntoDescription />
+                            <IntoDescription description={userInfo.description} />
                         </div>
-                        <Specification />
-                        {split === 'adSpaceHost' && <Portfolio />}
-                        {advertiserProfile && <ProductAdventiser />}
+                        <div className='py-5'>
+                            <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                        </div>
+
+                        {authUser.user_role === "space_host" ? (
+                            <Portfolio userPortfolios={userInfo.portfolios} />
+                        ) : authUser.user_role === "advertiser" ? (
+                            <ProductAdventiser userProducts={userInfo.products} />
+                        ) : null}
                     </div>
                     <div class="w-full py-5 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
                         {advertiserProfile ? null :
@@ -121,8 +140,12 @@ function SiplePages() {
                                 )}
                             </div>
                         }
-                        <AboutHim />
-                        <SocialMedia />
+                        <AboutHim
+                            location={userInfo.location}
+                            website={userInfo.website}
+                            joinDate={userInfo.joinDate}
+                        />
+                        <SocialMedia socials={userInfo.socialMedias} />
                         {advertiserProfile ? null :
                             <>
                                 <MainAdSpace />

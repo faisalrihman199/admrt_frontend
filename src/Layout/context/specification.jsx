@@ -12,62 +12,90 @@ import { auth, usersCollection } from '../../firebase/firebase'
 import { VscChromeClose } from "react-icons/vsc";
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { MdDelete } from "react-icons/md";
+import { QueryClient, useMutation } from '@tanstack/react-query'
+import { updateProfile } from '../../service/profile'
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 
-export const Specification = () => {
+export const Specification = ({ long_term_service_availability, language }) => {
     const { split, userUID } = useParams();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [meId, setMeId] = useState(null);
     const [modal, setModal] = useState(false);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         age: '',
         gender: '',
         experitise: [],
         topicalTime: '',
-        availability: '',
+        long_term_service_availability: '',
         language: ''
     });
 
     const location = useLocation();
     const { pathname } = location;
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                setMeId(user.uid);
-            } else {
-                setMeId(null)
-            }
-        })
-        return () => unsubscribe();
-    }, []);
+    // useEffect(() => {
+    //     const unsubscribe = auth.onAuthStateChanged((user) => {
+    //         if (user) {
+    //             setMeId(user.uid);
+    //         } else {
+    //             setMeId(null)
+    //         }
+    //     })
+    //     return () => unsubscribe();
+    // }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (userUID) {
-                const dataRef = await getDoc(doc(usersCollection, userUID));
-                if (dataRef.exists()) {
-                    const data = dataRef.data();
-                    setFormData(data);
-                }
-            }
-        }
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         if (userUID) {
+    //             const dataRef = await getDoc(doc(usersCollection, userUID));
+    //             if (dataRef.exists()) {
+    //                 const data = dataRef.data();
+    //                 setFormData(data);
+    //             }
+    //         }
+    //     }
 
-        fetchData();
-    }, [userUID]);
+    //     fetchData();
+    // }, [userUID]);
 
     const handleOpen = () => {
         setOpen(!open);
     };
 
+    const authHeader = useAuthHeader()
+
+    const mutation = useMutation({
+        mutationFn: updateProfile,
+        onSuccess: () => {
+            // Invalidate and refetch
+            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+        }
+
+    })
+
     const handleSaveDatabase = async (e) => {
         e.preventDefault();
         try {
-            const saveRef = doc(usersCollection, userUID);
-            await setDoc(saveRef, formData);
+            let data = {};
+            if (formData.long_term_service_availability) data.long_term_service_availability = formData.long_term_service_availability;
+            if (formData.language) data.language = formData.language;
+
+            mutation.mutate({
+                authHeader,
+                data
+            })
+
+            if (mutation.isError) {
+                console.error("Error saving changes");
+                setError('something went wrong')
+            }
+
+            setModal(false);
         } catch (err) {
             console.error(err);
         } finally {
-            setModal(false);
+            // setModal(false);
         }
     };
 
@@ -78,44 +106,51 @@ export const Specification = () => {
         });
     };
 
-    const handleExperitiseChange = (index, value) => {
-        const updatedExperitise = [...formData.experitise];
-        updatedExperitise[index] = value;
-        setFormData({
-            ...formData,
-            experitise: updatedExperitise
-        });
-    };
+    // const handleExperitiseChange = (index, value) => {
+    //     const updatedExperitise = [...formData.experitise];
+    //     updatedExperitise[index] = value;
+    //     setFormData({
+    //         ...formData,
+    //         experitise: updatedExperitise
+    //     });
+    // };
 
-    const handleAddExperitise = () => {
-        if (formData.experitise && Array.isArray(formData.experitise)) {
-            if (formData.experitise.length < 3) {
-                setFormData(prevState => ({
-                    ...prevState,
-                    experitise: [...prevState.experitise, '']
-                }));
-            }
-        }
-    };
+    // const handleAddExperitise = () => {
+    //     if (formData.experitise && Array.isArray(formData.experitise)) {
+    //         if (formData.experitise.length < 3) {
+    //             setFormData(prevState => ({
+    //                 ...prevState,
+    //                 experitise: [...prevState.experitise, '']
+    //             }));
+    //         }
+    //     }
+    // };
 
-    const handleRemoveExperitise = (index) => {
-        const updatedExperitise = [...formData.experitise];
-        updatedExperitise.splice(index, 1);
-        setFormData({
-            ...formData,
-            experitise: updatedExperitise
-        });
-    };
+    // const handleRemoveExperitise = (index) => {
+    //     const updatedExperitise = [...formData.experitise];
+    //     updatedExperitise.splice(index, 1);
+    //     setFormData({
+    //         ...formData,
+    //         experitise: updatedExperitise
+    //     });
+    // };
 
     return (
         <div>
-            {split === 'adSpaceHost' &&
-                <div onClick={handleOpen}
+            {
+                <div
+                    // onClick={handleOpen}
                     className={`flex justify-between border mt-8 py-2 px-3 md:py-4 md:px-7 ${open ? `rounded-t-xl` : `rounded-xl`}`}>
-                    <div className=''>
+                    <div className='flex items-start'>
                         <button>
                             <h1 className='text-base md:text-2xl font-semibold'>Specification</h1>
                         </button>
+                        <div className='flex justify-center items-center m-1 p-1 rounded-sm   cursor-pointer hover:bg-gray-100'
+                            onClick={() => setModal(true)}
+                        >
+                            <img src={edit_svg_blue} alt="edit" className='' />
+                            {/* <p className='text-blue-700'>edit</p> */}
+                        </div>
                     </div>
                     <div className='flex justify-center items-center'>
                         {open ? <div>
@@ -129,20 +164,20 @@ export const Specification = () => {
             {open ? (
                 <div className='border rounded-b-xl'>
                     <div className='px-2 md:px-8 mt-6'>
-                        {pathname !== `/profile/${split}/${userUID}` &&
-                            userUID === meId &&
-                            <div className='flex justify-end border-b'>
-                                <div className='flex justify-center border m-1 p-1 rounded-sm w-44 cursor-pointer hover:bg-gray-100'
-                                    onClick={() => setModal(true)}
-                                >
-                                    <img src={edit_svg_blue} alt="edit" className='' />
-                                    <p className='text-blue-700'>edit</p>
-                                </div>
-                            </div>
+                        {
+                            // <div className='flex justify-end  '>
+
+                            //     <div className='flex justify-center   m-1 p-1 rounded-sm w-44 cursor-pointer hover:bg-gray-100'
+                            //         onClick={() => setModal(true)}
+                            //     >
+                            //         <img src={edit_svg_blue} alt="edit" className='' />
+                            //         {/* <p className='text-blue-700'>edit</p> */}
+                            //     </div>
+                            // </div>
                         }
                         <ul className="menu gap-5">
 
-                            <li className="menu-item flex justify-between">
+                            {/* <li className="menu-item flex justify-between">
                                 <div
                                     className="flex justify-center items-center text-xs md:text-sm md:font-semibold text-gray-400">
                                     <img className='h-6 my-2 mr-1' src={typesSvg} alt='' />
@@ -152,7 +187,7 @@ export const Specification = () => {
                                     className='text-xs md:text-sm md:font-semibold text-[#2B59FF] flex items-center justify-center'>
                                     <h1>{formData.experitise ? formData.experitise.join(', ') : "none"}</h1>
                                 </div>
-                            </li>
+                            </li> */}
                             {/* <li className="menu-item flex justify-between">
                                 <div
                                     className="flex justify-center items-center text-xs md:text-sm md:font-semibold text-gray-400">
@@ -172,7 +207,7 @@ export const Specification = () => {
                                 </div>
                                 <div
                                     className='text-xs md:text-sm md:font-semibold text-[#2B59FF] flex justify-center items-center  gap-4'>
-                                    <h1>{formData.availability || 'none'}</h1>
+                                    <h1>{long_term_service_availability || 'none'}</h1>
                                 </div>
                             </li>
                             <li className="menu-item flex justify-between">
@@ -211,7 +246,7 @@ export const Specification = () => {
                             <form onSubmit={handleSaveDatabase}>
                                 <div className='mx-8 mt-5'>
 
-                                    {(formData.experitise || []).map((item, index) => (
+                                    {/* {(formData.experitise || []).map((item, index) => (
                                         <div className='m-1 flex gap-4' key={index}>
                                             <input type="text"
                                                 className='border rounded-lg w-full p-2'
@@ -226,15 +261,15 @@ export const Specification = () => {
                                                 <MdDelete className='text-red-600 h-6 w-6' />
                                             </button>
                                         </div>
-                                    ))}
-                                    <button type="button"
+                                    ))} */}
+                                    {/* <button type="button"
                                         className={`bg-blue-600 text-white p-2 rounded-lg ${formData.experitise?.length === 4 && 'opacity-50 cursor-not-allowed'}`}
                                         onClick={handleAddExperitise}
                                         disabled={formData.experitise?.length >= 4}
                                     >
                                         Add Experitise
-                                    </button>
-                                    <div className='m-1'>
+                                    </button> */}
+                                    {/* <div className='m-1'>
                                         <label>Typical Response Time</label>
                                         <input type="text"
                                             name="topicalTime"
@@ -242,11 +277,11 @@ export const Specification = () => {
                                             value={formData.topicalTime}
                                             onChange={handleChange}
                                         />
-                                    </div>
+                                    </div> */}
                                     <div className='m-1'>
                                         <label>Long-Term Service Availability</label>
                                         <input type="text"
-                                            name="availability"
+                                            name="long_term_service_availability"
                                             className='border rounded-lg w-full p-2'
                                             value={formData.availability}
                                             onChange={handleChange}
@@ -262,6 +297,7 @@ export const Specification = () => {
                                         />
                                     </div>
                                 </div>
+                                {error && <p className="text-red-500">{error}</p>}
                                 <div className="flex items-center justify-center p-2 md:p-6 border-t border-solid gap-4 border-blue Gray-200 rounded-b">
                                     <button
                                         type="submit"

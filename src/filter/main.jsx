@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Cards from './Cards';
-import { getDocs } from 'firebase/firestore';
-import { usersCollection } from '../firebase/firebase';
+import SpaceProfileSearchCard from './SpaceProfileSearchCard';
 
 const MainFilter = () => {
   const [filteredData, setFilteredData] = useState([]);
@@ -21,14 +19,50 @@ const MainFilter = () => {
 
   const applyFilter = useCallback(async () => {
     try {
-      const querySnapshot = await getDocs(usersCollection);
-      const data = querySnapshot.docs.map(doc => doc.data());
-      let filteredResult = data;
+      // Replace this with your own dummy data
+      const userData = [
+        {
+          uid: '1',
+          profile_image: 'https://i.pravatar.cc/300',
+          fullName: 'John Doe',
+          topics: [
+            { id: '1', title: 'Programming' },
+            { id: '2', title: 'Design' },
+          ],
+          socialMedia: [
+            { id: '1', url: 'https://youtube.com/user1', social_media: 'yt' },
+            { id: '2', url: 'https://facebook.com/user1', social_media: 'fb' },
+
+          ],
+          introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
+          split: 'user',
+          userId: '1',
+        },
+        {
+          uid: '2',
+          profile_image: 'https://i.pravatar.cc/305',
+          fullName: 'Jane Doe',
+          topics: [
+            { id: '3', title: 'Marketing' },
+            { id: '4', title: 'Sales' },
+          ],
+          socialMedia: [
+            { id: '9', url: 'https://youtube.com/user2', social_media: 'yt' },
+            { id: '10', url: 'https://facebook.com/user2', social_media: 'fb' },
+            { id: '11', url: 'https://linkedin.com/user2', social_media: 'ln' },
+
+          ],
+          introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
+          split: 'user',
+          userId: '2',
+        },
+      ];
+      let filteredResult = userData;
 
       if (filterOptions.nameOrExpertise.trim() !== '') {
         filteredResult = filteredResult.filter(user =>
           user.fullName.toLowerCase().includes(filterOptions.nameOrExpertise.toLowerCase()) ||
-          (user.experitise && user.experitise.map(e => e.toLowerCase()).includes(filterOptions.nameOrExpertise.toLowerCase()))
+          (user.expertise && user.expertise.map(e => e.toLowerCase()).includes(filterOptions.nameOrExpertise.toLowerCase()))
         );
       }
 
@@ -40,7 +74,6 @@ const MainFilter = () => {
           selectedMediaFilters.some(filter => user.socialMedia && user.socialMedia[filter.toLowerCase()])
         );
       }
-      console.log(selectedMediaFilters);
 
       if (filterOptions.country.trim() !== '') {
         filteredResult = filteredResult.filter(user =>
@@ -85,7 +118,7 @@ const MainFilter = () => {
             <div className='text-base md:text-xl text-red-500'><h1>Clear Filter</h1></div>
           </div>
           <div className='p-2 mt-4'>
-            <h1 className='text-base font-semibold'>Name or Expertise</h1>
+            <h1 className='text-base font-semibold'>Name or Topic</h1>
             <form>
               <div>
               </div>
@@ -180,7 +213,15 @@ const MainFilter = () => {
         </div>
       </div>
       <div>
-        <Cards userData={filteredData} />
+        <div className='p-3'>
+          <div className='max-w-screen-2xl mx-auto px-3 md:px-0'>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {filteredData.map(user => (
+                <SpaceProfileSearchCard key={user.uid} user={user} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

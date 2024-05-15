@@ -76,9 +76,10 @@ function App() {
       path: `/profile/:split/:userUID`,
       element: <ViewsProfile onUserUID={handleUserSelect} />,
     },
-    { id: 4, path: `/:title/portfolio/:userId/:Id`, element: <AddPortfolio /> },
-    { id: 5, path: `/filter`, element: <MainFilter /> },
-    { id: 6, path: "*", element: <NotFound /> },
+    { id: 4, path: `/mediaUpload/:portfolio`, element: <AddPortfolio /> },
+    { id: 6, path: `/mediaUpload/:product`, element: <AddPortfolio /> },
+    { id: 7, path: `/filter`, element: <MainFilter /> },
+    { id: 8, path: "*", element: <NotFound /> },
   ];
 
   const GhostUser = [

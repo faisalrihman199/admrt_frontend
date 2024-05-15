@@ -36,35 +36,8 @@ function StickyNavbar({ authenticated }) {
   const signOut = useSignOut()
   const isAuthenticated = useIsAuthenticated()
   const auth = useAuthUser()
-  console.log('authhhhh user ', auth)
-  // useEffect(() => {
-  //   const unsebscribe = auth.onAuthStateChanged(async (user) => {
-  //     if (user) {
-  //       setUserId(user.uid);
 
-  //       try {
-  //         const userDoc = await getDoc(doc(usersCollection, user.uid));
-  //         if (userDoc.exists()) {
-  //           const userData = userDoc.data();
-  //           const fullName = userData.fullName;
-  //           const splitCall = userData.split
-  //           const comeRequestCall = userData.requests;
-  //           setUserFullName(fullName);
-  //           setSplit(splitCall);
-  //           setComeRequest(comeRequestCall);
-  //           setHasFalseRequests(Object.values(comeRequestCall).includes(false));
-  //           setUnreadMessageCount(userData.seens);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error getting user data:', error);
-  //       }
-  //     } else {
-  //       setUserId(null);
-  //     }
-  //   });
 
-  //   return () => unsebscribe();
-  // }, []);
 
   useEffect(() => {
     const handleDropDown = (e) => {
@@ -274,10 +247,12 @@ function StickyNavbar({ authenticated }) {
           variant="small"
           className="p-1 text-black max-[1280px]:text-base text-lg font-normal mr-3"
         >
-          <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
-            <FaAd className="mr-1 self-start" />
-            <h1>Find adspaces</h1>
-          </Link>
+          {auth?.user_role === "advertiser" ? (
+            <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
+              <FaAd className="mr-1 self-start" />
+              <h1>Find Ad spaces</h1>
+            </Link>
+          ) : null}
         </Typography>
         {/* <Typography
           as="li"
@@ -375,8 +350,8 @@ function StickyNavbar({ authenticated }) {
               className="hidden w-10 flex h-10 outline-none rounded-full  ring-offset-2 ring-blue-600 lg:focus:ring-2 lg:block"
               onClick={() => setState(!state)}
             >
-              {auth?.image_url ? (
-                <img src={auth.image_url} alt="" className="w-full h-full rounded-full" />
+              {auth?.profile_image ? (
+                <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" />
               ) : auth?.full_name ? (
                 <div className="w-full h-full rounded-full flex items-center justify-center bg-orange-200 text-xl">
                   {auth.full_name.charAt(0).toUpperCase()}

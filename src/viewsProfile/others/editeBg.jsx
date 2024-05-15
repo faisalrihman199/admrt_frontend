@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import img from '../../image/image.png'
 
-const EditBg = () => {
+const EditBg = ({ backgroundImageUrl }) => {
     const { userUID, split } = useParams();
     const [bgImage, setBgImage] = useState('');
     const [userId, setUserId] = useState(null);

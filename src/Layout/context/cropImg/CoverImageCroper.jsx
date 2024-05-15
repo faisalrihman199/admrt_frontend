@@ -4,7 +4,7 @@ import { storage } from "../../../firebase/firebase";
 import { ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
-const ImageCropper = ({ closeModal, updateAvatar, submitFileUpload }) => {
+const CoverImageCropper = ({ closeModal, updateCoverImage, submitCoverUpload }) => {
     const editorRef = useRef(null);
     const [imgSrc, setImgSrc] = useState("");
     const [error, setError] = useState("");
@@ -36,7 +36,7 @@ const ImageCropper = ({ closeModal, updateAvatar, submitFileUpload }) => {
             const formData = new FormData();
             formData.append('file', blob);
 
-            await submitFileUpload(blob);
+            await submitCoverUpload(blob);
 
             // const response = await fetch('https://your-server.com/api/upload', {
             //     method: 'POST',
@@ -48,7 +48,7 @@ const ImageCropper = ({ closeModal, updateAvatar, submitFileUpload }) => {
             // }
 
             // const data = await response.json();
-            // updateAvatar(data.filePath);
+            // updateCoverImage(data.filePath);
             // closeModal();
         } catch (error) {
             console.error("Error handling or uploading image:", error);
@@ -56,12 +56,10 @@ const ImageCropper = ({ closeModal, updateAvatar, submitFileUpload }) => {
         }
     };
 
-
-
     return (
         <>
-            <label className="block mb-3 w-fit">
-                <span className="sr-only">Choose profile photo</span>
+            <label className="block mb-3 w-fit p-10">
+                <span className="sr-only">Choose cover photo</span>
                 <input
                     type="file"
                     accept="image/*"
@@ -71,16 +69,16 @@ const ImageCropper = ({ closeModal, updateAvatar, submitFileUpload }) => {
             </label>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             {imgSrc && (
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center p-5 border bg-gray-200 rounded-lg">
                     <AvatarEditor
                         ref={editorRef}
                         image={imgSrc}
-                        width={300}
+                        width={800}
                         height={300}
                         border={0}
-                        color={[255, 255, 255, 0.6]}
+                        color={[0, 0, 0, 0.6]} // Black, semi-transparent
                         scale={scale}
-                        borderRadius={150}
+                        borderRadius={0}
                     />
                     <input
                         type="range"
@@ -103,4 +101,4 @@ const ImageCropper = ({ closeModal, updateAvatar, submitFileUpload }) => {
     );
 };
 
-export default ImageCropper;
+export default CoverImageCropper;

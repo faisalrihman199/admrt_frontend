@@ -3,7 +3,7 @@ import apiClient from "../util/apiClient";
 export async function userProfile({ queryKey }) {
   try {
     const [_key, { authHeader }] = queryKey;
-    const response = await apiClient.get("/auth/users/me/", {
+    const response = await apiClient.get("/profile/", {
       headers: {
         Authorization: authHeader,
       },
@@ -33,8 +33,6 @@ export async function addProfileTopic({ authHeader, data }) {
 
 export async function addProfileSocials({ authHeader, data }) {
   try {
-    console.log("im here");
-
     const response = await apiClient.post("/profile/socials/", data, {
       headers: {
         Authorization: authHeader,
@@ -47,4 +45,96 @@ export async function addProfileSocials({ authHeader, data }) {
   }
 }
 
-// export default userProfile;
+export async function updateProfile({ authHeader, data }) {
+  try {
+    const response = await apiClient.post("/profile/", data, {
+      headers: {
+        Authorization: authHeader,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    alert("Something Went wrong");
+    console.log(error);
+    throw error;
+  }
+}
+export async function updateProfileWithFile({ authHeader, formData }) {
+  try {
+    const response = await apiClient.post("/profile/portfolios/", formData, {
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    alert("Something Went wrong");
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function addProduct({ authHeader, formData }) {
+  try {
+    const response = await apiClient.post("/profile/products/", formData, {
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    alert("Something Went wrong");
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function updateSingleImage({ authHeader, data }) {
+  try {
+    const response = await apiClient.post("/profile/", data, {
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    alert("Something Went wrong");
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deletePortfolio({ authHeader, portfolioId }) {
+  try {
+    console.log("authHeader", authHeader);
+    const response = await apiClient.delete(
+      `/profile/portfolios/${portfolioId}/`,
+      {
+        headers: {
+          Authorization: authHeader,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+export async function deleteProduct({ authHeader, productId }) {
+  try {
+    console.log("authHeader", authHeader);
+    const response = await apiClient.delete(`/profile/products/${productId}/`, {
+      headers: {
+        Authorization: authHeader,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

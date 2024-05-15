@@ -10,79 +10,51 @@ import shape3 from '../../../svgs/about/ic_date.svg';
 // import shape5 from '../../../svgs/about/ic_relationship.svg';
 import edit_svg_blue from '../../../image/edit_svg_blue.svg';
 import { useParams } from 'react-router-dom'
+import { QueryClient, useMutation } from '@tanstack/react-query';
+import { updateProfile } from '../../../service/profile';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
-const AboutHim = () => {
+const AboutHim = ({ location, website, joinDate }) => {
     const [aboutHimShow, setaboutHimShow] = useState("");
-    // const [fullTime, setFullTime] = useState(false);
-    // const [partTime, setPartTime] = useState(false);
-    const [userData, setUserDate] = useState(null)
-    const [userId, setUserId] = useState(null)
-    const { userUID: userIdParam } = useParams();
+    const [currentLocation, setCurrentLocation] = useState(location);
+    const [currentWebsite, setCurrentWebsite] = useState(website);
+    const authHeader = useAuthHeader()
+    const [websiteInput, setWebsiteInput] = useState('')
+    const [locationInput, setLocationInput] = useState('')
+    const [error, setError] = useState(null)
 
-    useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUserId(user.uid);
-            } else {
-                setUserId(null);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
+    const mutation = useMutation({
+        mutationFn: updateProfile,
+        onSuccess: () => {
+            // Invalidate and refetch
+            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+        }
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', userId || userIdParam));
-                const userData = userDoc.data();
-                setUserDate(userData || {});
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-
-        fetchUserData();
-    }, [userId, userIdParam]);
-
-    // const servicesItems = ["Full Time", "Part time"];
-
-    // const handleCheckboxChange = (index) => {
-    //     if (index === 0) {
-    //         setFullTime(!fullTime);
-    //         setPartTime(false);
-    //     } else if (index === 1) {
-    //         setPartTime(!partTime);
-    //         setFullTime(false);
-    //     }
-    // };
+    })
 
     const handleSaveChanges = async () => {
         try {
-            const userId = auth.currentUser.uid;
-            const userRef = doc(usersCollection, userId);
 
-            const userDoc = await getDoc(userRef);
+            let data = {};
+            if (locationInput) data.location = locationInput;
+            if (websiteInput) data.website = websiteInput;
 
-            if (userDoc.exists()) {
-                const currentData = userDoc.data();
+            mutation.mutate({
+                authHeader,
+                data
+            })
 
-                const address = document.getElementById('address').value || currentData.address;
-                const site = document.getElementById('site').value || currentData.site;
-                const userData = {
-                    address,
-                    site,
-                };
-
-                const updatedUserData = { ...currentData, ...userData };
-                await setDoc(userRef, updatedUserData);
-                setaboutHimShow(false);
-                window.location.reload();
-            } else {
-                console.error("User not found");
+            if (mutation.isError) {
+                console.error("Error saving changes");
+                setError('something went wrong')
             }
+
+            setCurrentLocation(locationInput);
+            setCurrentWebsite(websiteInput);
+            setaboutHimShow(false);
         } catch (error) {
             console.error("Error saving changes:", error);
+            setError('something went wrong')
         }
     };
 
@@ -106,6 +78,8 @@ const AboutHim = () => {
                                         className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-indigo-600"
                                         placeholder="Location"
                                         id="address"
+                                        onChange={(e) => setLocationInput(e.target.value)}
+                                    // value={currentLocation}
                                     />
                                 </div>
                                 <div>
@@ -115,9 +89,12 @@ const AboutHim = () => {
                                         className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-indigo-600"
                                         placeholder="Enter Website. Ex: admrt.com"
                                         id="site"
+                                        onChange={(e) => setWebsiteInput(e.target.value)}
+                                    // value={currentWebsite}
                                     />
                                 </div>
                             </div>
+                            {error && <p className="text-red-500 m-3 p-3">{error}</p>}
                             <div className="flex items-center justify-end p-4 border-t border-blueGray-200 rounded-b">
                                 <button
                                     className="text-blue-700 hover:text-indigo-700 px-4 py-2 font-semibold focus:outline-none"
@@ -154,7 +131,7 @@ const AboutHim = () => {
                 </div>
                 <div className='border'></div>
             </div>
-            {userData && (
+            {(
                 <div>
                     <div className='flex justify-between my-4'>
                         <div className='flex gap-5 '>
@@ -162,7 +139,7 @@ const AboutHim = () => {
                                 <img src={shape1} alt='' />
                             </div>
                             <div>
-                                <h1>{userData.address || "none. Please fill in your information!"}</h1>
+                                <h1>{currentLocation || "none. Please fill in your information!"}</h1>
                             </div>
                         </div>
                         <div className='flex justify-center items-center cursor-pointer'>
@@ -179,7 +156,10 @@ const AboutHim = () => {
                                 <img src={shape2} alt='' />
                             </div>
                             <div>
-                                <h1>{userData.site || "none. Please fill in your information!"}</h1>
+                                {currentWebsite
+                                    ? <a href={currentWebsite} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{currentWebsite}</a>
+                                    : <h1>"none. Please fill in your information!"</h1>
+                                }
                             </div>
                         </div>
                         <div className='flex justify-center items-center cursor-pointer'>
@@ -196,16 +176,16 @@ const AboutHim = () => {
                                 <img src={shape3} alt='' />
                             </div>
                             <div>
-                            <h1>Joined {userData.registrationDate ? new Date(userData.registrationDate.seconds * 1000).toLocaleDateString('en-GB') : 'Unknown'}</h1>
+                                <h1>Joined {joinDate ? new Date(joinDate).toLocaleDateString('en-GB') : 'Unknown'}</h1>
                             </div>
                         </div>
-                        <div className='flex justify-center items-center cursor-pointer'>
+                        {/* <div className='flex justify-center items-center cursor-pointer'>
                             <button onClick={() => {
                                 setaboutHimShow(true)
                             }}>
                                 <img src={edit_svg_blue} alt='' />
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             )}

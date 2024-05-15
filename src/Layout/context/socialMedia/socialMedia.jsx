@@ -13,54 +13,44 @@ import copy from '../../../svgs/social-media/Group 1000005712.svg';
 import { auth, usersCollection } from '../../../firebase/firebase'
 import { doc, getDoc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
+import { QueryClient, useMutation } from '@tanstack/react-query';
+import { addProfileSocials } from '../../../service/profile';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
-const SocialMedia = () => {
+const SocialMedia = ({ socials }) => {
     const [selectedSocialMedia, setSelectedSocialMedia] = useState([]);
     const [userId, setUserId] = useState(null);
+    const [currentSocials, setCurrentSocials] = useState(socials)
     const { split } = useParams();
     const maxSocialMediaCount = 6;
+    const authHeader = useAuthHeader()
+    const mutation = useMutation({
+        mutationFn: addProfileSocials,
+        onSuccess: () => {
+            // Invalidate and refetch
+            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+        },
+    })
+    console.log('socials', socials)
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                setUserId(user.uid);
-                try {
-                    const userRef = doc(usersCollection, user.uid);
-                    const userDoc = await getDoc(userRef);
-                    if (userDoc.exists()) {
-                        const data = userDoc.data();
-                        const media = data.socialMedia;
-                        const matchedMedia = Object.keys(media).filter(mediaName => socialMediaPages.some(page => page.name.toLowerCase() === mediaName.toLowerCase()));
-                        const selectedMedia = matchedMedia.map(mediaName => socialMediaPages.find(page => page.name.toLowerCase() === mediaName.toLowerCase()));
-                        setSelectedSocialMedia(selectedMedia);
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
-            } else {
-                setUserId(null);
-            }
-        });
 
-        return () => unsubscribe();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const handleSelectSocialMedia = (addedSocial) => {
 
-    const handleSelectSocialMedia = (socialMedia) => {
-        const isAlreadySelected = selectedSocialMedia.some((item) => item.name === socialMedia);
+        try {
+            mutation.mutate({
+                authHeader,
+                data: { social_media: addedSocial.social_media, url: addedSocial.url }
+            })
 
-        if (!isAlreadySelected && selectedSocialMedia.length < maxSocialMediaCount) {
-            const selectedOption = socialMediaPages.find((page) => page.name === socialMedia);
+            setCurrentSocials((prevSelected) => [...prevSelected, addedSocial]);
 
-            setSelectedSocialMedia((prevSelected) => [
-                ...prevSelected,
-                {
-                    name: socialMedia,
-                    icon: selectedOption ? selectedOption.icon : null,
-                    page: selectedOption ? selectedOption : { name: '', url: '' },
-                },
-            ]);
+
+        } catch (error) {
+            console.error('Error updating user data:', error);
+            alert('Something Went wrong');
         }
+
+
     };
 
     const handleRemoveSocialMedia = (socialMediaName) => {
@@ -69,16 +59,29 @@ const SocialMedia = () => {
         );
     };
 
-    const socialMediaPages = [
-        { name: 'Facebook', icon: svg_facebook, text: 'Facebook' },
-        { name: 'Youtube', icon: svg_youtube, text: 'Youtube' },
-        { name: 'Linkedin', icon: svg_linkedin, text: 'Linkedin' },
-        { name: 'Instagram', icon: svg_instagram, text: 'Instagram' },
-        { name: 'X', icon: svg_x, text: 'X' },
-        { name: 'Tik Tok', icon: svg_tiktok, text: 'Tik Tok' },
-        { name: 'WhatsApp', icon: svg_whatsapp, text: 'WhatsApp' },
-        { name: 'Other', icon: copy, text: 'Other' }
-    ];
+    // const socialMediaPages = [
+    //     { name: 'Facebook', icon: svg_facebook, text: 'Facebook' },
+    //     { name: 'Youtube', icon: svg_youtube, text: 'Youtube' },
+    //     { name: 'Linkedin', icon: svg_linkedin, text: 'Linkedin' },
+    //     { name: 'Instagram', icon: svg_instagram, text: 'Instagram' },
+    //     { name: 'X', icon: svg_x, text: 'X' },
+    //     { name: 'Tik Tok', icon: svg_tiktok, text: 'Tik Tok' },
+    //     { name: 'WhatsApp', icon: svg_whatsapp, text: 'WhatsApp' },
+    //     { name: 'Other', icon: copy, text: 'Other' }
+    // ];
+
+    const socialMediaPages =
+    {
+        "fb": { name: 'Facebook', icon: svg_facebook, text: 'Facebook' },
+        "yt": { name: 'Youtube', icon: svg_youtube, text: 'Youtube' },
+        "ln": { name: 'Linkedin', icon: svg_linkedin, text: 'Linkedin' },
+        "in": { name: 'Instagram', icon: svg_instagram, text: 'Instagram' },
+        "x": { name: 'X', icon: svg_x, text: 'X' },
+        "tt": { name: 'Tik Tok', icon: svg_tiktok, text: 'Tik Tok' },
+        "wa": { name: 'WhatsApp', icon: svg_whatsapp, text: 'WhatsApp' },
+        "ot": { name: 'Other', icon: copy, text: 'Other' }
+    }
+
 
     return (
         <div>
@@ -89,26 +92,39 @@ const SocialMedia = () => {
                     </div>
                     <div className='flex gap-3'>
                         <button className='bg-blue-700 px-2 py-1 rounded-lg text-sm'>
-                            <ModalAddSocialMedia onSelectSocialMedia={handleSelectSocialMedia} userId={userId} />
+                            <ModalAddSocialMedia onSelectSocialMedia={handleSelectSocialMedia} />
                         </button>
                     </div>
                 </div>
-                {split !== 'advertiser' &&
+                {/* {split !== 'advertiser' &&
                     <div className='my-3 border-t-2'>
                         <h1>Please select or copy like to get in touch with him. Add them as a friend on social media</h1>
                     </div>
-                }
+                } */}
                 <div className='border'></div>
-                {selectedSocialMedia.map((socialMedia, index) => (
+                {currentSocials && currentSocials.map((socialMedia, index) => (
                     <div key={index} className='flex gap-4 my-4'>
-                        <div className='w-1/6'>{socialMedia.icon && <img src={socialMedia.icon} alt={socialMedia.name} />}</div>
                         <div className='w-5/6 flex justify-between'>
-                            <div>{socialMedia.name && <h1>{socialMedia.name}</h1>}</div>
-                            {socialMedia.name && (
+                            <a href={socialMedia.url ? socialMedia.url : '#'} target={socialMedia.url ? "_blank" : ''} rel="noopener noreferrer">
+                                <div className='flex items-center gap-2'>
+                                    {socialMediaPages.hasOwnProperty(socialMedia.social_media) && <img src={socialMediaPages[socialMedia.social_media].icon} alt={socialMedia.social_media} />}
+                                    {socialMedia.url && <h1>{
+                                        (() => {
+                                            const parts = socialMedia.url.split('/');
+                                            let username = parts.pop();
+                                            if (!username) {
+                                                username = parts.pop();
+                                            }
+                                            return username;
+                                        })()
+                                    }</h1>}
+                                </div>
+                            </a>
+                            {socialMedia.social_media && (
                                 <div className='flex gap-5'>
-                                    <CheckMedia selectedSocialMedia={selectedSocialMedia} userId={userId} />
+                                    {/* <CheckMedia selectedSocialMedia={selectedSocialMedia} userId={userId} /> */}
                                     <div className='h-6 w-6 cursor-pointer'>
-                                        <ModalDelete onDeleteMedia={handleRemoveSocialMedia} name={socialMedia.name} />
+                                        <ModalDelete onDeleteMedia={handleRemoveSocialMedia} name={socialMedia.social_media} />
                                     </div>
                                 </div>
                             )}

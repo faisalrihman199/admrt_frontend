@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { auth, productCollection, saveProductDataToFirebase, storage, uploadFilesToStorage } from '../../../firebase/firebase';
 import { MdDelete } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
@@ -8,8 +8,14 @@ import generatedId from '../../../modul/main';
 import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { deleteObject, listAll, ref } from 'firebase/storage';
+import ReactPlayer from 'react-player';
+import { CarouselWithContent } from '../../../components/Carousel/CarouselWithContent';
+import { FaTrash } from 'react-icons/fa';
+import { deleteProduct } from '../../../service/profile';
+import { useQueryClient } from '@tanstack/react-query';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
-export const ProductAdventiser = () => {
+export const ProductAdventiser = ({ userProducts }) => {
   const { userUID } = useParams();
   const [userId, setUserId] = useState('');
   const [modal, setModal] = useState(false);
@@ -26,39 +32,10 @@ export const ProductAdventiser = () => {
 
   const productId = generatedId();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId('');
-      }
-    })
-    return () => unsubscribe();
-  }, [userId])
-
-  const fetchAllProducts = useCallback(async () => {
-    if (userUID) {
-      try {
-        const docRef = collection(productCollection, userUID, "all");
-        const snapshot = await getDocs(docRef);
-        const products = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const { icon, name, descriptions, images } = data;
-          products.push({ id: doc.id, icon, name, descriptions, images });
-        });
-        setData(products);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }, [userUID]);
+  const navigate = useNavigate();
+  console.log('userProducts', userProducts)
 
 
-  useEffect(() => {
-    fetchAllProducts();
-  }, [fetchAllProducts]);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -87,13 +64,37 @@ export const ProductAdventiser = () => {
       setError(null);
     }
   };
+  const queryClient = useQueryClient();
+  const authHeader = useAuthHeader()
 
-  const handleDelete = (index) => {
-    const newFiles = [...selectedFiles];
-    newFiles.splice(index, 1);
-    setSelectedFiles(newFiles);
+  const handleDelete = async (productId) => {
+    if (window.confirm('Are you sure you want to delete this portfolio?')) {
+      try {
+        await deleteProduct({ authHeader, productId });
+        queryClient.invalidateQueries('loggedInUser');
+      } catch (error) {
+        console.error('Error deleting portfolio:', error);
+      }
+    }
   };
+  const productData = [
+    {
+      id: 1,
+      name: 'Product 1',
+      description: 'Introducing our latest model, the Turbo X7. This car is the epitome of luxury and performance. It features a sleek, aerodynamic design with a glossy black finish that exudes elegance and sophistication. The Turbo X7 is powered by a 3.0L V6 engine that delivers an impressive 400 horsepower, ensuring a smooth and powerful drive. The interior is just as impressive, with leather seats, a state-of-the-art infotainment system, and a panoramic sunroof that offers stunning views. Safety features include adaptive cruise control, lane keep assist, and a rearview camera. Experience the perfect blend of luxury, comfort, and performance with the Turbo X7.',
+      price: 100,
+      images: ['https://picsum.photos/200/300', 'https://picsum.photos/id/237/200/300']
+    },
+    {
+      id: 2,
+      name: 'Product 2',
+      description: 'This is product 2',
+      price: 200,
+      youtube_url: 'https://www.youtube.com/watch?v=dyXScuEoGrE',
+      images: ['https://picsum.photos/id/237/200/300', 'https://picsum.photos/id/237/200/300']
 
+    },
+  ];
   const handleCancel = () => {
     setModal(false);
     setName('')
@@ -144,8 +145,10 @@ export const ProductAdventiser = () => {
     }
 
     setError();
-    setnextSection(true);
+    // setnextSection(true);
+    navigate(`/mediaUpload/product`, { state: { title: name, description: descriptions, module: 'product' } });
     setBtn('Save');
+
   }
 
 
@@ -171,7 +174,7 @@ export const ProductAdventiser = () => {
       setError(null);
       setnextSection(false);
       setModal(false);
-      fetchAllProducts();
+
     } catch (error) {
       console.error(error);
       setError("Failed to save product. Please try again!");
@@ -200,7 +203,7 @@ export const ProductAdventiser = () => {
         await deleteObject(item);
       });
       setSeenModal(false);
-      fetchAllProducts();
+
     } catch (err) {
       console.error(error);
     }
@@ -216,7 +219,7 @@ export const ProductAdventiser = () => {
                 <button onClick={() => setSeenModal(false)}>
                   <IoCloseCircleOutline className='w-8 h-8' />
                 </button>
-                {userUID === userId &&
+                {
                   <button className='' onClick={() => handleDeleteProduct(selectedProduct.id)}>
                     <MdDelete className='text-red-700 w-8 h-8' />
                   </button>
@@ -283,7 +286,7 @@ export const ProductAdventiser = () => {
                     <div>
                       {error && <p className='text-red-600 text-center'>{error}</p>}
                     </div>
-                    <div className='flex items-center justify-center gap-3 border-b py-3'>
+                    {/* <div className='flex items-center justify-center gap-3 border-b py-3'>
                       <label for="dropzone-file" className="flex flex-col items-center w-1/2 p-5 text-center bg-white border-2 border-blue-600 border-dashed cursor-pointer rounded-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-blue-600">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
@@ -299,7 +302,7 @@ export const ProductAdventiser = () => {
                       <div className='flex justify-center items-center'>
                         <p className='text-center'>Your product logo <br />upload here <span className='text-gray-700'>(option)</span></p>
                       </div>
-                    </div>
+                    </div> */}
                     <div>
                       <div className='my-2'>
                         <label className='pl-2'>Product name</label>
@@ -339,11 +342,11 @@ export const ProductAdventiser = () => {
           </div>
         </div>
       )}
-      {userUID === userId && (
+      {(
         <div className='flex justify-between mb-3'>
           <div>
             <h1 className='font-bold text-xl text-gray-800'>Products</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            {/* <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
           </div>
           <div className='flex items-center justify-center'>
             <button className='flex gap-2 bg-blue-600 hover:bg-blue-700 p-2 rounded-lg px-5 active:bg-blue-600 text-white'
@@ -355,37 +358,40 @@ export const ProductAdventiser = () => {
           </div>
         </div>
       )}
-      <div className='flex gap-6'>
-        {data && data.length > 0 ? (
-          data.map((product) => (
-            <div key={product.id} className='border p-4 rounded-lg w-1/2 cursor-pointer hover:shadow-lg' onClick={() => openModal(product)}>
-              <div className="flex items-center justify-start gap-4">
-                <div>
-                  {product.icon && (
-                    <img src={product.icon} alt="Product Icon" className="w-28 h-28 object-cover rounded-lg" />
-                  )}
+      <div className='grid grid-cols-2 gap-4'>
+        {userProducts ? (
+          userProducts.map((product) => {
+            const images = [product.image1, product.image2, product.image3].filter(Boolean);
+            product.images = images;
+            return (
+              <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg'>
+                <div className='p-2 rounded-lg cursor-pointer relative'>
+                  <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
                 </div>
-                <div>
+                <div className="flex items-center justify-start gap-4">
                   <h2 className="font-semibold">{product.name}</h2>
                   <p className="text-gray-600">
-                    {truncateDescription(product.descriptions, 35)}
+                    {/* {truncateDescription(product.description, 35)} */}
                   </p>
                 </div>
+                <div className="md:h-128 lg:h-128 h-128 max-h-70" style={{ height: '300px', overflow: 'hidden' }}>
+                  {product.youtube_url ? (
+                    <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
+                  ) : (
+                    <div onClick={() => handleExpandItemImages(product)}>
+                      <CarouselWithContent description={product.description} imageUrls={images} />
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="grid grid-cols-2 mt-4 gap-4">
-                {product.images && product.images.map((image, index) => (
-                  <img key={index} src={image} alt='images' className="rounded-lg w-44 h-44 object-cover" />
-                ))}
-              </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className='m-auto text-gray-300'>
-              <h1 className='text-4xl font-bold'>Empty Product!</h1>
+            <h1 className='text-4xl font-bold'>No products found</h1>
           </div>
         )}
-
       </div>
-    </div>
+    </div >
   )
 }

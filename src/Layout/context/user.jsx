@@ -8,14 +8,16 @@ import { usersCollection, storage, db } from "../../firebase/firebase";
 import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
 import { MdDelete } from "react-icons/md";
-import { QueryClient, useMutation } from "@tanstack/react-query";
-import { addProfileTopic } from "../../service/profile";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { addProfileTopic, updateProfile, updateSingleImage, userProfile } from "../../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { Modal } from "../../components/Modal/Modal";
+import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadForm";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(null);
-  const avatarUrl = useRef("https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
+  const avatarUrl = useRef(userInfo.ProfileImage ? userInfo.ProfileImage : "https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
   const [modalOpen, setModalOpen] = useState(false);
   // const [fullName, setFullName] = useState("");
   const [croppedImage, setCroppedImage] = useState("");
@@ -31,7 +33,9 @@ const EditeUser = ({ userInfo }) => {
   const [price, setPrice] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   const [split, setSplit] = useState('');
-
+  const [currentProfileImageUrl, setCurrentProfileImageUrl] = useState(userInfo.profileImage);
+  // const allTopics = [...userInfo.topics, ...todos];
+  console.log('userInfo.ProfileImage', userInfo.profileImage)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -76,10 +80,7 @@ const EditeUser = ({ userInfo }) => {
     }
   };
   const updateAvatar = (imgSrc) => {
-    const newCroppedImage = imgSrc + `?key=${Date.now()}`;
-    setCroppedImage(newCroppedImage);
 
-    window.location.reload();
   };
 
   const mutation = useMutation({
@@ -93,14 +94,17 @@ const EditeUser = ({ userInfo }) => {
   const handleAddTodo = () => {
     const newTodo = {
       id: todos.length + 1,
-      text: todoText
+      title: todoText
     };
-    setTodos([...todos, newTodo]);
+    // setTodos([...todos, newTodo]);
+    console.log('newTodo', newTodo)
     setExperitise([...experitise, newTodo.text]);
     mutation.mutate({
       authHeader,
       data: { title: todoText }
     })
+    userInfo.topics.push(newTodo)
+
     setTodoText("");
   };
 
@@ -112,33 +116,14 @@ const EditeUser = ({ userInfo }) => {
     }
   };
 
-  const fetchExperitise = async (userId) => {
-    try {
-      const userDoc = await getDoc(doc(usersCollection, userId));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setExperitise(userData.experitise || []);
-      }
-    } catch (error) {
-      console.error("Error fetching Experitise data:", error);
-    }
-  };
 
 
-  const updateExperitise = async () => {
-    try {
-      // const userDocRef = doc(usersCollection, currentUser.uid);
-      // await setDoc(userDocRef, { experitise }, { merge: true });
 
-      setTodoModal(false)
-    } catch (error) {
-      console.error("Error updating experitise data:", error);
-    }
-  };
+
 
   const handleCloseTodoModal = () => {
     setTodoModal(false);
-    fetchExperitise(currentUser.uid);
+    // fetchExperitise(currentUser.uid);
   };
 
   useEffect(() => {
@@ -162,6 +147,42 @@ const EditeUser = ({ userInfo }) => {
       console.error(error);
     }
   };
+
+  // const handleProfilePicUpload = async (file) => {
+  //   try {
+  //     const imageUploadResponse = await updateSingleImage({ authHeader, data: { profile_image: file } });
+
+  //     if (imageUploadResponse?.profile_image) {
+  //       setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+  //       setModalOpen(false);
+  //     }
+
+  //   } catch (error) {
+  //     console.error('Error updating user data:', error);
+  //   }
+  // }
+  const handleProfilePicUpload = async (file) => {
+    try {
+      let data;
+      if (file instanceof Blob) {
+        const formData = new FormData();
+        formData.append('profile_image', file, 'profile_pic.png');
+        data = formData;
+      } else {
+        data = { profile_image: file };
+      }
+
+      const imageUploadResponse = await updateSingleImage({ authHeader, data });
+
+      if (imageUploadResponse?.profile_image) {
+        setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+        setModalOpen(false);
+      }
+
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
+  }
 
   const handleInputChange = (e) => {
     const input = e.target.value;
@@ -206,13 +227,13 @@ const EditeUser = ({ userInfo }) => {
                   <div>
                     <div className="border-t">
                       <h2 className="text-md font-bold mb-4 pt-5">Your Topics</h2>
-                      {todos.map((todo, index) => (
-                        <div className="flex items-center" key={todo.id}>
+                      {userInfo.topics.map((topic, index) => (
+                        <div className="flex items-center" key={topic.id}>
                           <p className="w-full text-grey-50">
                             <span className="mr-2">{index + 1}.</span>
-                            {todo.text}
+                            {topic.title}
                           </p>
-                          <button onClick={() => handleDeleteTodo(todo.id)}>
+                          <button onClick={() => handleDeleteTopic(topic.id)}>
                             <MdDelete />
                           </button>
                         </div>
@@ -331,11 +352,12 @@ const EditeUser = ({ userInfo }) => {
           </div>
         </div>
       )}
-      {split !== 'advertiser' && (
+      {(
         <div className="relative -mt-10">
           <img
             key={croppedImage}
-            src={croppedImage || avatarUrl.current}
+            // src={croppedImage || avatarUrl.current}
+            src={currentProfileImageUrl || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
             alt="...leading. please make refresh"
             className="w-[150px] h-[150px] rounded-full border-8 border-white"
           />
@@ -352,7 +374,10 @@ const EditeUser = ({ userInfo }) => {
         <div className=''>
           <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
           <div className="flex">
-            <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
+            <h1 className='text-sm w-full font-medium text-blue-800'>
+              <span className='text-sm text-gray-500'>Topics: </span>
+              {userInfo?.topics && userInfo.topics.length > 0 ? userInfo.topics.map(topic => topic.title).join(', ') : "none"}
+            </h1>
             <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
               <img src={edit_svg_blue} alt="" />
             </div>
@@ -366,13 +391,15 @@ const EditeUser = ({ userInfo }) => {
         </div> */}
       </div>
       {modalOpen && (
-        <ImageCropper
-          updateAvatar={updateAvatar}
-          closeModal={() => setModalOpen(false)}
-          currentAvatar={croppedImage}
-        />
-      )}
-    </div>
+        // < ImageCropper
+        //   updateAvatar={updateAvatar}
+        //   closeModal={() => setModalOpen(false)}
+        //   currentAvatar={croppedImage}
+        // />
+        <Modal open={modalOpen} handleOpen={setModalOpen} children={<ProfileImageUploadForm submitFileUpload={handleProfilePicUpload} />} />
+      )
+      }
+    </div >
   );
 };
 
