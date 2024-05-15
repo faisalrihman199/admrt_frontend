@@ -137,6 +137,24 @@ function StickyNavbar({ authenticated }) {
       window.location.reload()
     }
   };
+  function renderProfileImage(auth) {
+    function handleImageError(e) {
+      e.target.onerror = null;
+      e.target.src = defaultAvate;
+    }
+
+    if (auth?.profile_image) {
+      return <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
+    } else if (auth?.full_name) {
+      return (
+        <div className="w-full h-full rounded-full flex items-center justify-center bg-orange-200 text-xl">
+          {auth.full_name.charAt(0).toUpperCase()}
+        </div>
+      );
+    } else {
+      return <img src={defaultAvate} alt="" className="w-full h-full rounded-full" />;
+    }
+  }
 
   const clickCCloseSeen = async () => {
     const daf = doc(usersCollection, userId);
@@ -350,15 +368,7 @@ function StickyNavbar({ authenticated }) {
               className="hidden w-10 flex h-10 outline-none rounded-full  ring-offset-2 ring-blue-600 lg:focus:ring-2 lg:block"
               onClick={() => setState(!state)}
             >
-              {auth?.profile_image ? (
-                <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" />
-              ) : auth?.full_name ? (
-                <div className="w-full h-full rounded-full flex items-center justify-center bg-orange-200 text-xl">
-                  {auth.full_name.charAt(0).toUpperCase()}
-                </div>
-              ) : (
-                <img src={defaultAvate} alt="" className="w-full h-full rounded-full" />
-              )}
+              {renderProfileImage(auth)}
             </button>
           )}
           {auth?.full_name ? (
@@ -396,7 +406,7 @@ function StickyNavbar({ authenticated }) {
   );
 
   return (
-    <div className="">
+    <div className="" >
       <div className="max-w-screen-2xl mx-auto ">
         <Navbar className="sticky bg-transpernt border-none backdrop-none backdrop-blur-none shadow-none top-0 z-10 h-max max-w-full rounded-none px-6 py-6 lg:px-6 lg:py-4">
           <div className="flex items-center justify-between text-blue-gray-900">

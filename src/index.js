@@ -11,6 +11,8 @@ import {
 } from "@tanstack/react-query";
 import { Modal } from "./components/Modal/Modal";
 import PopupLayout from "./Layout/PopupLayout";
+import { WebSocketProvider } from "./Layout/context/socketContex";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
 
@@ -18,10 +20,14 @@ root.render(
   <>
     <AuthProvider store={authStore}>
       <QueryClientProvider client={queryClient}>
-        <PopupLayout />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <WebSocketProvider
+        // isAuthenticated={true}
+        >
+          <PopupLayout />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </WebSocketProvider>
       </QueryClientProvider>
     </AuthProvider>
   </>

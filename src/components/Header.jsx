@@ -52,7 +52,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div class="bg-sky-100 py-10">
+      <div class="py-10" style={{ background: '#f4f7ff' }}>
         <div class="md:flex max-w-6xl mx-auto p-6 px-8 md:p-24   md:mb-10 md:px-8  xl:px-5">
           <div class="w-full md:w-1/2 md:ml-8 items-center ">
             <div class="">

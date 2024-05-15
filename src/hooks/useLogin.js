@@ -20,7 +20,7 @@ export function useLogIn() {
           refresh: data.refresh,
           userState: data.user,
         });
-        navigate("/");
+        window.location.href = "/";
       } else {
         console.error("im here");
         throw new Error("Invalid response from server login.");

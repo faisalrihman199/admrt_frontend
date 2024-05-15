@@ -136,11 +136,12 @@ const AddPortfolio = (props) => {
         const fileExtension = file.name.split('.').pop().toLowerCase();
         const isValidExtension = allowedExtensions.includes(`.${fileExtension}`);
 
-        if (!isValidExtension || file.size > maxSizeInBytes) {
-            error = 'Invalid file format or size exceeds the maximum limit (5MB).';
-        } else {
-            newUploadFile = file;
-        }
+        // if (!isValidExtension || file.size > maxSizeInBytes) {
+        //     error = 'Invalid file format or size exceeds the maximum limit (5MB).';
+        // } else {
+        //     newUploadFile = file;
+        // }
+        newUploadFile = file;
 
         if (error) {
             setFileError(error);
@@ -214,7 +215,7 @@ const AddPortfolio = (props) => {
 
             setSaveLoading(false);
             queryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
-            // navigate('/profile')
+            navigate('/profile')
         } catch (error) {
             console.error(error);
             setSaveLoading(false);

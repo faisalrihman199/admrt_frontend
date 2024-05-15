@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { auth, db, deleteMessageFromFirebase, saveMessageToFirebase, usersCollection } from '../../firebase/firebase'
 import { collection, doc, getDoc, getDocs, setDoc, writeBatch } from "firebase/firestore";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
@@ -7,6 +7,7 @@ import svg2 from '../../image/search 1.svg'
 import { VscEmptyWindow } from "react-icons/vsc"
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
 import EmojiPicker from 'emoji-picker-react';
+import { useWebSocket } from "../../Layout/context/socketContex";
 
 const MessageIndex = ({ isMobile }) => {
     const [userUid, setUserId] = useState('');
@@ -25,14 +26,16 @@ const MessageIndex = ({ isMobile }) => {
     const verifyPath = location.pathname === '/message';
     const dummyData = [
         {
-            key: "User1",
+            senderName: "John Doe",
+            key: "5",
             avatar: "https://via.placeholder.com/150",
             lastMessages: 5,
             lastMessage: "Hello, how are you?",
             lastChattedTime: "5 minutes ago",
         },
         {
-            key: "User2",
+            senderName: "Bob Smith",
+            key: "7",
             avatar: "https://via.placeholder.com/150",
             lastMessages: 2,
             lastMessage: "Goodbye!",
@@ -40,122 +43,33 @@ const MessageIndex = ({ isMobile }) => {
         },
         // Add more dummy data here
     ];
-    // Add more dummy data here
-
-    // useEffect(() => {
-    //     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-    //         if (user) {
-    //             setMeId(user.uid)
-    //             try {
-    //                 const userRef = doc(usersCollection, user.uid);
-    //                 const userDoc = await getDoc(userRef);
-    //                 if (userDoc.exists()) {
-    //                     const data = userDoc.data();
-    //                     const requestCall = Object.fromEntries(Object.entries(data.requests)
-    //                         .filter(([key, value]) => value === true)
-    //                     );
-    //                     setVerifyRequest(requestCall);
-    //                     setUsername(data.fullName)
-    //                 }
-    //             } catch (error) {
-    //                 console.error(error);
-    //             }
-    //         } else {
-    //             setMeId(null)
-    //         }
-    //     });
-    //     return () => unsubscribe();
-    // }, []);
-
-    const handleFetch = useCallback(async () => {
-        try {
-            const fetchedAvatars = {};
-            const fetchedUserId = {}
-            await Promise.all(Object.keys(verifyRequest).map(async (key) => {
-                const userRef = doc(db, "search", key);
-                const userDoc = await getDoc(userRef);
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    fetchedAvatars[key] = data.imageUrl;
-                    fetchedUserId[key] = data.userId
-                }
-            }));
-            setAvatars(fetchedAvatars);
-            setUserId(fetchedUserId);
-        } catch (err) {
-            console.error(err);
+    const { socket, messages, sendMessage, conversationList } = useWebSocket();
+    useEffect(() => {
+        // This effect runs when messages change
+        if (messages.length > 0) {
+            console.log("New message received:", messages[messages.length - 1]);
         }
-    }, [verifyRequest]);
-
+    }, [messages]);
     // useEffect(() => {
     //     handleFetch();
     // }, [handleFetch]);
 
-    const handleMessageSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await saveMessageToFirebase(meId, userId, { message, sender: username });
-            setMessage('');
-        } catch (error) {
-            console.error('Error sending message:', error);
-        }
-    };
-    const handleDeleteMessage = async () => {
-        try {
-            await deleteMessageFromFirebase(meId, userId);
-            setModalUser(false);
-        } catch (error) {
-            console.error("Error deleting message:", error);
-            setModalUser(false);
-        }
-    };
+
+    // const handleDeleteMessage = async () => {
+    //     try {
+    //         await deleteMessageFromFirebase(meId, userId);
+    //         setModalUser(false);
+    //     } catch (error) {
+    //         console.error("Error deleting message:", error);
+    //         setModalUser(false);
+    //     }
+    // };
 
     const openModal = (userId) => {
         setSelectedUserId(userId);
         setModalUser(true);
     };
 
-    // useEffect(() => {
-    //     const handleFindUsername = async () => {
-    //         if (userId) {
-    //             const findRef = await getDoc(doc(usersCollection, userId));
-    //             if (findRef.exists()) {
-    //                 const data = findRef.data();
-    //                 setFindData(data);
-    //             }
-    //         }
-    //     };
-    //     handleFindUsername();
-    // }, [userId]);
-
-    const getFirebaseSendSeenTrue = useCallback(async (userId) => {
-        try {
-            const messagesRef = collection(db, `messages/${userId}/${meId}`);
-            const messagesSnapshot = await getDocs(messagesRef);
-            const batch = writeBatch(db);
-
-            messagesSnapshot.forEach((doc) => {
-                batch.update(doc.ref, { seen: true });
-            });
-
-            await batch.commit();
-        } catch (error) {
-            console.error('Error marking messages as seen:', error);
-        }
-    }, [meId]);
-
-    // useEffect(() => {
-    //     const realSeen = () => {
-    //         if (location.pathname.startsWith(`/message/direct/${userId}`)) {
-    //             getFirebaseSendSeenTrue(userId);
-    //         }
-    //     }
-
-    //     realSeen();
-    //     const interval = setInterval(realSeen, 1000);
-
-    //     return () => clearInterval(interval);
-    // }, [location.pathname, userId, getFirebaseSendSeenTrue]);
 
     const calculateLastMessage = useCallback(async (userId) => {
         try {
@@ -176,45 +90,6 @@ const MessageIndex = ({ isMobile }) => {
             return 0;
         }
     }, [meId]);
-
-    // useEffect(() => {
-    //     const calculateLastMessages = async () => {
-    //         const lastMessagesObj = {};
-    //         await Promise.all(Object.keys(verifyRequest).map(async (key) => {
-    //             const count = await calculateLastMessage(userUid[key]);
-    //             lastMessagesObj[key] = count;
-    //         }));
-
-
-
-    //         setLastMessages(lastMessagesObj);
-    //     };
-
-    //     const interval = setInterval(() => {
-    //         calculateLastMessages();
-    //     }, 2000);
-
-    //     return () => clearInterval(interval);
-    // }, [verifyRequest, userUid, calculateLastMessage, meId]);
-
-    // useEffect(() => {
-    //     const handleSeens = async () => {
-    //         let sum = 0;
-    //         Object.values(lastMessages).forEach((value) => {
-    //             sum += value;
-    //         });
-
-    //         if (!usersCollection || !meId) {
-    //             console.error("usersCollection or meId is not defined.");
-    //             return;
-    //         }
-
-    //         const daf = doc(usersCollection, meId);
-    //         await setDoc(daf, { seens: sum }, { merge: true });
-    //     }
-
-    //     return () => handleSeens();
-    // }, [lastMessages, meId]);
 
 
     return (
@@ -242,7 +117,7 @@ const MessageIndex = ({ isMobile }) => {
                                 <div class="flex flex-col space-y-1 mt-3  h-full rounded-xl overflow-y-auto">
                                     <div class="flex flex-col h-full w-full px-5 overflow-x-auto mb-4">
                                         <div class="my-2 py-2">
-                                            {dummyData.length === 0 && (
+                                            {conversationList.length === 0 && (
                                                 <div className="text-gray-400 flex justify-center">
                                                     <div>
                                                         <VscEmptyWindow className="w-44 h-44" />
@@ -250,14 +125,14 @@ const MessageIndex = ({ isMobile }) => {
                                                     </div>
                                                 </div>
                                             )}
-                                            {dummyData.map((data) => (
+                                            {conversationList.map((data) => (
                                                 <div key={data.key}>
                                                     <Link to={`/message/direct/${data.key}`} className="flex justify-between border-b hover:bg-gray-50">
                                                         <button className="py-4 flex w-full items-start justify-between cursor-pointer  hover:text-black">
                                                             <div className="flex gap-3">
                                                                 <img src={data.avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
                                                                 <div className="m-auto">
-                                                                    <span className="block text-sm text-gray-700 font-semibold text-left">{data.key}</span>
+                                                                    <span className="block text-sm text-gray-700 font-semibold text-left">{data.senderName}</span>
                                                                     <div className="flex items-center">
                                                                         <span className="block text-sm text-gray-500">{data.lastMessage}</span>
                                                                         <p className="bg-red-600 px-2.5 py-0.5 rounded-full text-white ml-2">{data.lastMessages}</p>
@@ -312,9 +187,8 @@ const MessageIndex = ({ isMobile }) => {
                         <div class="flex flex-col h-full w-full border rounded-xl overflow-x-auto mb-4">
                             <Outlet />
                         </div>
-                        {!verifyPath && (
+                        {/* {!verifyPath && (
                             <form onSubmit={handleMessageSubmit} className="flex flex-row items-center h-16 border rounded-xl bg-white w-full px-2">
-
                                 <div class="flex-grow">
                                     <div class="relative w-full">
                                         <input
@@ -362,7 +236,7 @@ const MessageIndex = ({ isMobile }) => {
                                     </button>
                                 </div>
                             </form>
-                        )}
+                        )} */}
                     </div>
                 </div>
             </div>

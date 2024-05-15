@@ -16,6 +16,7 @@ import { userProfile } from '../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useQuery } from '@tanstack/react-query';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { CustomSpinner } from '../components/Spinner';
 
 function SiplePages() {
 
@@ -40,7 +41,7 @@ function SiplePages() {
     console.log('profile data', data)
 
     if (isPending) {
-        return <span>Loading...</span>
+        return <CustomSpinner />
     }
 
     if (isError) {

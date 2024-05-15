@@ -14,6 +14,7 @@ import { FaTrash } from 'react-icons/fa';
 import { deleteProduct } from '../../../service/profile';
 import { useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { Modal } from '../../../components/Modal/Modal';
 
 export const ProductAdventiser = ({ userProducts }) => {
   const { userUID } = useParams();
@@ -150,7 +151,16 @@ export const ProductAdventiser = ({ userProducts }) => {
     setBtn('Save');
 
   }
+  const [openItemImage, setOpenItemImage] = useState(false);
 
+  const handleExpandItemImages = (product) => {
+    setSelectedProduct(product);
+    setOpenItemImage(true);
+  };
+
+  const ExpandItemImagesClose = () => {
+    setOpenItemImage(false);
+  };
 
   const saveProduct = async () => {
     setBtn('Loading...')
@@ -364,7 +374,7 @@ export const ProductAdventiser = ({ userProducts }) => {
             const images = [product.image1, product.image2, product.image3].filter(Boolean);
             product.images = images;
             return (
-              <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg'>
+              <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg bg-gray-100 backdrop-blur-sm'>
                 <div className='p-2 rounded-lg cursor-pointer relative'>
                   <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
                 </div>
@@ -374,7 +384,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                     {/* {truncateDescription(product.description, 35)} */}
                   </p>
                 </div>
-                <div className="md:h-128 lg:h-128 h-128 max-h-70" style={{ height: '300px', overflow: 'hidden' }}>
+                <div className="md:h-128 lg:h-128 h-128 max-h-70 mt-3" style={{ height: '250px', overflow: 'hidden' }}>
                   {product.youtube_url ? (
                     <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
                   ) : (
@@ -391,7 +401,20 @@ export const ProductAdventiser = ({ userProducts }) => {
             <h1 className='text-4xl font-bold'>No products found</h1>
           </div>
         )}
+        <div>
+          <Modal open={openItemImage} handleOpen={ExpandItemImagesClose}
+            size="md"
+            children={
+              <CarouselWithContent
+                description={selectedProduct?.description}
+                imageUrls={selectedProduct?.images} fullScreenMode={true}
+              />
+            }
+          />
+        </div>
+
       </div>
+
     </div >
   )
 }
