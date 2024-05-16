@@ -90,7 +90,7 @@ const SpaceProfileSearchCard = ({ user }) => {
 
       <div className='m-3     rounded-xl'>
         <div className='p-1 flex justify-end'>
-          <Link to={`/profile/${user.split}/${user.userId}`} className='bg-gray-300 hover:bg-opacity-75 p-2 rounded-lg'>
+          <Link to={`/profile/${user.userId}`} className='bg-gray-300 hover:bg-opacity-75 p-2 rounded-lg'>
             <button className='w-44 text-white'>
               View profile
             </button>

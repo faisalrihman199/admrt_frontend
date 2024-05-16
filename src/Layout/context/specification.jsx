@@ -15,6 +15,7 @@ import { MdDelete } from "react-icons/md";
 import { QueryClient, useMutation } from '@tanstack/react-query'
 import { updateProfile } from '../../service/profile'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
+import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission'
 
 export const Specification = ({ long_term_service_availability, language }) => {
     const { split, userUID } = useParams();
@@ -145,12 +146,15 @@ export const Specification = ({ long_term_service_availability, language }) => {
                         <button>
                             <h1 className='text-base md:text-2xl font-semibold'>Specification</h1>
                         </button>
-                        <div className='flex justify-center items-center m-1 p-1 rounded-sm   cursor-pointer hover:bg-gray-100'
-                            onClick={() => setModal(true)}
-                        >
-                            <img src={edit_svg_blue} alt="edit" className='' />
-                            {/* <p className='text-blue-700'>edit</p> */}
-                        </div>
+                        <AuthenticatedUserViewPermission>
+                            <div className='flex justify-center items-center m-1 p-1 rounded-sm   cursor-pointer hover:bg-gray-100'
+                                onClick={() => setModal(true)}
+                            >
+                                <img src={edit_svg_blue} alt="edit" className='' />
+                                {/* <p className='text-blue-700'>edit</p> */}
+                            </div>
+                        </AuthenticatedUserViewPermission>
+
                     </div>
                     <div className='flex justify-center items-center'>
                         {open ? <div>

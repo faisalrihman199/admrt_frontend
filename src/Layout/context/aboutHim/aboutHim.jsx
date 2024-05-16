@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom'
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import { updateProfile } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 
 const AboutHim = ({ location, website, joinDate }) => {
     const [aboutHimShow, setaboutHimShow] = useState("");
@@ -126,9 +127,12 @@ const AboutHim = ({ location, website, joinDate }) => {
                     </div>
                 </div>
                 <div className='border'></div>
-                <div className='my-3'>
-                    <h1>Tell potential advertisers more about you.</h1>
-                </div>
+                <AuthenticatedUserViewPermission>
+                    <div className='my-3'>
+                        <h1>Tell potential advertisers more about you.</h1>
+                    </div>
+                </AuthenticatedUserViewPermission>
+
                 <div className='border'></div>
             </div>
             {(

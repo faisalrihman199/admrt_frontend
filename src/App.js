@@ -69,8 +69,10 @@ function App() {
   };
   const isAuthenticated = useIsAuthenticated();
 
+  useEffect(() => {}, [isAuthenticated]);
+
   const AuthUserRoutes = [
-    { id: 1, path: `/profile`, element: <Profile /> },
+    { id: 1, path: `/profile/:userId`, element: <Profile /> },
     { id: 2, path: `/settings`, element: <Settings /> },
     {
       id: 3,

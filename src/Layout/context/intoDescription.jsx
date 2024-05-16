@@ -10,6 +10,7 @@ import editeicon from '../../image/edit_svg_blue.svg';
 import { updateProfile, updateProfileSocials } from '../../service/profile';
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
 
 const IntoDescription = ({ description }) => {
     const [showModal, setShowModal] = useState(false);
@@ -116,19 +117,22 @@ const IntoDescription = ({ description }) => {
                     <div className="flex justify-between">
                         <div className="flex items-start justify-between">
                             <h1 className="text-2xl font-semibold">{userData.split === 'advertiser' ? 'Brand Description' : 'Intro Description'}</h1>
-                            <div className="flex justify-center items-center cursor-pointer mx-5">
-                                <div className="item">
-                                    <Button
-                                        onClick={() => {
-                                            setDialogInput(userData.introDescription);
-                                            setIsDialogOpened(true);
-                                            setShowModal(true);
-                                        }}
-                                    >
-                                        <img src={editeicon} alt="icon" />
-                                    </Button>
+                            <AuthenticatedUserViewPermission>
+                                <div className="flex justify-center items-center cursor-pointer mx-5">
+                                    <div className="item">
+                                        <Button
+                                            onClick={() => {
+                                                setDialogInput(userData.introDescription);
+                                                setIsDialogOpened(true);
+                                                setShowModal(true);
+                                            }}
+                                        >
+                                            <img src={editeicon} alt="icon" />
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
+                            </AuthenticatedUserViewPermission>
+
                         </div>
                     </div>
                     <div className="border my-5"></div>

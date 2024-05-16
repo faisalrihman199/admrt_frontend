@@ -17,6 +17,8 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { MdMessage } from 'react-icons/md';
 import { FaAd } from 'react-icons/fa';
+import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
+import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -73,7 +75,7 @@ function StickyNavbar({ authenticated }) {
   }, [userId]);
 
   const navigation = [
-    { title: "Profile", path: `/profile` },
+    { title: "Profile", path: `/profile/${auth?.id}` },
     { title: "Settings", path: `/settings` },
   ];
   const handleLogout = () => {
@@ -265,12 +267,12 @@ function StickyNavbar({ authenticated }) {
           variant="small"
           className="p-1 text-black max-[1280px]:text-base text-lg font-normal mr-3"
         >
-          {auth?.user_role === "advertiser" ? (
+          <AdvertiserViewPermission>
             <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
               <FaAd className="mr-1 self-start" />
               <h1>Find Ad spaces</h1>
             </Link>
-          ) : null}
+          </AdvertiserViewPermission>
         </Typography>
         {/* <Typography
           as="li"

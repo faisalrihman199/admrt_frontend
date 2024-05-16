@@ -312,6 +312,7 @@ const Portfolio = ({ userPortfolios }) => {
                     onClick={() => setModal(true)}
                   />
                 )}
+
               </div>
             </div>
           }

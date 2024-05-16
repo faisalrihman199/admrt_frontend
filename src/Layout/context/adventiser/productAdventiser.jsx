@@ -15,6 +15,7 @@ import { deleteProduct } from '../../../service/profile';
 import { useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { Modal } from '../../../components/Modal/Modal';
+import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 
 export const ProductAdventiser = ({ userProducts }) => {
   const { userUID } = useParams();
@@ -78,24 +79,7 @@ export const ProductAdventiser = ({ userProducts }) => {
       }
     }
   };
-  const productData = [
-    {
-      id: 1,
-      name: 'Product 1',
-      description: 'Introducing our latest model, the Turbo X7. This car is the epitome of luxury and performance. It features a sleek, aerodynamic design with a glossy black finish that exudes elegance and sophistication. The Turbo X7 is powered by a 3.0L V6 engine that delivers an impressive 400 horsepower, ensuring a smooth and powerful drive. The interior is just as impressive, with leather seats, a state-of-the-art infotainment system, and a panoramic sunroof that offers stunning views. Safety features include adaptive cruise control, lane keep assist, and a rearview camera. Experience the perfect blend of luxury, comfort, and performance with the Turbo X7.',
-      price: 100,
-      images: ['https://picsum.photos/200/300', 'https://picsum.photos/id/237/200/300']
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      description: 'This is product 2',
-      price: 200,
-      youtube_url: 'https://www.youtube.com/watch?v=dyXScuEoGrE',
-      images: ['https://picsum.photos/id/237/200/300', 'https://picsum.photos/id/237/200/300']
 
-    },
-  ];
   const handleCancel = () => {
     setModal(false);
     setName('')
@@ -358,17 +342,20 @@ export const ProductAdventiser = ({ userProducts }) => {
             <h1 className='font-bold text-xl text-gray-800'>Products</h1>
             {/* <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
           </div>
-          <div className='flex items-center justify-center'>
-            <button className='flex gap-2 bg-blue-600 hover:bg-blue-700 p-2 rounded-lg px-5 active:bg-blue-600 text-white'
-              onClick={() => setModal(true)}
-            >
-              <IoIosAddCircleOutline className='w-6 h-6 m-auto' />
-              <p>Add product</p>
-            </button>
-          </div>
+          <AuthenticatedUserViewPermission>
+            <div className='flex items-center justify-center'>
+              <button className='flex gap-2 bg-blue-600 hover:bg-blue-700 p-2 rounded-lg px-5 active:bg-blue-600 text-white'
+                onClick={() => setModal(true)}
+              >
+                <IoIosAddCircleOutline className='w-6 h-6 m-auto' />
+                <p>Add product</p>
+              </button>
+            </div>
+          </AuthenticatedUserViewPermission>
+
         </div>
       )}
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid grid-cols-2 gap-4 p-6'>
         {userProducts ? (
           userProducts.map((product) => {
             const images = [product.image1, product.image2, product.image3].filter(Boolean);
@@ -384,7 +371,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                     {/* {truncateDescription(product.description, 35)} */}
                   </p>
                 </div>
-                <div className="md:h-128 lg:h-128 h-128 max-h-70 mt-3" style={{ height: '250px', overflow: 'hidden' }}>
+                <div className="md:h-128 lg:h-128 h-128 max-h-70 mt-3" style={{ height: '200px', overflow: 'hidden' }}>
                   {product.youtube_url ? (
                     <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
                   ) : (

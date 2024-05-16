@@ -8,6 +8,7 @@ import { VscEmptyWindow } from "react-icons/vsc"
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
 import EmojiPicker from 'emoji-picker-react';
 import { useWebSocket } from "../../Layout/context/socketContex";
+// import { avatar } from '../../../../modul/main';
 
 const MessageIndex = ({ isMobile }) => {
     const [userUid, setUserId] = useState('');
@@ -24,46 +25,16 @@ const MessageIndex = ({ isMobile }) => {
     const { userId } = useParams();
     const location = useLocation();
     const verifyPath = location.pathname === '/message';
-    const dummyData = [
-        {
-            senderName: "John Doe",
-            key: "5",
-            avatar: "https://via.placeholder.com/150",
-            lastMessages: 5,
-            lastMessage: "Hello, how are you?",
-            lastChattedTime: "5 minutes ago",
-        },
-        {
-            senderName: "Bob Smith",
-            key: "7",
-            avatar: "https://via.placeholder.com/150",
-            lastMessages: 2,
-            lastMessage: "Goodbye!",
-            lastChattedTime: "2 hours ago",
-        },
-        // Add more dummy data here
-    ];
+
+
     const { socket, messages, sendMessage, conversationList } = useWebSocket();
     useEffect(() => {
         // This effect runs when messages change
-        if (messages.length > 0) {
-            console.log("New message received:", messages[messages.length - 1]);
-        }
-    }, [messages]);
-    // useEffect(() => {
-    //     handleFetch();
-    // }, [handleFetch]);
+        // if (messages.length > 0) {
+        //     console.log("New message received:", messages[messages.length - 1]);
+        // }
+    }, [conversationList]);
 
-
-    // const handleDeleteMessage = async () => {
-    //     try {
-    //         await deleteMessageFromFirebase(meId, userId);
-    //         setModalUser(false);
-    //     } catch (error) {
-    //         console.error("Error deleting message:", error);
-    //         setModalUser(false);
-    //     }
-    // };
 
     const openModal = (userId) => {
         setSelectedUserId(userId);
@@ -127,15 +98,19 @@ const MessageIndex = ({ isMobile }) => {
                                             )}
                                             {conversationList.map((data) => (
                                                 <div key={data.key}>
-                                                    <Link to={`/message/direct/${data.key}`} className="flex justify-between border-b hover:bg-gray-50">
+                                                    <Link to={`/message/direct/${data.id}`} className="flex justify-between border-b hover:bg-gray-50">
                                                         <button className="py-4 flex w-full items-start justify-between cursor-pointer  hover:text-black">
                                                             <div className="flex gap-3">
-                                                                <img src={data.avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
+                                                                <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
                                                                 <div className="m-auto">
-                                                                    <span className="block text-sm text-gray-700 font-semibold text-left">{data.senderName}</span>
+                                                                    <span className="block text-sm text-gray-700 font-semibold text-left">{data.full_name}</span>
                                                                     <div className="flex items-center">
                                                                         <span className="block text-sm text-gray-500">{data.lastMessage}</span>
-                                                                        <p className="bg-red-600 px-2.5 py-0.5 rounded-full text-white ml-2">{data.lastMessages}</p>
+                                                                        {data.unread_messages > 0 && (
+                                                                            <p className="bg-red-600 px-2.5 py-0.5 rounded-full text-white ml-2">
+                                                                                {data.unread_messages}
+                                                                            </p>
+                                                                        )}
                                                                     </div>
                                                                 </div>
                                                             </div>

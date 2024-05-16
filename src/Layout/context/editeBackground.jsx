@@ -11,6 +11,7 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { updateSingleImage } from '../../service/profile';
 import { Modal } from '../../components/Modal/Modal';
 import CoverImageCropper from './cropImg/CoverImageCroper';
+import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
 
 const EditBackground = ({ split, userId, coverImageUrl }) => {
     const [bgImage, setBgImage] = useState('');
@@ -142,21 +143,15 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
                     children={<CoverImageCropper submitCoverUpload={handleSave} />} />
 
             ) : (
-                <div className="flex justify-between items-center p-6">
-                    <div className="flex items-center">
+                <AuthenticatedUserViewPermission>
+                    <div onClick={handleEditBackground} className="flex items-center p-5 hover:bg-gray-200 cursor-pointer">
                         <img src={editIcon} alt="Edit" className="mr-1 w-5" />
-                        <button onClick={handleEditBackground} className="text-black font-semibold">
+                        <p className="text-black font-semibold">
                             Edit Banner
-                        </button>
+                        </p>
                     </div>
-                    {split === 'adSpaceHost' &&
-                        <Link to={`/profile/${split}/${userId}`}>
-                            <button className="bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-                                View profile
-                            </button>
-                        </Link>
-                    }
-                </div>
+                </AuthenticatedUserViewPermission>
+
             )}
         </div>
     );

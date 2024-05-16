@@ -17,11 +17,15 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useQuery } from '@tanstack/react-query';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { CustomSpinner } from '../components/Spinner';
+import SpaceHostViewPermission from '../components/Permissions/SpaceHostViewPermission';
+import AdvertiserViewPermission from '../components/Permissions/AdvertiserViewPermission';
+import { useParams } from 'react-router-dom';
 
 function SiplePages() {
 
     const authHeader = useAuthHeader()
     const authUser = useAuthUser()
+    const { userId } = useParams();
 
 
     const { isPending, isError, data, error } = useQuery({
@@ -31,14 +35,12 @@ function SiplePages() {
     })
 
 
-    const [userId, setUserId] = useState(null);
     const [split, setSplit] = useState(null);
     const [advertiserProfile, setAdvertiserProfile] = useState(false);
     const [requests, setRequests] = useState('')
     const profile_amer = 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
 
 
-    console.log('profile data', data)
 
     if (isPending) {
         return <CustomSpinner />
@@ -63,7 +65,6 @@ function SiplePages() {
         portfolios: data?.portfolios,
 
     };
-    console.log('userInfo', userInfo)
 
     return (
         <div className="App">
@@ -79,11 +80,13 @@ function SiplePages() {
                             <Specification long_term_service_availability={userInfo.long_term_service_availability} />
                         </div>
 
-                        {authUser.user_role === "space_host" ? (
+                        <SpaceHostViewPermission>
                             <Portfolio userPortfolios={userInfo.portfolios} />
-                        ) : authUser.user_role === "advertiser" ? (
+                        </SpaceHostViewPermission>
+
+                        <AdvertiserViewPermission>
                             <ProductAdventiser userProducts={userInfo.products} />
-                        ) : null}
+                        </AdvertiserViewPermission>
                     </div>
                     <div class="w-full py-5 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
                         {advertiserProfile ? null :
@@ -147,11 +150,11 @@ function SiplePages() {
                             joinDate={userInfo.joinDate}
                         />
                         <SocialMedia socials={userInfo.socialMedias} />
-                        {advertiserProfile ? null :
-                            <>
-                                <MainAdSpace />
-                            </>
-                        }
+                        <SpaceHostViewPermission>
+                            <MainAdSpace />
+
+                        </SpaceHostViewPermission>
+
                     </div>
                 </div>
             </div>

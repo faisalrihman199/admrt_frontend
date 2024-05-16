@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
 } from "react";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 
 const WebSocketContext = createContext();
@@ -21,16 +22,30 @@ const socketReducer = (state, action) => {
   switch (action.type) {
     case "SET_SOCKET":
       return { ...state, socket: action.payload };
+
     case "ADD_MESSAGE_TO_CONVERSATION":
+      const updatedConversationList = state.conversationList.find(
+        (conversation) => conversation.id === action.payload.userId
+      )
+        ? state.conversationList
+        : [
+            {
+              id: action.payload.userId,
+              full_name: action.payload.body.full_name,
+              profile_image: action.payload.body.profile_image,
+            },
+            ...state.conversationList,
+          ];
       return {
         ...state,
         conversation: {
           ...state.conversation,
           [action.payload.userId]: [
             ...(state.conversation[action.payload.userId] || []),
-            action.payload.message,
+            action.payload.body,
           ],
         },
+        conversationList: updatedConversationList,
       };
     case "SET_MESSAGES":
       return { ...state, messages: action.payload };
@@ -39,13 +54,15 @@ const socketReducer = (state, action) => {
         ...state,
         conversation: {
           ...state.conversation,
-          [action.payload.userId]: action.payload.messages,
+          [action.payload.partner_id]: action.payload.conversation,
         },
       };
     case "SET_UNREAD_CONVERSATIONS":
       return { ...state, unreadConversations: action.payload };
     case "SET_CONVERSATION_LIST":
-      return { ...state, conversationList: action.payload };
+      const conversationList = Object.values(action.payload).flat();
+      console.log("conversationList", conversationList);
+      return { ...state, conversationList };
     default:
       return state;
   }
@@ -54,18 +71,20 @@ const socketReducer = (state, action) => {
 export const WebSocketProvider = ({ children }) => {
   const [state, dispatch] = useReducer(socketReducer, initialState);
   const isAuthenticated = useIsAuthenticated();
+  const authHeader = useAuthHeader();
+  const cleanedToken = authHeader?.replace(/^JWT\s/, "");
 
   const sendMessage = (action, body) => {
     if (state.socket && state.socket.readyState === WebSocket.OPEN) {
       const message = { action, body };
       console.log("Message sent for action:", action);
       if (action === "SEND-MESSAGE") {
-        console.log("imhere");
+        console.log("SEND-MESSAGE body:", body);
         dispatch({
           type: "ADD_MESSAGE_TO_CONVERSATION",
           payload: {
-            userId: body.userId,
-            message: body,
+            userId: body.receiver_id,
+            body: body,
           },
         });
       }
@@ -75,7 +94,9 @@ export const WebSocketProvider = ({ children }) => {
   };
   useEffect(() => {
     if (isAuthenticated) {
-      const socket = new WebSocket("ws://localhost:8080");
+      const socket = new WebSocket(
+        `ws://173.230.135.194:8080/ws?token=${cleanedToken}`
+      );
 
       socket.onopen = () => {
         console.log("WebSocket connection established");
@@ -83,7 +104,6 @@ export const WebSocketProvider = ({ children }) => {
       };
 
       socket.onmessage = (event) => {
-        console.log("Message received:", event);
         const message = JSON.parse(event.data);
         console.log("Message received:", message);
         switch (message.action) {
@@ -92,25 +112,24 @@ export const WebSocketProvider = ({ children }) => {
             dispatch({
               type: "ADD_MESSAGE_TO_CONVERSATION",
               payload: {
-                userId: message.data.userId,
-                message: message.data,
+                userId: message.body.sender_id,
+                body: message.body,
               },
             });
             break;
           case "CONVERSATION":
+            console.log("CONVERSATION RECEIVED from socket", message);
             dispatch({
               type: "SET_CONVERSATION",
-              payload: message.data,
+              payload: message.body,
             });
             break;
-          case "UNREAD-CONVERSATION":
+
+          case "CONVERSATION-LIST":
             dispatch({
-              type: "SET_UNREAD_CONVERSATIONS",
-              payload: message.body.conversations,
+              type: "SET_CONVERSATION_LIST",
+              payload: message.body.summary,
             });
-            break;
-          case "CONVERSATION_LIST":
-            dispatch({ type: "SET_CONVERSATION_LIST", payload: message.data });
             break;
           default:
             console.log("Unhandled message action:", message.action);

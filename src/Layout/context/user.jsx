@@ -13,6 +13,7 @@ import { addProfileTopic, updateProfile, updateSingleImage, userProfile } from "
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Modal } from "../../components/Modal/Modal";
 import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadForm";
+import AuthenticatedUserViewPermission from "../../components/Permissions/AuthenticatedUserViewPermission";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
@@ -352,7 +353,7 @@ const EditeUser = ({ userInfo }) => {
           </div>
         </div>
       )}
-      {(
+      <AuthenticatedUserViewPermission>
         <div className="relative -mt-10">
           <img
             key={croppedImage}
@@ -369,7 +370,9 @@ const EditeUser = ({ userInfo }) => {
             <PencilIcon />
           </button>
         </div>
-      )}
+      </AuthenticatedUserViewPermission>
+
+
       <div className="flex justify-between ml-4 w-3/4 items-center">
         <div className=''>
           <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
@@ -378,9 +381,13 @@ const EditeUser = ({ userInfo }) => {
               <span className='text-sm text-gray-500'>Topics: </span>
               {userInfo?.topics && userInfo.topics.length > 0 ? userInfo.topics.map(topic => topic.title).join(', ') : "none"}
             </h1>
-            <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
-              <img src={edit_svg_blue} alt="" />
-            </div>
+            <AuthenticatedUserViewPermission>
+              <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
+
+                <img src={edit_svg_blue} alt="" />
+              </div>
+            </AuthenticatedUserViewPermission>
+
           </div>
         </div>
         {/* <div className="flex gap-3">
