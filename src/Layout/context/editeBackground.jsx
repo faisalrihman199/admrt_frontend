@@ -148,7 +148,7 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
 
             ) : (
                 <AuthenticatedUserViewPermission>
-                    <div onClick={handleEditBackground} className="flex items-center p-5   cursor-pointer backdrop-blur-sm shadow-sm ">
+                    <div onClick={handleEditBackground} className="flex items-center p-5   cursor-pointer backdrop-blur-sm hover:backdrop-blur-lg shadow-sm ">
                         <img src={editIcon} alt="Edit" className="mr-1 w-5" />
                         <p className="text-white font-semibold  ">
                             Edit Banner
