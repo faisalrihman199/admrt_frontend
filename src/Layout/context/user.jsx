@@ -44,7 +44,7 @@ const EditeUser = ({ userInfo }) => {
         setCurrentUser(user);
         fetchUserData(user.uid);
         fetchUserImage(user.uid);
-        fetchExperitise(user.uid);
+        // fetchExperitise(user.uid);
       }
     });
 
@@ -165,6 +165,7 @@ const EditeUser = ({ userInfo }) => {
   //     console.error('Error updating user data:', error);
   //   }
   // }
+
   const handleProfilePicUpload = async (file) => {
     try {
       let data;
@@ -179,7 +180,9 @@ const EditeUser = ({ userInfo }) => {
       const imageUploadResponse = await updateSingleImage({ authHeader, data });
 
       if (imageUploadResponse?.profile_image) {
-        setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+        // setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+        queryClient.invalidateQueries('loggedInUser')
+
         setModalOpen(false);
       }
 
@@ -237,7 +240,9 @@ const EditeUser = ({ userInfo }) => {
                             <span className="mr-2">{index + 1}.</span>
                             {topic.title}
                           </p>
-                          <button onClick={() => handleDeleteTopic(topic.id)}>
+                          <button
+                          // onClick={() => handleDeleteTopic(topic.id)}
+                          >
                             <MdDelete />
                           </button>
                         </div>
