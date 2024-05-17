@@ -2,6 +2,7 @@ import CloseIcon from "./icons/CloseIcon";
 import ImageCropper from "./cropImg";
 
 const Modal = ({ updateAvatar, closeModal }) => {
+    console.log('im here')
     return (
         <div
             className="relative z-10"
@@ -30,6 +31,7 @@ const Modal = ({ updateAvatar, closeModal }) => {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };

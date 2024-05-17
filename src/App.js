@@ -24,6 +24,7 @@ import MainFilter from "./filter/main";
 import DirectIndexPage from "./message/layout/context/direct/index";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
+import Chat from "./components/Test";
 
 function App() {
   const [userId, setUserId] = useState(null);
@@ -68,17 +69,22 @@ function App() {
   };
   const isAuthenticated = useIsAuthenticated();
 
+  // useEffect(() => {}, [isAuthenticated]);
+
   const AuthUserRoutes = [
-    { id: 1, path: `/profile`, element: <Profile /> },
+    { id: 1, path: `/profile/:userId`, element: <Profile /> },
     { id: 2, path: `/settings`, element: <Settings /> },
     {
       id: 3,
-      path: `/profile/:split/:userUID`,
+      path: `/profile/user/:userId`,
       element: <ViewsProfile onUserUID={handleUserSelect} />,
     },
-    { id: 4, path: `/:title/portfolio/:userId/:Id`, element: <AddPortfolio /> },
-    { id: 5, path: `/filter`, element: <MainFilter /> },
-    { id: 6, path: "*", element: <NotFound /> },
+    { id: 4, path: `/mediaUpload/:portfolio`, element: <AddPortfolio /> },
+    { id: 6, path: `/mediaUpload/:product`, element: <AddPortfolio /> },
+    { id: 7, path: `/filter`, element: <MainFilter /> },
+    // { id: 9, path: "/message", element: <MessageIndex /> },
+    // { id: 10, path: "/message/direct/:userId", element: <DirectIndexPage /> },
+    { id: 8, path: "*", element: <NotFound /> },
   ];
 
   const GhostUser = [
@@ -97,7 +103,9 @@ function App() {
     { id: 9, path: "/checkEmail", element: <CheckEmail /> },
     { id: 10, path: "/congratulation", element: <CreateAnAcc /> },
     { id: 11, path: "*", element: <NotFound /> },
+    // { id: 12, path: "/testChat", element: <Chat /> },
   ];
+
   return (
     <div>
       <Routes>
@@ -111,24 +119,10 @@ function App() {
           }
         >
           <Route index element={<Home />} />
-          <Route element={<AuthOutlet fallbackPath="/login" />}>
+          <Route element={<AuthOutlet fallbackPath="/" />}>
             {AuthUserRoutes.map((route) => (
               <Route key={route.id} path={route.path} element={route.element} />
             ))}
-          </Route>
-
-          {isMobile ? (
-            <>
-              <Route
-                path="/message"
-                element={<MessageIndex isMobile={isMobile} />}
-              />
-              <Route
-                path="/message/direct/:userId"
-                element={<DirectIndexPage isMobile={isMobile} />}
-              />
-            </>
-          ) : (
             <Route path="/message" element={<MessageIndex />}>
               <Route index element={<EmptyMessage />} />
               <Route
@@ -136,7 +130,7 @@ function App() {
                 element={<DirectIndexPage />}
               />
             </Route>
-          )}
+          </Route>
         </Route>
         {GhostUser.map((route) => (
           <Route key={route.id} path={route.path} element={route.element} />

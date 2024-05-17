@@ -7,11 +7,19 @@ import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { usersCollection, storage, db } from "../../firebase/firebase";
 import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
+import { MdDelete } from "react-icons/md";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { addProfileTopic, updateProfile, updateSingleImage, userProfile } from "../../service/profile";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { Modal } from "../../components/Modal/Modal";
+import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadForm";
+import AuthenticatedUserViewPermission from "../../components/Permissions/AuthenticatedUserViewPermission";
+import SpaceHostViewPermission from "../../components/Permissions/SpaceHostViewPermission";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(null);
-  const avatarUrl = useRef("https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
+  const avatarUrl = useRef(userInfo.ProfileImage ? userInfo.ProfileImage : "https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
   const [modalOpen, setModalOpen] = useState(false);
   // const [fullName, setFullName] = useState("");
   const [croppedImage, setCroppedImage] = useState("");
@@ -27,7 +35,9 @@ const EditeUser = ({ userInfo }) => {
   const [price, setPrice] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   const [split, setSplit] = useState('');
-
+  // const [currentProfileImageUrl, setCurrentProfileImageUrl] = useState(userInfo.profileImage);
+  // const allTopics = [...userInfo.topics, ...todos];
+  console.log('userInfo.ProfileImage', userInfo.profileImage)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -72,65 +82,50 @@ const EditeUser = ({ userInfo }) => {
     }
   };
   const updateAvatar = (imgSrc) => {
-    const newCroppedImage = imgSrc + `?key=${Date.now()}`;
-    setCroppedImage(newCroppedImage);
 
-    window.location.reload();
   };
 
+  const mutation = useMutation({
+    mutationFn: addProfileTopic,
+    onSuccess: () => {
+      // Invalidate and refetch
+      QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+    },
+  })
+  const authHeader = useAuthHeader()
   const handleAddTodo = () => {
-    if (todos.length < 3 && todoText.trim() !== "") {
-      const newTodo = {
-        id: todos.length + 1,
-        text: todoText
-      };
-      setTodos([...todos, newTodo]);
-      setExperitise([...experitise, newTodo.text]);
-      setTodoText("");
-    }
+    const newTodo = {
+      id: todos.length + 1,
+      title: todoText
+    };
+    // setTodos([...todos, newTodo]);
+    console.log('newTodo', newTodo)
+    setExperitise([...experitise, newTodo.text]);
+    mutation.mutate({
+      authHeader,
+      data: { title: todoText }
+    })
+    userInfo.topics.push(newTodo)
+
+    setTodoText("");
   };
 
   const handleDeleteTodo = async (id) => {
     try {
-      const updatedTodos = todos.filter(todo => todo.id !== id);
-      setTodos(updatedTodos);
-
-      const updatedExperitise = updatedTodos.map(todo => todo.text);
-      setExperitise(updatedExperitise);
-
-      const userDocRef = doc(usersCollection, currentUser.uid);
-      await updateDoc(userDocRef, { todos: updatedTodos });
+      // to be implemented
     } catch (error) {
       console.error("Error deleting todo:", error);
     }
   };
 
-  const fetchExperitise = async (userId) => {
-    try {
-      const userDoc = await getDoc(doc(usersCollection, userId));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setExperitise(userData.experitise || []);
-      }
-    } catch (error) {
-      console.error("Error fetching Experitise data:", error);
-    }
-  };
 
 
-  const updateExperitise = async () => {
-    try {
-      const userDocRef = doc(usersCollection, currentUser.uid);
-      await setDoc(userDocRef, { experitise }, { merge: true });
-      setTodoModal(false)
-    } catch (error) {
-      console.error("Error updating experitise data:", error);
-    }
-  };
+
+
 
   const handleCloseTodoModal = () => {
     setTodoModal(false);
-    fetchExperitise(currentUser.uid);
+    // fetchExperitise(currentUser.uid);
   };
 
   useEffect(() => {
@@ -154,6 +149,42 @@ const EditeUser = ({ userInfo }) => {
       console.error(error);
     }
   };
+
+  // const handleProfilePicUpload = async (file) => {
+  //   try {
+  //     const imageUploadResponse = await updateSingleImage({ authHeader, data: { profile_image: file } });
+
+  //     if (imageUploadResponse?.profile_image) {
+  //       setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+  //       setModalOpen(false);
+  //     }
+
+  //   } catch (error) {
+  //     console.error('Error updating user data:', error);
+  //   }
+  // }
+  const handleProfilePicUpload = async (file) => {
+    try {
+      let data;
+      if (file instanceof Blob) {
+        const formData = new FormData();
+        formData.append('profile_image', file, 'profile_pic.png');
+        data = formData;
+      } else {
+        data = { profile_image: file };
+      }
+
+      const imageUploadResponse = await updateSingleImage({ authHeader, data });
+
+      if (imageUploadResponse?.profile_image) {
+        setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+        setModalOpen(false);
+      }
+
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
+  }
 
   const handleInputChange = (e) => {
     const input = e.target.value;
@@ -186,37 +217,39 @@ const EditeUser = ({ userInfo }) => {
               </div>
               <div className="relative p-2 md:p-6 justify-center items-start">
                 <div>
-                  <h1 className='text-center mb-6 text-2xl md:text-3xl font-semibold'>Add topics you speak about or have advertises in the past</h1>
+                  <p className='text-center mb-6 text-xl md:text-xl font-semibold'>Add topics you speak about or have advertises in the past</p>
                 </div>
                 <div className="">
-                  <div className="">
-                    <div className="mb-4">
-                      <div className="flex mt-4">
-                        <input className="border rounded-lg w-full py-2 px-3 mr-1 text-grey-darker" placeholder="Add social" value={todoText} onChange={(e) => setTodoText(e.target.value)} />
-                        <button type="submit" className={`p-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 w-20 ${todos.length >= 10 ? 'cursor-not-allowed opacity-50' : ''}`} onClick={handleAddTodo} disabled={todos.length >= 3}>Add</button>
-                      </div>
+                  <div className="mb-4">
+                    <div className="flex mt-5">
+                      <input className="border rounded-lg w-full py-2 px-3 mr-1 text-grey-darker" placeholder="Add topic" value={todoText} onChange={(e) => setTodoText(e.target.value)} />
+                      <button type="submit" className={`p-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 w-20 ${todos.length >= 10 ? 'cursor-not-allowed opacity-50' : ''}`} onClick={handleAddTodo}  >Add</button>
                     </div>
-                    <div>
-                      <div>
-                        {todos.map(todo => (
-                          <div className="flex items-center border-b" key={todo.id}>
-                            <p className="w-full text-grey-50 ">{todo.text}</p>
-                            <button onClick={() => handleDeleteTodo(todo.id)}>
-                              <VscChromeClose />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                  </div>
+                  <div>
+                    <div className="border-t">
+                      <h2 className="text-md font-bold mb-4 pt-5">Your Topics</h2>
+                      {userInfo.topics && userInfo.topics.map((topic, index) => (
+                        <div className="flex items-center" key={topic.id}>
+                          <p className="w-full text-grey-50">
+                            <span className="mr-2">{index + 1}.</span>
+                            {topic.title}
+                          </p>
+                          <button onClick={() => handleDeleteTopic(topic.id)}>
+                            <MdDelete />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-                <div id="expertiseContainer" className="mt-4">
+                {/* <div id="expertiseContainer" className="mt-4">
                   <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
-                </div>
+                </div> */}
               </div>
-              <p className="text-center">Maximum ten topics may be added</p>
-              <div className="flex items-center justify-center p-2 md:p-6 border-t border-solid gap-4 border-blue Gray-200 rounded-b">
-                <button className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              {/* <p className="text-center">Maximum ten topics may be added</p> */}
+              <div className="flex items-center justify-center p-2 md:p-6   border-solid gap-4 border-blue Gray-200 rounded-b">
+                {/* <button className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   onClick={() => setTodoModal(false)}>
                   <h1 className='text-xs md:text-sm'>
@@ -228,7 +261,7 @@ const EditeUser = ({ userInfo }) => {
                   onClick={updateExperitise}
                 >
                   Save
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -321,14 +354,16 @@ const EditeUser = ({ userInfo }) => {
           </div>
         </div>
       )}
-      {split !== 'advertiser' && (
-        <div className="relative -mt-10">
-          <img
-            key={croppedImage}
-            src={croppedImage || avatarUrl.current}
-            alt="...leading. please make refresh"
-            className="w-[150px] h-[150px] rounded-full border-8 border-white"
-          />
+      <div className="relative -mt-10">
+        <img
+          key={croppedImage}
+          // src={croppedImage || avatarUrl.current}
+          src={userInfo.profileImage || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
+          alt="...leading. please make refresh"
+          className="w-[150px] h-[150px] rounded-full border-8 border-white"
+        />
+        <AuthenticatedUserViewPermission>
+
           <button
             className="absolute -bottom-1 left-20 right-0 w-fit p-[.35rem] rounded-full bg-white hover:bg-gray-200 border border-gray-600"
             title="Change photo"
@@ -336,16 +371,30 @@ const EditeUser = ({ userInfo }) => {
           >
             <PencilIcon />
           </button>
-        </div>
-      )}
+        </AuthenticatedUserViewPermission>
+
+      </div>
+
+
       <div className="flex justify-between ml-4 w-3/4 items-center">
         <div className=''>
           <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
           <div className="flex">
-            <h1 className='text-sm w-full font-medium text-blue-800'><span className='text-sm text-gray-500'>Topics: </span>{experitise.join(', ') || "none"}</h1>
-            <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
-              <img src={edit_svg_blue} alt="" />
-            </div>
+            <SpaceHostViewPermission userRole={userInfo.user_role}>
+              <h1 className='text-sm w-full font-medium text-blue-800'>
+                <span className='text-sm text-gray-500'>Topics: </span>
+                {userInfo?.topics && userInfo.topics.length > 0 ? userInfo.topics.map(topic => topic.title).join(', ') : "none"}
+              </h1>
+              <AuthenticatedUserViewPermission>
+                <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
+
+                  <img src={edit_svg_blue} alt="" />
+                </div>
+              </AuthenticatedUserViewPermission>
+            </SpaceHostViewPermission>
+
+
+
           </div>
         </div>
         {/* <div className="flex gap-3">
@@ -356,13 +405,15 @@ const EditeUser = ({ userInfo }) => {
         </div> */}
       </div>
       {modalOpen && (
-        <ImageCropper
-          updateAvatar={updateAvatar}
-          closeModal={() => setModalOpen(false)}
-          currentAvatar={croppedImage}
-        />
-      )}
-    </div>
+        // < ImageCropper
+        //   updateAvatar={updateAvatar}
+        //   closeModal={() => setModalOpen(false)}
+        //   currentAvatar={croppedImage}
+        // />
+        <Modal open={modalOpen} handleOpen={setModalOpen} children={<ProfileImageUploadForm submitFileUpload={handleProfilePicUpload} />} />
+      )
+      }
+    </div >
   );
 };
 

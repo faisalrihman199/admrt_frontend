@@ -9,10 +9,12 @@ import svg_tiktok from '../svgs/social-media/tiktok-svgrepo-com.svg'
 import svg_whatsapp from '../svgs/social-media/whatsapp-icon-logo-svgrepo-com.svg'
 import { HiChevronDown } from "@react-icons/all-files/hi/HiChevronDown";
 
-const ModalAddSocialMedia = ({ onSelectSocialMedia, userId }) => {
+const ModalAddSocialMedia = ({ onSelectSocialMedia }) => {
     const [isActive, setIsActive] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [selectedOption, setSelectedOption] = useState('Select your option');
+    const [selectedOption, setSelectedOption] = useState('select social media');
+    const [socialMediaUrl, setSocialMediaUrl] = useState('');
+    const [error, setError] = useState(null);
 
     const options = [
         { icon: <img src={svg_facebook} alt='' />, text: 'Facebook' },
@@ -23,7 +25,15 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia, userId }) => {
         { icon: <img src={svg_tiktok} alt='' />, text: 'Tik Tok' },
         { icon: <img src={svg_whatsapp} alt='' />, text: 'WhatsApp' },
     ];
-
+    const socialMediaMapping = {
+        'Facebook': 'fb',
+        'Youtube': 'yt',
+        'Linkedin': 'ln',
+        'Instagram': 'in',
+        'X': 'x',
+        'Tik Tok': 'tt',
+        'WhatsApp': 'wa',
+    };
     const toggleMenu = () => {
         setIsActive(!isActive);
     };
@@ -33,8 +43,17 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia, userId }) => {
         setIsActive(false);
     };
 
+    // const handleLinkSocialMedia = async () => {
+    //     onSelectSocialMedia(selectedOption);
+    //     setShowModal(false);
+    // };
     const handleLinkSocialMedia = async () => {
-        onSelectSocialMedia(selectedOption);
+        if (!selectedOption || !socialMediaUrl) {
+            setError('Both Social Type and URL are required');
+            return;
+        }
+
+        onSelectSocialMedia({ social_media: socialMediaMapping[selectedOption], url: socialMediaUrl });
         setShowModal(false);
     };
 
@@ -56,7 +75,7 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia, userId }) => {
                                 <div className="relative p-2 md:p-6  flex-auto  justify-center items-start">
                                     <div className=''>
                                         <h1 className='text-lg md:text-3xl font-medium text-center'>Add New Social Media</h1>
-                                        <p className='mt-7 mb-2 text-lg font-medium text-start'>Select Social Media</p>
+                                        <p className='mt-7 mb-2 text-sm font-medium text-start'>Select Social Media</p>
                                         <div className={`select-menu ${isActive ? 'active' : ''}`}>
                                             <div className="select-btn" onClick={toggleMenu}>
                                                 <span className="sBtn-text">{selectedOption}</span>
@@ -71,10 +90,22 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia, userId }) => {
                                                 ))}
                                             </ul>
                                         </div>
-                                        <p className='my-6 text-center'>Link your Selected Social Media with AdMrt.</p>
+                                        <div className="my-6">
+                                            <label className="block text-gray-700 text-sm font-bold mb-5 text-left" htmlFor="social-media-link">
+                                                Social Media Url
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="social-media-link"
+                                                className="w-full px-3 py-5 placeholder-gray-500 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                                placeholder="Enter your social media link here"
+                                                value={socialMediaUrl} // Bind the input value to the state variable
+                                                onChange={e => setSocialMediaUrl(e.target.value)} // Update the state variable when the input changes
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-
+                                {error && <p className="text-red-500">{error}</p>}
                                 <div className="flex items-center w-full justify-center p-2 md:p-6 border-t border-solid gap-4 border-blue Gray-200 rounded-b">
                                     <button
                                         className="bg-blue-700 w-[80%] text-white active:bg-blue-600 font-normal p-2 md:px-8 md:py-5 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"

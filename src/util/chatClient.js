@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL: "http://173.230.135.194:8080",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -17,9 +17,6 @@ instance.interceptors.request.use(
   },
   (error) => {
     console.error("Request error:", error);
-    if (error.response && error.response.status === 401) {
-      window.location.href = "/login";
-    }
     return Promise.reject(error);
   }
 );

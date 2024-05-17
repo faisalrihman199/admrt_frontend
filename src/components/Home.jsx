@@ -71,7 +71,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="w-full bg-2 bg-white rounded-xl py-8 px-10 md:w-2/5 ">
+          <div className="w-full bg-2  shadow-2xl rounded-xl py-8 px-10 md:w-2/5 backdrop-blur-md">
             <div className="text-center h-auto overflow-hidden rounded-md  sm:rounded-xl">
               <h1 className="text-3xl font-semibold">Sell your ad space</h1>
               <Link to="/register">

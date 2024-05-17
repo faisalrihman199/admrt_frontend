@@ -7,47 +7,41 @@ import { BsDot } from 'react-icons/bs';
 import { useParams } from 'react-router-dom';
 import { db, saveUserDataToFirebase } from '../../firebase/firebase';
 import editeicon from '../../image/edit_svg_blue.svg';
+import { updateProfile, updateProfileSocials } from '../../service/profile';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
 
-const IntoDescription = () => {
+const IntoDescription = ({ description }) => {
     const [showModal, setShowModal] = useState(false);
     const [isDialogOpened, setIsDialogOpened] = useState(false);
     const [dialogInput, setDialogInput] = useState('');
     const [userData, setUserData] = useState({});
     const [userId, setUserId] = useState(null);
     const { userId: userIdParam } = useParams();
+    // const [description2, setDescription2] = useState(description);
 
-    // useEffect(() => {
-    //     const auth = getAuth();
-    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //         if (user) {
-    //             setUserId(user.uid);
-    //         } else {
-    //             setUserId(null);
-    //         }
-    //     });
-    //     return () => unsubscribe();
-    // }, []);
+    const authHeader = useAuthHeader()
+    const queryClient = useQueryClient();
 
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const userDoc = await getDoc(doc(db, 'users', userId || userIdParam));
-    //             const userData = userDoc.data();
-    //             setUserData(userData || {});
-    //         } catch (error) {
-    //             console.error('Error fetching user data:', error);
-    //         }
-    //     };
+    const mutation = useMutation({
+        mutationFn: updateProfile,
+        onSuccess: () => {
+            queryClient.invalidateQueries('loggedInUser');
 
-    //     fetchUserData();
-    // }, [userId, userIdParam]);
-
+        },
+    })
     const addNew = async () => {
         try {
             if (!!dialogInput.trim()) {
-                const updatedUserData = { ...userData, introDescription: dialogInput };
-                setUserData(updatedUserData);
-                await saveUserDataToFirebase(userId, updatedUserData);
+                mutation.mutate({
+                    authHeader,
+                    data: { description: dialogInput }
+                })
+
+
+                // setDescription2(dialogInput);
+                // QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
             } else {
                 alert('Please try again');
             }
@@ -56,6 +50,8 @@ const IntoDescription = () => {
             console.error('Error updating user data:', error);
         }
     };
+    useEffect(() => {
+    }, [description]);
 
     return (
         <div>
@@ -91,7 +87,8 @@ const IntoDescription = () => {
                                         >
                                             <form className="h-36">
                                                 <textarea
-                                                    value={dialogInput}
+                                                    // value={description2}
+                                                    defaultValue={description}
                                                     onChange={(e) => setDialogInput(e.target.value)}
                                                     className="h-36 overfull border-2 focus:outline-none border-blue-600 focus w-full peer rounded-lg resize-none px-3 py-2.5 font-sans text-sm font-normal"
                                                     placeholder="Tell brands and advertisers about your reach, adspace and anything else they should know"
@@ -121,29 +118,35 @@ const IntoDescription = () => {
                     <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                 </form>
             )}
-            {userData && (
+            {(
                 <div className="mt-5">
                     <div className="flex justify-between">
-                        <h1 className="text-2xl font-semibold">{userData.split === 'advertiser' ? 'Brand Description' : 'Intro Description'}</h1>
-                        <div className="flex  justify-center items-center cursor-pointer mx-5">
-                            <div className="item">
-                                <Button
-                                    onClick={() => {
-                                        setDialogInput(userData.introDescription);
-                                        setIsDialogOpened(true);
-                                        setShowModal(true);
-                                    }}
-                                >
-                                    <img src={editeicon} alt="icon" />
-                                </Button>
-                            </div>
+                        <div className="flex items-start justify-between">
+                            <AuthenticatedUserViewPermission>
+
+                                <h1 className="text-2xl font-semibold">{userData.split === 'advertiser' ? 'Brand Description' : 'Intro Description'}</h1>
+                                <div className="flex justify-center items-center cursor-pointer mx-5">
+                                    <div className="item">
+                                        <Button
+                                            onClick={() => {
+                                                setDialogInput(userData.introDescription);
+                                                setIsDialogOpened(true);
+                                                setShowModal(true);
+                                            }}
+                                        >
+                                            <img src={editeicon} alt="icon" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </AuthenticatedUserViewPermission>
+
                         </div>
                     </div>
                     <div className="border my-5"></div>
                     <div className="items overflow-hidden w-full break-words">
                         <ShowMoreText lines={3} more="more" less="less" className="content-css">
-                            {userData.introDescription && userData.introDescription.trim().length > 0 ? (
-                                <div dangerouslySetInnerHTML={{ __html: userData.introDescription }} />
+                            {description && description.trim().length > 0 ? (
+                                <div dangerouslySetInnerHTML={{ __html: description }} />
                             ) : (
                                 <p>No description available</p>
                             )}

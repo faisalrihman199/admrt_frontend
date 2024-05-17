@@ -1,9 +1,9 @@
 import apiClient from "../util/apiClient";
 
-async function userProfile({ queryKey }) {
+export async function otherUserProfile({ queryKey }) {
   try {
-    const [_key, { authHeader }] = queryKey;
-    const response = await apiClient.get("/auth/users/me/", {
+    const [_key, { authHeader, userId }] = queryKey;
+    const response = await apiClient.get(`/profile/?id=${userId}`, {
       headers: {
         Authorization: authHeader,
       },
@@ -14,5 +14,3 @@ async function userProfile({ queryKey }) {
     throw error;
   }
 }
-
-export default userProfile;

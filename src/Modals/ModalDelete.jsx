@@ -3,6 +3,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import delete_svg from '../image/Delete.svg'
 import { doc, deleteDoc } from 'firebase/firestore'
 import { auth, db } from '../firebase/firebase'
+import { FaTrash } from 'react-icons/fa';
 
 const ModalDelete = ({ onDeleteMedia, name }) => {
     const [showModal, setShowModal] = useState(false);
@@ -81,8 +82,8 @@ const ModalDelete = ({ onDeleteMedia, name }) => {
             ) : null}
 
             <button onClick={() => { setShowModal(true) }} >
-                <img src={delete_svg} className='h-6 w-6' alt='' />
-
+                {/* <img src={delete_svg} className='h-6 w-6' alt='' /> */}
+                <FaTrash />
             </button>
         </div>
     )

@@ -3,7 +3,6 @@ import 'flowbite';
 import EditBackground from "../Layout/context/editeBackground";
 import EditeUser from "../Layout/context/user";
 import IntoDescription from "../Layout/context/intoDescription";
-import { auth, usersCollection } from "../firebase/firebase";
 import AboutHim from '../Layout/context/aboutHim/aboutHim';
 import SocialMedia from '../Layout/context/socialMedia/socialMedia';
 import { doc, getDoc } from 'firebase/firestore';
@@ -13,13 +12,23 @@ import { VscEmptyWindow } from "react-icons/vsc";
 import { Specification } from '../Layout/context/specification';
 import { MainAdSpace } from '../Layout/adSpace/main';
 import { ProductAdventiser } from '../Layout/context/adventiser/productAdventiser';
-import userProfile from '../service/user';
+import { userProfile } from '../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useQuery } from '@tanstack/react-query';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { CustomSpinner } from '../components/Spinner';
+import SpaceHostViewPermission from '../components/Permissions/SpaceHostViewPermission';
+import AdvertiserViewPermission from '../components/Permissions/AdvertiserViewPermission';
+import { useParams } from 'react-router-dom';
+import AuthenticatedUserViewPermission from '../components/Permissions/AuthenticatedUserViewPermission';
+import { otherUserProfile } from '../service/orherUser';
 
 function SiplePages() {
 
     const authHeader = useAuthHeader()
+    const authUser = useAuthUser()
+    const { userId } = useParams();
+
 
     const { isPending, isError, data, error } = useQuery({
         queryKey: ['loggedInUser', { authHeader }],
@@ -27,17 +36,19 @@ function SiplePages() {
         staleTime: 5 * 60 * 1000,
     })
 
-    const [userId, setUserId] = useState(null);
+
+
+
+
     const [split, setSplit] = useState(null);
     const [advertiserProfile, setAdvertiserProfile] = useState(false);
     const [requests, setRequests] = useState('')
     const profile_amer = 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
 
 
-    console.log('profile data', data)
 
     if (isPending) {
-        return <span>Loading...</span>
+        return <CustomSpinner />
     }
 
     if (isError) {
@@ -46,9 +57,20 @@ function SiplePages() {
 
     const userInfo = {
         name: data?.full_name,
+        topics: data?.topics,
+        description: data?.description,
+        socialMedias: data?.socials,
+        location: data?.location,
+        website: data?.website,
+        joinDate: data?.joined,
+        long_term_service_availability: data?.long_term_service_availability,
+        profileImage: data?.profile_image,
+        coverImageUrl: data?.banner_image,
+        products: data?.products,
+        portfolios: data?.portfolios,
+        user_role: data?.user_role,
 
     };
-    console.log('userInfo', userInfo)
 
     return (
         <div className="App">
@@ -56,16 +78,26 @@ function SiplePages() {
                 <div className="md:flex">
                     <div className="w-full order-2 md:w-2/3 ">
                         <div className={"border p-2 md:p-5 rounded-xl"}>
-                            <EditBackground userId={userId} split={split} />
+                            <EditBackground userId={userId} split={split} coverImageUrl={userInfo.coverImageUrl} />
                             <EditeUser userInfo={userInfo} />
-                            <IntoDescription />
+                            <IntoDescription description={userInfo.description} />
                         </div>
-                        <Specification />
-                        {split === 'adSpaceHost' && <Portfolio />}
-                        {advertiserProfile && <ProductAdventiser />}
+                        <div className='py-5'>
+                            <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                        </div>
+
+                        <SpaceHostViewPermission userRole={userInfo.user_role}>
+                            <Portfolio userPortfolios={userInfo.portfolios} />
+                        </SpaceHostViewPermission>
+
+                        <AdvertiserViewPermission userRole={userInfo.user_role}>
+                            <ProductAdventiser userProducts={userInfo.products} />
+                        </AdvertiserViewPermission>
                     </div>
+
                     <div class="w-full py-5 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
-                        {advertiserProfile ? null :
+                        <AuthenticatedUserViewPermission>
+
                             <div className='mb-20'>
                                 <div className='flex justify-between my-3'>
                                     <div>
@@ -119,14 +151,18 @@ function SiplePages() {
                                     </div>
                                 )}
                             </div>
-                        }
-                        <AboutHim />
-                        <SocialMedia />
-                        {advertiserProfile ? null :
-                            <>
-                                <MainAdSpace />
-                            </>
-                        }
+                        </AuthenticatedUserViewPermission>
+
+                        <AboutHim
+                            location={userInfo.location}
+                            website={userInfo.website}
+                            joinDate={userInfo.joinDate}
+                        />
+                        <SocialMedia socials={userInfo.socialMedias} />
+                        <SpaceHostViewPermission userRole={userInfo.user_role}>
+                            <MainAdSpace />
+                        </SpaceHostViewPermission>
+
                     </div>
                 </div>
             </div>

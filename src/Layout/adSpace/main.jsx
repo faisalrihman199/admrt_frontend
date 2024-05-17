@@ -5,6 +5,7 @@ import { auth, usersCollection } from '../../firebase/firebase';
 import { Link } from 'react-router-dom';
 import { MdModeEditOutline } from "react-icons/md";
 import deleteIcon from '../../image/Delete.svg'
+import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
 
 export const MainAdSpace = () => {
   const [modal, setModal] = useState(false);
@@ -292,7 +293,9 @@ export const MainAdSpace = () => {
       )}
       <div className='flex justify-between border-b-2 py-3'>
         <p className='font-bold'>Ad Space</p>
-        {data.addSpace && Object.keys(data.addSpace).length > 0 ? null : (
+        {/* {data.addSpace && Object.keys(data.addSpace).length > 0 ? null : ( */}
+        <AuthenticatedUserViewPermission>
+
           <button
             onClick={() => {
               setModal(true);
@@ -302,26 +305,29 @@ export const MainAdSpace = () => {
           >
             + Add Space
           </button>
-        )}
+        </AuthenticatedUserViewPermission>
+        {/* )} */}
       </div>
       <div className='py-3 border-b-2'>
         {data && data.addSpace && Object.entries(data.addSpace).length > 0 ? (
           <div className='flex justify-between px-3'>
             <Link to={data.addSpace.link || ''} className='w-full flex'>
               <img src={
-                data.addSpace.type === 'Event' ? eventIcon : 
-                data.addSpace.type === 'Transportation' ? transIcon :  
-                data.addSpace.type === 'Print' ? printIcon : 
-                data.addSpace.type === 'Other' ? otherIcon : null
-                } alt={data.addSpace.type} className='w-6 mr-2' />
+                data.addSpace.type === 'Event' ? eventIcon :
+                  data.addSpace.type === 'Transportation' ? transIcon :
+                    data.addSpace.type === 'Print' ? printIcon :
+                      data.addSpace.type === 'Other' ? otherIcon : null
+              } alt={data.addSpace.type} className='w-6 mr-2' />
               <h1>{data.addSpace.type}</h1>
             </Link>
-            <div className='flex gap-3'>
-              <MdModeEditOutline className='text-gray-600 w-6 h-6' onClick={() => setEditModal(true)} />
-              <button onClick={() => setDeleteModal(true)}>
-                <img src={deleteIcon} alt='delete icon' className='text-red-600 hover:shadow-sm active:text-red-700 w-6 h-6 cursor-pointer' />
-              </button>
-            </div>
+            <AuthenticatedUserViewPermission>
+              <div className='flex gap-3'>
+                <MdModeEditOutline className='text-gray-600 w-6 h-6' onClick={() => setEditModal(true)} />
+                <button onClick={() => setDeleteModal(true)}>
+                  <img src={deleteIcon} alt='delete icon' className='text-red-600 hover:shadow-sm active:text-red-700 w-6 h-6 cursor-pointer' />
+                </button>
+              </div>
+            </AuthenticatedUserViewPermission>
           </div>
         ) : (
           <p className='text-center font-semibold text-gray-400'>Empty Ad Space</p>

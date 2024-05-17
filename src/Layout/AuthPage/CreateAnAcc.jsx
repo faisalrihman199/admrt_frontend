@@ -58,11 +58,11 @@ const CreateAnAcc = () => {
 
     try {
 
-      await userRegisterApi({ full_name: fullName, email, phone_number: phoneNumber, password, country, user_role: split });
+      await userRegisterApi({ full_name: fullName, email, phone: phoneNumber, password, country, user_role: split });
       await logIn(email, password);
     } catch (err) {
       console.error(err);
-      setErrorMessage('The information you entered is available. Please try login');
+      setErrorMessage('Something Went Wrong');
       setLoading(false)
     }
   };

@@ -5,14 +5,25 @@ import { auth, db, deletePortfolioFirebase, savePortfolioFirebase } from '../../
 import { useNavigate } from 'react-router-dom'
 import { collection, getDocs } from 'firebase/firestore';
 import { MdDelete } from "react-icons/md";
+import ReactPlayer from 'react-player';
+import { CarouselWithContent } from '../../../components/Carousel/CarouselWithContent';
+import { Modal } from '../../../components/Modal/Modal';
+import { FaTrash } from 'react-icons/fa';
+import { Button, IconButton } from '@material-tailwind/react';
+import { deletePortfolio } from '../../../service/profile';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 
-const Portfolio = () => {
+
+const Portfolio = ({ userPortfolios }) => {
   const [modal, setModal] = useState(false)
   const [isHovered, setIsHovered] = useState(false);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('')
   const [errorMessageTitle, setErrorMessageTitle] = useState(false);
+  const [errorMessageDescription, setErrorMessageDescription] = useState(false);
   const [portfolios, setPortfolios] = useState([]);
   const [viewModal, setViewModal] = useState();
   const [selectPortfolio, setSeletPortfolio] = useState();
@@ -21,39 +32,19 @@ const Portfolio = () => {
   const [deleteSelect, setDeleteSelect] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [checkId, setCheckId] = useState([])
-
+  const [description, setDescription] = useState('')
   const navigate = useNavigate();
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [openItemImage, setOpenItemImage] = useState(false);
+  const authHeader = useAuthHeader()
+  const handleExpandItemImages = (product) => {
+    setSelectedProduct(product);
+    setOpenItemImage(true);
+  };
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId(null)
-      }
-    })
-
-    return () => unsubscribe()
-  }, [userId])
-
-  const fetchPortfolios = useCallback(async () => {
-    try {
-      const portfoliosRef = collection(db, 'portfolio', userId, "portfolios");
-      const snapshot = await getDocs(portfoliosRef);
-      const portfolioData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setPortfolios(portfolioData);
-    } catch (error) {
-      console.error('Error fetching portfolios:', error);
-    }
-  }, [userId])
-
-  useEffect(() => {
-    fetchPortfolios();
-  }, [fetchPortfolios]);
-
+  const ExpandItemImagesClose = () => {
+    setOpenItemImage(false);
+  };
 
   const handleNextButton = async () => {
     if (title.length === 0) {
@@ -70,9 +61,9 @@ const Portfolio = () => {
       startDate: new Date(),
     };
     try {
-      await savePortfolioFirebase(userId, Id, datas);
       setLoading(false);
-      navigate(`/${title}/portfolio/${userId}/${Id}`);
+      // navigate(`/portfolio/add/${title}`);
+      navigate(`/mediaUpload/portfolio`, { state: { title: title, description: description, module: 'portfolio' } });
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -91,7 +82,24 @@ const Portfolio = () => {
 
     generateID()
   }, [])
+  const productData = [
+    {
+      id: 1,
+      name: 'Portfolio 1',
+      description: 'Introducing our latest model, the Turbo X7. This car is the epitome of luxury and performance. It features a sleek, aerodynamic design with a glossy black finish that exudes elegance and sophistication. The Turbo X7 is powered by a 3.0L V6 engine that delivers an impressive 400 horsepower, ensuring a smooth and powerful drive. The interior is just as impressive, with leather seats, a state-of-the-art infotainment system, and a panoramic sunroof that offers stunning views. Safety features include adaptive cruise control, lane keep assist, and a rearview camera. Experience the perfect blend of luxury, comfort, and performance with the Turbo X7.',
+      price: 100,
+      images: ['https://picsum.photos/200/300', 'https://picsum.photos/id/237/200/300']
+    },
+    {
+      id: 2,
+      name: 'Portfolio 2',
+      description: 'This is product 2',
+      price: 200,
+      youtube_url: 'https://www.youtube.com/watch?v=dyXScuEoGrE',
+      images: ['https://picsum.photos/id/237/200/300', 'https://picsum.photos/id/237/200/300']
 
+    },
+  ];
   const handleViewModalOpen = (selectId) => {
     const selectedPortfolio = portfolios.find(portfolio => portfolio.id === selectId);
     if (selectedPortfolio) {
@@ -100,17 +108,15 @@ const Portfolio = () => {
     }
   }
 
-  const handleDeletePortfolio = async (portfolioId) => {
-    try {
-      await deletePortfolioFirebase(userId, portfolioId);
-      const updatedPortfolios = portfolios.filter(portfolio => portfolio.id !== portfolioId);
-      setPortfolios(updatedPortfolios);
-      setViewModal(false);
-
-      const updatedCheckIds = checkId.filter(id => id !== portfolioId);
-      setCheckId(updatedCheckIds);
-    } catch (error) {
-      console.error('Error deleting portfolio:', error);
+  const queryClient = useQueryClient();
+  const handleDelete = async (portfolioId) => {
+    if (window.confirm('Are you sure you want to delete this portfolio?')) {
+      try {
+        await deletePortfolio({ authHeader, portfolioId });
+        queryClient.invalidateQueries('loggedInUser');
+      } catch (error) {
+        console.error('Error deleting portfolio:', error);
+      }
     }
   }
 
@@ -122,7 +128,6 @@ const Portfolio = () => {
       setCheckId([]);
       setDeleteModal(false);
       setDeleteSelect(false);
-      fetchPortfolios()
     } catch (error) {
       console.error('Error deleting portfolios:', error);
     }
@@ -184,16 +189,24 @@ const Portfolio = () => {
                     <h1 className='text-center mb-6 text-2xl md:text-3xl font-semibold'>Add new portfolio</h1>
                   </div>
                   <div className='pt-2'>
-                    <div className="">
+                    <div className="space-y-5">
                       <p className='pl-1'>Name</p>
-                      <p className='px-1 pb-1 text-sm text-gray-500'>This is will be the title of your portfolio</p>
                       <input type="text"
                         placeholder='Writing portfolio name'
                         className={`w-full p-2 border rounded-lg ${errorMessageTitle ? "border-red-600" : ""}`}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                       />
-                      {errorMessageTitle && <p className='text-red-600'>Please enter title</p>}
+                      {errorMessageTitle && <p className='text-red-600'>Please enter portfolio title</p>}
+
+                      <p className='pl-1'>Description</p>
+                      <textarea
+                        placeholder='Writing portfolio description'
+                        className={`w-full p-2 border rounded-lg ${errorMessageDescription ? "border-red-600" : ""}`}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                      {errorMessageDescription && <p className='text-red-600'>Please enter portfolio description</p>}
                     </div>
                   </div>
                 </div>
@@ -230,7 +243,7 @@ const Portfolio = () => {
                 </div>
                 <div>
                   <MdDelete className='w-6 h-6 hover:opacity-75 text-red-600 cursor-pointer'
-                    onClick={() => handleDeletePortfolio(selectPortfolio[0].id)}
+                  // onClick={() => handleDeletePortfolio(selectPortfolio[0].id)}
                   />
                 </div>
               </div>
@@ -291,16 +304,19 @@ const Portfolio = () => {
                   />
                 )}
               </div>
-              <div>
-                <p className={`absolute text-sm bg-gray-50 border rounded-ls shadow p-2 -mt-11 -ml-9 ${isHovered ? '' : 'hidden'}`}>Add Portfolio</p>
-                {portfolios.length === 6 ? null : (
-                  <IoIosAddCircleOutline className='w-8 h-8 mr-1.5 cursor-pointer'
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
+              <AuthenticatedUserViewPermission>
+                <div>
+                  {/* <p className={`absolute text-sm bg-gray-50 border rounded-ls shadow p-2 -mt-11 -ml-9 ${isHovered ? '' : 'hidden'}`}>Add Portfolio</p> */}
+                  <Button className='bg-blue-500 text-white hover:bg-blue-600'
+                    // onMouseEnter={() => setIsHovered(true)}
+                    // onMouseLeave={() => setIsHovered(false)}
                     onClick={() => setModal(true)}
-                  />
-                )}
-              </div>
+                  >
+                    Add Portfolio
+                  </Button>
+
+                </div>
+              </AuthenticatedUserViewPermission>
             </div>
           }
         </div>
@@ -310,49 +326,57 @@ const Portfolio = () => {
               <p className=' font-normal mt-2.5'>Select the portfolio you want to delete</p>
             </div>
           }
-          <div className='flex'>
-            {portfolios.length > 0 ? (
-              portfolios.map(portfolio => (
-                <div>
-                  {deleteSelect &&
-                    <div className='flex justify-center mt-2'>
-                      <input type="checkbox"
-                        className='w-4 h-4 cursor-pointer'
-                        onChange={(e) => {
-                          const checkedId = e.target.value;
-                          if (e.target.checked) {
-                            setCheckId(prevState => [...prevState, checkedId]);
-                          } else {
-                            const updatedCheckIds = checkId.filter(id => id !== checkedId);
-                            setCheckId(updatedCheckIds);
-                          }
-                        }}
-                        value={portfolio.id}
-                        checked={checkId.includes(portfolio.id)}
-                      />
+          <div className='grid grid-cols-2 gap-4 p-3'>
+            {userPortfolios ? (
+              userPortfolios.map((product) => {
+                const images = [product.image1, product.image2, product.image3].filter(Boolean);
+                product.images = images;
+                return (
+                  <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg   backdrop-blur-sm'>
+
+                    <AuthenticatedUserViewPermission>
+                      <div key={product.id} className=' p-2 rounded-lg cursor-pointer  relative'>
+                        <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
+                      </div>
+                    </AuthenticatedUserViewPermission>
+                    <div className="flex items-center justify-start gap-4">
+
                     </div>
-                  }
-                  <div className='p-1 border rounded-lg bg-blue-50 border-blue-400 m-2 cursor-pointer'
-                    onClick={() => deleteSelect ? null : handleViewModalOpen(portfolio.id)}
-                  >
-                    <div key={portfolio.id}>
-                      <h1 className='font-semibold text-sm text-center'>{portfolio.portfolioTitle}</h1>
-                      <img src={portfolio.image} alt={portfolio.portfolioTitle} className='w-44 h-56 object-cover rounded-lg' />
-                      <p className={`text-gray-500 text-sm text-center ${portfolio.description?.length > 24 ? "cursor-pointer" : ""}`}>
-                        {portfolio.description?.slice(0, 24)}{portfolio.description?.length > 24 ? '...' : ''}
+                    <div>
+                      <h2 className="  p-2">{product.title}</h2>
+                      <p className="text-gray-600">
+                        {/* {truncateDescription(product.description, 35)} */}
                       </p>
                     </div>
+                    <div className="md:h-128 lg:h-128 h-128 max-h-70" style={{ height: '220px', overflow: 'hidden' }}>
+                      {product.youtube_url ? (
+                        <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
+                      ) : (
+                        <div key={product.id} className=' ' onClick={() => handleExpandItemImages(product)}>
+                          <CarouselWithContent description={product.description} imageUrls={images} />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
-              <div className='m-auto text-center py-3'>
-                <h1 className='text-gray-500 font-semibold text-sm'>Empty portfolio</h1>
-                <p className='text-gray-500 text-sm'>You haven't added a portfolio yet! Please <span onClick={() => setModal(true)} className='text-blue-700 font-semibold text-sm hover:text-blue-800 hover:border-b border-gray-400 cursor-pointer'>add portfolio</span></p>
-                <VscEmptyWindow className='w-32 h-32 text-gray-300 m-auto' />
+              <div className='m-auto text-gray-300'>
+                <h1 className='text-4xl font-bold'>Empty Product!</h1>
               </div>
             )}
           </div>
+        </div>
+        <div>
+          <Modal open={openItemImage} handleOpen={ExpandItemImagesClose}
+            size="md"
+            children={
+              <CarouselWithContent
+                description={selectedProduct?.description}
+                imageUrls={selectedProduct?.images} fullScreenMode={true}
+              />
+            }
+          />
         </div>
       </div>
     </div>
