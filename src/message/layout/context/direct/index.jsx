@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { avatar } from '../../../../modul/main';
 import { SlArrowRight } from "react-icons/sl";
 import { IoCheckmark } from "react-icons/io5";
@@ -23,6 +23,10 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
     const [message, setMessage] = useState('');
     const messageRef = useRef('');
 
+    const location = useLocation();
+
+    const newConversationUserName = location.state?.newConverSationUserName || '';
+    const newConversationUserProfileImage = location.state?.newConverSationUserProfileImage || '';
 
 
     const authHeader = useAuthHeader()
@@ -65,7 +69,9 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                 receiver_id: userId,
                 text: messageRef.current.value,
                 sender_id: authUser.id,
-                created_at: timestampInMicroseconds
+                created_at: timestampInMicroseconds,
+                full_name: newConversationUserName,
+                profile_image: newConversationUserProfileImage
             };
 
             // console.log('i m here Sending message:', body);
@@ -96,7 +102,6 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
         let lastDate = null;
         let renderedMessages = [];
 
-        console.log('userConversation', userConversation);
 
         userConversation.forEach((msg) => {
             // const messageDate = msg.created_at;
@@ -199,11 +204,14 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                     </div>
                 </div>
             ) : null}
-            <div className={`  flex flex-col w-full rounded-xl overflow-x-auto mb-3 p-4 ${isMobile ? 'border ' : ""}`} style={{ height: 'calc(100vh - 250px)' }}>
-
-                {renderMessages()}
+            <div className={`flex flex-col w-full rounded-xl overflow-x-auto mb-3 p-4 ${isMobile ? 'border ' : ""}`} style={{ height: 'calc(100vh - 250px)' }}>
+                {userConversation.length === 0 && newConversationUserName ? (
+                    <div className="flex flex-col items-center justify-center h-full">
+                        <img src={newConversationUserProfileImage || avatar} className="w-12 h-12 rounded-full" alt="User" />
+                        <p className="mt-2">Send message to <strong>{newConversationUserName}</strong></p>
+                    </div>
+                ) : renderMessages()}
                 <div ref={messagesEndRef} />
-
             </div>
             <div className='mt-auto'>
                 <form onSubmit={handleMessageSubmit} className="flex flex-row items-center h-16 border rounded-xl bg-white w-full px-2">

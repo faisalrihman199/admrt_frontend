@@ -6,52 +6,120 @@
 // import reviews_img2 from '../svgs/reviews/Rectangle 6596 (2).svg';
 // import reviews_img3 from '../svgs/reviews/Rectangle 6596 (3).svg';
 // import reviews_img4 from '../svgs/reviews/Rectangle 6596 (4).svg';
-import EditBackground from "./others/editeBg";
-import EditeUser from "./others/user";
-import IntoDescription from "./others/description";
-import AboutHim from './others/abouthim';
-import SocialMedia from './others/socialMedia';
+// import EditeUser from "./others/user";
+// import IntoDescription from "./others/description";
+
+
 import { useEffect, useState } from 'react';
 import Loading from '../loading/loading'
-import Portfolio from './others/portfolio'
-import { useParams } from 'react-router-dom'
-import { Specification } from "../Layout/context/specification";
-import { MainAdSpace } from "./others/adspace";
+import { useNavigate, useParams } from 'react-router-dom'
+
 import { ProductAdventiser } from "../Layout/context/adventiser/productAdventiser";
+import { otherUserProfile } from "../service/orherUser";
+import EditeUser from "../Layout/context/user";
+import IntoDescription from "../Layout/context/intoDescription";
+import { Specification } from "../Layout/context/specification";
+import SpaceHostViewPermission from "../components/Permissions/SpaceHostViewPermission";
+import Portfolio from "../Layout/context/portfolio/portfolio";
+import AdvertiserViewPermission from "../components/Permissions/AdvertiserViewPermission";
+import AboutHim from "../Layout/context/aboutHim/aboutHim";
+import SocialMedia from "../Layout/context/socialMedia/socialMedia";
+import { MainAdSpace } from "../Layout/adSpace/main";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { useQuery } from "@tanstack/react-query";
+import { CustomSpinner } from "../components/Spinner";
+import EditBackground from '../Layout/context/editeBackground';
+import { Button } from '@material-tailwind/react';
 
 function ViewsProfile() {
-  const [loading, setLoading] = useState(true);
-  const { split } = useParams();
+  const authHeader = useAuthHeader()
+  // const authUser = useAuthUser()
+  const { userId } = useParams();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadingTime = setTimeout(() => {
-      setLoading(false)
-    }, 1200);
 
-    return () => clearTimeout(loadingTime)
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['viewUserProfile', { authHeader, userId }],
+    queryFn: otherUserProfile,
   })
+
+
+
+  const [advertiserProfile, setAdvertiserProfile] = useState(false);
+  const [requests, setRequests] = useState('')
+  const profile_amer = 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
+
+
+
+  if (isPending) {
+    return <CustomSpinner />
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>
+  }
+
+  const userInfo = {
+    name: data?.full_name,
+    topics: data?.topics,
+    description: data?.description,
+    socialMedias: data?.socials,
+    location: data?.location,
+    website: data?.website,
+    joinDate: data?.joined,
+    long_term_service_availability: data?.long_term_service_availability,
+    profileImage: data?.profile_image,
+    coverImageUrl: data?.banner_image,
+    products: data?.products,
+    portfolios: data?.portfolios,
+    user_role: data?.user_role,
+
+  };
+  // const [loading, setLoading] = useState(true);
+  // const { split } = useParams();
+
 
   return (
     <div className="App">
-      {loading && <Loading />}
+
       <div className="max-w-screen-2xl mx-auto">
         <div className="md:flex">
           <div className="w-full order-2 md:w-2/3">
             <div className={"border p-2 md:p-5 rounded-xl"}>
-              <EditBackground />
-              <EditeUser />
-              <IntoDescription />
+              <div className='m-2' style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  color="blue"
+                  ripple="light"
+                  onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
+                >
+                  Send Message
+                </Button>
+              </div>
+              <EditBackground backgroundImageUrl={userInfo.coverImageUrl} />
+              <EditeUser userInfo={userInfo} />
+              <IntoDescription description={userInfo.description} />
               <div>
-                <Specification />
+                <Specification long_term_service_availability={userInfo.long_term_service_availability} />
               </div>
             </div>
-            {split === 'adSpaceHost' && <Portfolio />}
-            {split !== 'adSpaceHost' && <ProductAdventiser />}
+            <SpaceHostViewPermission userRole={userInfo.user_role}>
+              <Portfolio userPortfolios={userInfo.portfolios} />
+            </SpaceHostViewPermission>
+
+            <AdvertiserViewPermission userRole={userInfo.user_role}>
+              <ProductAdventiser userProducts={userInfo.products} />
+            </AdvertiserViewPermission>
           </div>
           <div class="w-full py-0 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
-            <AboutHim />
-            <SocialMedia />
-            <MainAdSpace />
+            <AboutHim
+              location={userInfo.location}
+              website={userInfo.website}
+              joinDate={userInfo.joinDate}
+            />
+            <SocialMedia socials={userInfo.socialMedias} />
+            <SpaceHostViewPermission userRole={userInfo.user_role}>
+              <MainAdSpace />
+            </SpaceHostViewPermission>
           </div>
         </div>
       </div>

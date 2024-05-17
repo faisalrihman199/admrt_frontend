@@ -361,7 +361,7 @@ export const ProductAdventiser = ({ userProducts }) => {
             const images = [product.image1, product.image2, product.image3].filter(Boolean);
             product.images = images;
             return (
-              <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg bg-gray-100 backdrop-blur-sm'>
+              <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg backdrop-blur-sm'>
                 <div className='p-2 rounded-lg cursor-pointer relative'>
                   <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
                 </div>

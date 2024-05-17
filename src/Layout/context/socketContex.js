@@ -89,7 +89,16 @@ export const WebSocketProvider = ({ children }) => {
         });
       }
 
-      state.socket.send(JSON.stringify(message));
+      let { text, receiver_id } = body;
+      let socketSendParam = {
+        action,
+        body: {
+          text,
+          receiver_id,
+        },
+      };
+
+      state.socket.send(JSON.stringify(socketSendParam));
     }
   };
   useEffect(() => {

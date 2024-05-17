@@ -20,6 +20,8 @@ import { CustomSpinner } from '../components/Spinner';
 import SpaceHostViewPermission from '../components/Permissions/SpaceHostViewPermission';
 import AdvertiserViewPermission from '../components/Permissions/AdvertiserViewPermission';
 import { useParams } from 'react-router-dom';
+import AuthenticatedUserViewPermission from '../components/Permissions/AuthenticatedUserViewPermission';
+import { otherUserProfile } from '../service/orherUser';
 
 function SiplePages() {
 
@@ -33,6 +35,9 @@ function SiplePages() {
         queryFn: userProfile,
         staleTime: 5 * 60 * 1000,
     })
+
+
+
 
 
     const [split, setSplit] = useState(null);
@@ -63,6 +68,7 @@ function SiplePages() {
         coverImageUrl: data?.banner_image,
         products: data?.products,
         portfolios: data?.portfolios,
+        user_role: data?.user_role,
 
     };
 
@@ -80,16 +86,18 @@ function SiplePages() {
                             <Specification long_term_service_availability={userInfo.long_term_service_availability} />
                         </div>
 
-                        <SpaceHostViewPermission>
+                        <SpaceHostViewPermission userRole={userInfo.user_role}>
                             <Portfolio userPortfolios={userInfo.portfolios} />
                         </SpaceHostViewPermission>
 
-                        <AdvertiserViewPermission>
+                        <AdvertiserViewPermission userRole={userInfo.user_role}>
                             <ProductAdventiser userProducts={userInfo.products} />
                         </AdvertiserViewPermission>
                     </div>
+
                     <div class="w-full py-5 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
-                        {advertiserProfile ? null :
+                        <AuthenticatedUserViewPermission>
+
                             <div className='mb-20'>
                                 <div className='flex justify-between my-3'>
                                     <div>
@@ -143,16 +151,16 @@ function SiplePages() {
                                     </div>
                                 )}
                             </div>
-                        }
+                        </AuthenticatedUserViewPermission>
+
                         <AboutHim
                             location={userInfo.location}
                             website={userInfo.website}
                             joinDate={userInfo.joinDate}
                         />
                         <SocialMedia socials={userInfo.socialMedias} />
-                        <SpaceHostViewPermission>
+                        <SpaceHostViewPermission userRole={userInfo.user_role}>
                             <MainAdSpace />
-
                         </SpaceHostViewPermission>
 
                     </div>

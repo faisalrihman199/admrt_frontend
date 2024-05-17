@@ -16,6 +16,7 @@ import { useParams } from 'react-router-dom';
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import { addProfileSocials } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 
 const SocialMedia = ({ socials }) => {
     const [selectedSocialMedia, setSelectedSocialMedia] = useState([]);
@@ -59,17 +60,6 @@ const SocialMedia = ({ socials }) => {
         );
     };
 
-    // const socialMediaPages = [
-    //     { name: 'Facebook', icon: svg_facebook, text: 'Facebook' },
-    //     { name: 'Youtube', icon: svg_youtube, text: 'Youtube' },
-    //     { name: 'Linkedin', icon: svg_linkedin, text: 'Linkedin' },
-    //     { name: 'Instagram', icon: svg_instagram, text: 'Instagram' },
-    //     { name: 'X', icon: svg_x, text: 'X' },
-    //     { name: 'Tik Tok', icon: svg_tiktok, text: 'Tik Tok' },
-    //     { name: 'WhatsApp', icon: svg_whatsapp, text: 'WhatsApp' },
-    //     { name: 'Other', icon: copy, text: 'Other' }
-    // ];
-
     const socialMediaPages =
     {
         "fb": { name: 'Facebook', icon: svg_facebook, text: 'Facebook' },
@@ -90,11 +80,14 @@ const SocialMedia = ({ socials }) => {
                     <div>
                         <h1 className='font-semibold'>{split === 'advertiser' ? 'Platforms' : 'Social Media'}</h1>
                     </div>
-                    <div className='flex gap-3'>
-                        <button className='bg-blue-700 px-2 py-1 rounded-lg text-sm'>
-                            <ModalAddSocialMedia onSelectSocialMedia={handleSelectSocialMedia} />
-                        </button>
-                    </div>
+                    <AuthenticatedUserViewPermission>
+                        <div className='flex gap-3'>
+                            <button className='bg-blue-700 px-2 py-1 rounded-lg text-sm'>
+                                <ModalAddSocialMedia onSelectSocialMedia={handleSelectSocialMedia} />
+                            </button>
+                        </div>
+                    </AuthenticatedUserViewPermission>
+
                 </div>
                 {/* {split !== 'advertiser' &&
                     <div className='my-3 border-t-2'>
@@ -120,14 +113,19 @@ const SocialMedia = ({ socials }) => {
                                     }</h1>}
                                 </div>
                             </a>
-                            {socialMedia.social_media && (
-                                <div className='flex gap-5'>
-                                    {/* <CheckMedia selectedSocialMedia={selectedSocialMedia} userId={userId} /> */}
-                                    <div className='h-6 w-6 cursor-pointer'>
-                                        <ModalDelete onDeleteMedia={handleRemoveSocialMedia} name={socialMedia.social_media} />
+                            <AuthenticatedUserViewPermission>
+                                {socialMedia.social_media && (
+                                    <div className='flex gap-5'>
+                                        {/* <CheckMedia selectedSocialMedia={selectedSocialMedia} userId={userId} /> */}
+                                        <div className='h-6 w-6 cursor-pointer'>
+                                            <ModalDelete onDeleteMedia={handleRemoveSocialMedia} name={socialMedia.social_media} />
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
+                            </AuthenticatedUserViewPermission>
+
+
+
                         </div>
                     </div>
                 ))}

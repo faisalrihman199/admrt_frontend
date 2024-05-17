@@ -184,8 +184,8 @@ const Settings = () => {
                   onClick={() => setSelectedSettingsType('Account')}
                   className={`flex items-center justify-center mt-8 w-full text-lg font-medium p-4 rounded-2xl mb-2.5 border ${selectedSettingsType === 'Account' ? 'border-blue-500 text-blue-500' : ''}`}
                 >
-                  {auth?.imageUrl ? (
-                    <img className="mr-4 w-10 h-10" src={auth.imageUrl} alt="" />
+                  {auth?.profile_image ? (
+                    <img className="mr-4 w-10 h-10 rounded-full" src={auth.profile_image} alt="" />
                   ) : auth?.full_name ? (
                     <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center bg-orange-200 text-xl">
                       {auth.full_name.charAt(0).toUpperCase()}

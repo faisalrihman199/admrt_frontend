@@ -267,7 +267,7 @@ function StickyNavbar({ authenticated }) {
           variant="small"
           className="p-1 text-black max-[1280px]:text-base text-lg font-normal mr-3"
         >
-          <AdvertiserViewPermission>
+          <AdvertiserViewPermission userRole={auth?.user_role}>
             <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
               <FaAd className="mr-1 self-start" />
               <h1>Find Ad spaces</h1>

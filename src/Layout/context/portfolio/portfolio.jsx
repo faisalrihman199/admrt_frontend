@@ -9,10 +9,11 @@ import ReactPlayer from 'react-player';
 import { CarouselWithContent } from '../../../components/Carousel/CarouselWithContent';
 import { Modal } from '../../../components/Modal/Modal';
 import { FaTrash } from 'react-icons/fa';
-import { IconButton } from '@material-tailwind/react';
+import { Button, IconButton } from '@material-tailwind/react';
 import { deletePortfolio } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 
 
 const Portfolio = ({ userPortfolios }) => {
@@ -303,17 +304,19 @@ const Portfolio = ({ userPortfolios }) => {
                   />
                 )}
               </div>
-              <div>
-                <p className={`absolute text-sm bg-gray-50 border rounded-ls shadow p-2 -mt-11 -ml-9 ${isHovered ? '' : 'hidden'}`}>Add Portfolio</p>
-                {portfolios.length === 6 ? null : (
-                  <IoIosAddCircleOutline className='w-8 h-8 mr-1.5 cursor-pointer'
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
+              <AuthenticatedUserViewPermission>
+                <div>
+                  {/* <p className={`absolute text-sm bg-gray-50 border rounded-ls shadow p-2 -mt-11 -ml-9 ${isHovered ? '' : 'hidden'}`}>Add Portfolio</p> */}
+                  <Button className='bg-blue-500 text-white hover:bg-blue-600'
+                    // onMouseEnter={() => setIsHovered(true)}
+                    // onMouseLeave={() => setIsHovered(false)}
                     onClick={() => setModal(true)}
-                  />
-                )}
+                  >
+                    Add Portfolio
+                  </Button>
 
-              </div>
+                </div>
+              </AuthenticatedUserViewPermission>
             </div>
           }
         </div>
@@ -323,28 +326,29 @@ const Portfolio = ({ userPortfolios }) => {
               <p className=' font-normal mt-2.5'>Select the portfolio you want to delete</p>
             </div>
           }
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-2 gap-4 p-3'>
             {userPortfolios ? (
               userPortfolios.map((product) => {
                 const images = [product.image1, product.image2, product.image3].filter(Boolean);
                 product.images = images;
                 return (
-                  <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg bg-gray-100 backdrop-blur-sm'>
+                  <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg   backdrop-blur-sm'>
 
-
-                    <div key={product.id} className=' p-2 rounded-lg cursor-pointer  relative'>
-                      <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
-                    </div>
+                    <AuthenticatedUserViewPermission>
+                      <div key={product.id} className=' p-2 rounded-lg cursor-pointer  relative'>
+                        <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
+                      </div>
+                    </AuthenticatedUserViewPermission>
                     <div className="flex items-center justify-start gap-4">
 
                     </div>
                     <div>
-                      <h2 className="font-semibold">{product.title}</h2>
+                      <h2 className="  p-2">{product.title}</h2>
                       <p className="text-gray-600">
                         {/* {truncateDescription(product.description, 35)} */}
                       </p>
                     </div>
-                    <div className="md:h-128 lg:h-128 h-128 max-h-70" style={{ height: '250px', overflow: 'hidden' }}>
+                    <div className="md:h-128 lg:h-128 h-128 max-h-70" style={{ height: '220px', overflow: 'hidden' }}>
                       {product.youtube_url ? (
                         <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
                       ) : (

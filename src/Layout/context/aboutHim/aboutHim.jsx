@@ -146,15 +146,18 @@ const AboutHim = ({ location, website, joinDate }) => {
                                 <h1>{currentLocation || "none. Please fill in your information!"}</h1>
                             </div>
                         </div>
-                        <div className='flex justify-center items-center cursor-pointer'>
-                            <button onClick={() => {
-                                setaboutHimShow(true)
-                            }}>
-                                <img src={edit_svg_blue} alt='' />
-                            </button>
-                        </div>
+                        <AuthenticatedUserViewPermission>
+                            <div className='flex justify-center items-center cursor-pointer'>
+                                <button onClick={() => {
+                                    setaboutHimShow(true)
+                                }}>
+                                    <img src={edit_svg_blue} alt='' />
+                                </button>
+                            </div>
+                        </AuthenticatedUserViewPermission>
                     </div>
                     <div className='flex justify-between my-4'>
+
                         <div className='flex gap-5 '>
                             <div className=''>
                                 <img src={shape2} alt='' />
@@ -166,13 +169,16 @@ const AboutHim = ({ location, website, joinDate }) => {
                                 }
                             </div>
                         </div>
-                        <div className='flex justify-center items-center cursor-pointer'>
-                            <button onClick={() => {
-                                setaboutHimShow(true)
-                            }}>
-                                <img src={edit_svg_blue} alt='' />
-                            </button>
-                        </div>
+                        <AuthenticatedUserViewPermission>
+                            <div className='flex justify-center items-center cursor-pointer'>
+                                <button onClick={() => {
+                                    setaboutHimShow(true)
+                                }}>
+                                    <img src={edit_svg_blue} alt='' />
+                                </button>
+                            </div>
+                        </AuthenticatedUserViewPermission>
+
                     </div>
                     <div className='flex justify-between my-4'>
                         <div className='flex gap-5'>

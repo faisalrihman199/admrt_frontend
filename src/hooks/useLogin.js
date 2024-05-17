@@ -10,14 +10,13 @@ export function useLogIn() {
   const logIn = async (email, password) => {
     try {
       const data = await userLoginApi(email, password);
-      console.log("gdfsgdfsgdfsdfgs", data);
       if (data.access && data.refresh && data.user) {
         signIn({
           auth: {
             token: data.access,
             type: "JWT",
           },
-          refresh: data.refresh,
+          // refresh: data.refresh,
           userState: data.user,
         });
         window.location.href = "/";

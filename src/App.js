@@ -69,14 +69,14 @@ function App() {
   };
   const isAuthenticated = useIsAuthenticated();
 
-  useEffect(() => {}, [isAuthenticated]);
+  // useEffect(() => {}, [isAuthenticated]);
 
   const AuthUserRoutes = [
     { id: 1, path: `/profile/:userId`, element: <Profile /> },
     { id: 2, path: `/settings`, element: <Settings /> },
     {
       id: 3,
-      path: `/profile/:split/:userUID`,
+      path: `/profile/user/:userId`,
       element: <ViewsProfile onUserUID={handleUserSelect} />,
     },
     { id: 4, path: `/mediaUpload/:portfolio`, element: <AddPortfolio /> },
@@ -105,6 +105,7 @@ function App() {
     { id: 11, path: "*", element: <NotFound /> },
     // { id: 12, path: "/testChat", element: <Chat /> },
   ];
+
   return (
     <div>
       <Routes>
@@ -118,7 +119,7 @@ function App() {
           }
         >
           <Route index element={<Home />} />
-          <Route element={<AuthOutlet fallbackPath="/login" />}>
+          <Route element={<AuthOutlet fallbackPath="/" />}>
             {AuthUserRoutes.map((route) => (
               <Route key={route.id} path={route.path} element={route.element} />
             ))}

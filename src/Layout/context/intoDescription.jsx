@@ -82,7 +82,8 @@ const IntoDescription = ({ description }) => {
                                         >
                                             <form className="h-36">
                                                 <textarea
-                                                    value={description2}
+                                                    // value={description2}
+                                                    defaultValue={description2}
                                                     onChange={(e) => setDialogInput(e.target.value)}
                                                     className="h-36 overfull border-2 focus:outline-none border-blue-600 focus w-full peer rounded-lg resize-none px-3 py-2.5 font-sans text-sm font-normal"
                                                     placeholder="Tell brands and advertisers about your reach, adspace and anything else they should know"

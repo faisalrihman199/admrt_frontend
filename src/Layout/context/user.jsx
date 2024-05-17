@@ -34,7 +34,7 @@ const EditeUser = ({ userInfo }) => {
   const [price, setPrice] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   const [split, setSplit] = useState('');
-  const [currentProfileImageUrl, setCurrentProfileImageUrl] = useState(userInfo.profileImage);
+  // const [currentProfileImageUrl, setCurrentProfileImageUrl] = useState(userInfo.profileImage);
   // const allTopics = [...userInfo.topics, ...todos];
   console.log('userInfo.ProfileImage', userInfo.profileImage)
   useEffect(() => {
@@ -353,15 +353,16 @@ const EditeUser = ({ userInfo }) => {
           </div>
         </div>
       )}
-      <AuthenticatedUserViewPermission>
-        <div className="relative -mt-10">
-          <img
-            key={croppedImage}
-            // src={croppedImage || avatarUrl.current}
-            src={currentProfileImageUrl || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
-            alt="...leading. please make refresh"
-            className="w-[150px] h-[150px] rounded-full border-8 border-white"
-          />
+      <div className="relative -mt-10">
+        <img
+          key={croppedImage}
+          // src={croppedImage || avatarUrl.current}
+          src={userInfo.profileImage || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
+          alt="...leading. please make refresh"
+          className="w-[150px] h-[150px] rounded-full border-8 border-white"
+        />
+        <AuthenticatedUserViewPermission>
+
           <button
             className="absolute -bottom-1 left-20 right-0 w-fit p-[.35rem] rounded-full bg-white hover:bg-gray-200 border border-gray-600"
             title="Change photo"
@@ -369,8 +370,9 @@ const EditeUser = ({ userInfo }) => {
           >
             <PencilIcon />
           </button>
-        </div>
-      </AuthenticatedUserViewPermission>
+        </AuthenticatedUserViewPermission>
+
+      </div>
 
 
       <div className="flex justify-between ml-4 w-3/4 items-center">
