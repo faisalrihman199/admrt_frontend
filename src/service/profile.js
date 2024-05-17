@@ -31,6 +31,22 @@ export async function addProfileTopic({ authHeader, data }) {
   }
 }
 
+export async function addLanguage({ authHeader, data }) {
+  try {
+    console.log("im here");
+
+    const response = await apiClient.post("/profile/languages/", data, {
+      headers: {
+        Authorization: authHeader,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export async function addProfileSocials({ authHeader, data }) {
   try {
     const response = await apiClient.post("/profile/socials/", data, {
