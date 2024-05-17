@@ -343,7 +343,7 @@ const Portfolio = ({ userPortfolios }) => {
 
                     </div>
                     <div>
-                      <h2 className="  p-2">{product.title}</h2>
+                      <h2 className="p-2">{product.title}</h2>
                       <p className="text-gray-600">
                         {/* {truncateDescription(product.description, 35)} */}
                       </p>

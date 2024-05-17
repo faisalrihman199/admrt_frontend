@@ -14,7 +14,7 @@ export function CarouselWithContent({ description, imageUrls, fullScreenMode = f
                     />
                     {fullScreenMode && index === 0 && (
                         <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/75">
-                            <div className="w-3/4 text-center md:w-2/4 p-1">
+                            <div className="w-3/4 md:w-2/4 p-1 text-left">
                                 <Typography
                                     variant="h1"
                                     color="white"
