@@ -20,9 +20,7 @@ root.render(
   <>
     <AuthProvider store={authStore}>
       <QueryClientProvider client={queryClient}>
-        <WebSocketProvider
-        // isAuthenticated={true}
-        >
+        <WebSocketProvider>
           <PopupLayout />
           <BrowserRouter>
             <App />
