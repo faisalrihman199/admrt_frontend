@@ -12,7 +12,7 @@ import { auth, usersCollection } from '../../firebase/firebase'
 import { VscChromeClose } from "react-icons/vsc";
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { MdDelete } from "react-icons/md";
-import { QueryClient, useMutation } from '@tanstack/react-query'
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProfile } from '../../service/profile'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission'
@@ -65,12 +65,14 @@ export const Specification = ({ long_term_service_availability, language }) => {
     };
 
     const authHeader = useAuthHeader()
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: updateProfile,
         onSuccess: () => {
             // Invalidate and refetch
-            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+            queryClient.invalidateQueries('loggedInUser')
+
         }
 
     })

@@ -10,7 +10,7 @@ import shape3 from '../../../svgs/about/ic_date.svg';
 // import shape5 from '../../../svgs/about/ic_relationship.svg';
 import edit_svg_blue from '../../../image/edit_svg_blue.svg';
 import { useParams } from 'react-router-dom'
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProfile } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
@@ -23,12 +23,14 @@ const AboutHim = ({ location, website, joinDate }) => {
     const [websiteInput, setWebsiteInput] = useState('')
     const [locationInput, setLocationInput] = useState('')
     const [error, setError] = useState(null)
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: updateProfile,
         onSuccess: () => {
             // Invalidate and refetch
-            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+            queryClient.invalidateQueries('loggedInUser')
+
         }
 
     })
