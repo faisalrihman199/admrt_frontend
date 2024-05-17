@@ -8,7 +8,7 @@ import { usersCollection, storage, db } from "../../firebase/firebase";
 import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
 import { MdDelete } from "react-icons/md";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addProfileTopic, updateProfile, updateSingleImage, userProfile } from "../../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Modal } from "../../components/Modal/Modal";
@@ -84,12 +84,14 @@ const EditeUser = ({ userInfo }) => {
   const updateAvatar = (imgSrc) => {
 
   };
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: addProfileTopic,
     onSuccess: () => {
       // Invalidate and refetch
-      QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+      queryClient.invalidateQueries('loggedInUser')
+
     },
   })
   const authHeader = useAuthHeader()

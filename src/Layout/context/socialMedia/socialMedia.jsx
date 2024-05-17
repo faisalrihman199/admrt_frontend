@@ -13,7 +13,7 @@ import copy from '../../../svgs/social-media/Group 1000005712.svg';
 import { auth, usersCollection } from '../../../firebase/firebase'
 import { doc, getDoc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addProfileSocials } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
@@ -25,11 +25,14 @@ const SocialMedia = ({ socials }) => {
     const { split } = useParams();
     const maxSocialMediaCount = 6;
     const authHeader = useAuthHeader()
+    const queryClient = useQueryClient();
+
     const mutation = useMutation({
         mutationFn: addProfileSocials,
         onSuccess: () => {
             // Invalidate and refetch
-            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+            queryClient.invalidateQueries('loggedInUser')
+
         },
     })
     console.log('socials', socials)

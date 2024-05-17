@@ -12,7 +12,7 @@ import { updateSingleImage } from '../../service/profile';
 import { Modal } from '../../components/Modal/Modal';
 import CoverImageCropper from './cropImg/CoverImageCroper';
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 const EditBackground = ({ split, userId, coverImageUrl }) => {
     const [bgImage, setBgImage] = useState('');
@@ -76,6 +76,7 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
     //         setIsLoading(false);
     //     }
     // };
+    const queryClient = useQueryClient();
 
     const handleSave = async (file) => {
         try {
@@ -94,7 +95,7 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
 
             if (updateResponse?.banner_image) {
                 // setCurrentCoverImageUrl(updateResponse?.banner_image);
-                QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+                queryClient.invalidateQueries('loggedInUser')
 
                 setIsEditing(false);
             }
