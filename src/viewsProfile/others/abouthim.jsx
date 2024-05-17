@@ -48,7 +48,11 @@ const AboutHim = () => {
                                 <img src={shape1} alt='' />
                             </div>
                             <div>
-                                <h1>{userData.address || "none. Please fill in your information!"}</h1>
+                                <h1>{userData.address || <><span>none.</span>
+                                    <AuthenticatedUserViewPermission>
+                                        <span> Please fill in your information!</span>
+                                    </AuthenticatedUserViewPermission>
+                                </>}</h1>
                             </div>
                         </div>
                     </div>
@@ -58,7 +62,11 @@ const AboutHim = () => {
                                 <img src={shape2} alt='' />
                             </div>
                             <div>
-                                <h1>{userData.site || "none. Please fill in your information!"}</h1>
+                                <h1>{userData.site || <><span>none.</span>
+                                    <AuthenticatedUserViewPermission>
+                                        <span> Please fill in your information!</span>
+                                    </AuthenticatedUserViewPermission>
+                                </>}</h1>
                             </div>
                         </div>
                     </div>

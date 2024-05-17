@@ -143,7 +143,15 @@ const AboutHim = ({ location, website, joinDate }) => {
                                 <img src={shape1} alt='' />
                             </div>
                             <div>
-                                <h1>{currentLocation || "none. Please fill in your information!"}</h1>
+                                <h1>{currentLocation ||
+                                    <><span>none.</span>
+                                        <AuthenticatedUserViewPermission>
+                                            <span> Please fill in your information!</span>
+                                        </AuthenticatedUserViewPermission>
+                                    </>
+                                }
+
+                                </h1>
                             </div>
                         </div>
                         <AuthenticatedUserViewPermission>
@@ -165,7 +173,11 @@ const AboutHim = ({ location, website, joinDate }) => {
                             <div>
                                 {currentWebsite
                                     ? <a href={currentWebsite} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{currentWebsite}</a>
-                                    : <h1>"none. Please fill in your information!"</h1>
+                                    : <h1> <><span>none.</span>
+                                        <AuthenticatedUserViewPermission>
+                                            <span> Please fill in your information!</span>
+                                        </AuthenticatedUserViewPermission>
+                                    </></h1>
                                 }
                             </div>
                         </div>
@@ -198,10 +210,11 @@ const AboutHim = ({ location, website, joinDate }) => {
                         </div> */}
                     </div>
                 </div>
-            )}
+            )
+            }
 
 
-        </div>
+        </div >
     )
 }
 

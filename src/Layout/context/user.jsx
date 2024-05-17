@@ -14,6 +14,7 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Modal } from "../../components/Modal/Modal";
 import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadForm";
 import AuthenticatedUserViewPermission from "../../components/Permissions/AuthenticatedUserViewPermission";
+import SpaceHostViewPermission from "../../components/Permissions/SpaceHostViewPermission";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
@@ -228,7 +229,7 @@ const EditeUser = ({ userInfo }) => {
                   <div>
                     <div className="border-t">
                       <h2 className="text-md font-bold mb-4 pt-5">Your Topics</h2>
-                      {userInfo.topics.map((topic, index) => (
+                      {userInfo.topics && userInfo.topics.map((topic, index) => (
                         <div className="flex items-center" key={topic.id}>
                           <p className="w-full text-grey-50">
                             <span className="mr-2">{index + 1}.</span>
@@ -379,16 +380,20 @@ const EditeUser = ({ userInfo }) => {
         <div className=''>
           <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
           <div className="flex">
-            <h1 className='text-sm w-full font-medium text-blue-800'>
-              <span className='text-sm text-gray-500'>Topics: </span>
-              {userInfo?.topics && userInfo.topics.length > 0 ? userInfo.topics.map(topic => topic.title).join(', ') : "none"}
-            </h1>
-            <AuthenticatedUserViewPermission>
-              <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
+            <SpaceHostViewPermission userRole={userInfo.user_role}>
+              <h1 className='text-sm w-full font-medium text-blue-800'>
+                <span className='text-sm text-gray-500'>Topics: </span>
+                {userInfo?.topics && userInfo.topics.length > 0 ? userInfo.topics.map(topic => topic.title).join(', ') : "none"}
+              </h1>
+              <AuthenticatedUserViewPermission>
+                <div className='flex justify-center items-center cursor-pointer ml-2' onClick={() => setTodoModal(true)}>
 
-                <img src={edit_svg_blue} alt="" />
-              </div>
-            </AuthenticatedUserViewPermission>
+                  <img src={edit_svg_blue} alt="" />
+                </div>
+              </AuthenticatedUserViewPermission>
+            </SpaceHostViewPermission>
+
+
 
           </div>
         </div>

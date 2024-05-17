@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { db, saveUserDataToFirebase } from '../../firebase/firebase';
 import editeicon from '../../image/edit_svg_blue.svg';
 import { updateProfile, updateProfileSocials } from '../../service/profile';
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
 
@@ -19,26 +19,29 @@ const IntoDescription = ({ description }) => {
     const [userData, setUserData] = useState({});
     const [userId, setUserId] = useState(null);
     const { userId: userIdParam } = useParams();
-    const [description2, setDescription2] = useState(description);
+    // const [description2, setDescription2] = useState(description);
 
     const authHeader = useAuthHeader()
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: updateProfile,
         onSuccess: () => {
-            // Invalidate and refetch
-            QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+            queryClient.invalidateQueries('loggedInUser');
+
         },
     })
     const addNew = async () => {
         try {
             if (!!dialogInput.trim()) {
-                const updatedUserData = { ...userData, introDescription: dialogInput };
                 mutation.mutate({
                     authHeader,
                     data: { description: dialogInput }
                 })
-                setDescription2(dialogInput);
+
+
+                // setDescription2(dialogInput);
+                // QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
             } else {
                 alert('Please try again');
             }
@@ -47,6 +50,8 @@ const IntoDescription = ({ description }) => {
             console.error('Error updating user data:', error);
         }
     };
+    useEffect(() => {
+    }, [description]);
 
     return (
         <div>
@@ -83,7 +88,7 @@ const IntoDescription = ({ description }) => {
                                             <form className="h-36">
                                                 <textarea
                                                     // value={description2}
-                                                    defaultValue={description2}
+                                                    defaultValue={description}
                                                     onChange={(e) => setDialogInput(e.target.value)}
                                                     className="h-36 overfull border-2 focus:outline-none border-blue-600 focus w-full peer rounded-lg resize-none px-3 py-2.5 font-sans text-sm font-normal"
                                                     placeholder="Tell brands and advertisers about your reach, adspace and anything else they should know"
@@ -117,8 +122,9 @@ const IntoDescription = ({ description }) => {
                 <div className="mt-5">
                     <div className="flex justify-between">
                         <div className="flex items-start justify-between">
-                            <h1 className="text-2xl font-semibold">{userData.split === 'advertiser' ? 'Brand Description' : 'Intro Description'}</h1>
                             <AuthenticatedUserViewPermission>
+
+                                <h1 className="text-2xl font-semibold">{userData.split === 'advertiser' ? 'Brand Description' : 'Intro Description'}</h1>
                                 <div className="flex justify-center items-center cursor-pointer mx-5">
                                     <div className="item">
                                         <Button
@@ -139,8 +145,8 @@ const IntoDescription = ({ description }) => {
                     <div className="border my-5"></div>
                     <div className="items overflow-hidden w-full break-words">
                         <ShowMoreText lines={3} more="more" less="less" className="content-css">
-                            {description2 && description2.trim().length > 0 ? (
-                                <div dangerouslySetInnerHTML={{ __html: description2 }} />
+                            {description && description.trim().length > 0 ? (
+                                <div dangerouslySetInnerHTML={{ __html: description }} />
                             ) : (
                                 <p>No description available</p>
                             )}

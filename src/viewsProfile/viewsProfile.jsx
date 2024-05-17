@@ -95,7 +95,7 @@ function ViewsProfile() {
                   Send Message
                 </Button>
               </div>
-              <EditBackground backgroundImageUrl={userInfo.coverImageUrl} />
+              <EditBackground coverImageUrl={userInfo.coverImageUrl} />
               <EditeUser userInfo={userInfo} />
               <IntoDescription description={userInfo.description} />
               <div>

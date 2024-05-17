@@ -12,6 +12,7 @@ import { updateSingleImage } from '../../service/profile';
 import { Modal } from '../../components/Modal/Modal';
 import CoverImageCropper from './cropImg/CoverImageCroper';
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
+import { QueryClient } from '@tanstack/react-query';
 
 const EditBackground = ({ split, userId, coverImageUrl }) => {
     const [bgImage, setBgImage] = useState('');
@@ -92,7 +93,9 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
             const updateResponse = await updateSingleImage({ authHeader, data });
 
             if (updateResponse?.banner_image) {
-                setCurrentCoverImageUrl(updateResponse?.banner_image);
+                // setCurrentCoverImageUrl(updateResponse?.banner_image);
+                QueryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
+
                 setIsEditing(false);
             }
 
@@ -104,7 +107,7 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
         }
     };
     return (
-        <div className="relative h-72 bg-cover bg-center border rounded-lg bg-gray-100" style={{ backgroundImage: currentCoverImageUrl ? `url(${currentCoverImageUrl})` : emptyBg }}>
+        <div className="relative h-72 bg-cover bg-center border rounded-lg bg-gray-100" style={{ backgroundImage: coverImageUrl ? `url(${coverImageUrl})` : emptyBg }}>
             {isEditing ? (
                 // <div className="absolute inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
                 //     <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
