@@ -87,9 +87,12 @@ function SiplePages() {
                             <EditeUser userInfo={userInfo} />
                             <IntoDescription description={userInfo.description} />
                         </div>
-                        <div className='py-5'>
-                            <Specification long_term_service_availability={userInfo.long_term_service_availability} />
-                        </div>
+                        <SpaceHostViewPermission userRole={userInfo.user_role}>
+
+                            <div className='py-5'>
+                                <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                            </div>
+                        </SpaceHostViewPermission>
 
                         <SpaceHostViewPermission userRole={userInfo.user_role}>
                             <Portfolio userPortfolios={userInfo.portfolios} />

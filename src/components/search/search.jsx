@@ -16,10 +16,13 @@ const Search = () => {
   const avatar = 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg';
   const authHeader = useAuthHeader();
 
-  const { isPending, isError, data, error, refetch } = useQuery({
-    queryKey: ['searchSpace'],
-    queryFn: () => searchAdSpace({ authHeader, filterOptions: { q: inputRef.current.value } })
-  })
+  // const { isPending, isError, data, error, refetch } = useQuery({
+  //   queryKey: ['searchSpace'],
+  //   queryFn: () => searchAdSpace({ authHeader, filterOptions: { q: inputRef.current.value } }),
+  //   retry: false
+
+  // })
+  let data = []
 
   const handleMouseDown = (event) => {
     if (inputRef.current && dropdownRef.current) {
@@ -29,13 +32,13 @@ const Search = () => {
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleMouseDown);
+  // useEffect(() => {
+  //   document.addEventListener('mousedown', handleMouseDown);
 
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleMouseDown);
+  //   };
+  // }, []);
 
   return (
     <div className="relative mr-3">

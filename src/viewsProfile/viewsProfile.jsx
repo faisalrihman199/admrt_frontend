@@ -103,9 +103,13 @@ function ViewsProfile() {
               <EditBackground coverImageUrl={userInfo.coverImageUrl} />
               <EditeUser userInfo={userInfo} />
               <IntoDescription description={userInfo.description} />
-              <div>
-                <Specification long_term_service_availability={userInfo.long_term_service_availability} />
-              </div>
+              <SpaceHostViewPermission userRole={userInfo.user_role}>
+
+                <div>
+                  <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                </div>
+              </SpaceHostViewPermission>
+
             </div>
             <SpaceHostViewPermission userRole={userInfo.user_role}>
               <Portfolio userPortfolios={userInfo.portfolios} />

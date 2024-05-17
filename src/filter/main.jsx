@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { CustomSpinner } from '../components/Spinner';
 import { useLocation } from 'react-router-dom';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 const MainFilter = () => {
   const formRef = useRef();
@@ -22,11 +23,19 @@ const MainFilter = () => {
   useEffect(() => {
     if (query) {
       finalfilterOptionsRef.current = { q: query };
+
+      // handleApplyFilter();
     }
   }, [query]);
+
+  const isAuthenticated = useIsAuthenticated();
+
   const { isPending, isError, data, error, refetch } = useQuery({
     queryKey: ['searchSpace'],
-    queryFn: () => searchAdSpace({ authHeader, filterOptions: finalfilterOptionsRef.current })
+    queryFn: () => searchAdSpace({ authHeader, filterOptions: finalfilterOptionsRef.current }),
+    retry: false,
+    // staleTime: 1000 * 60 * 5,
+
   })
 
 

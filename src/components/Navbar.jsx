@@ -19,6 +19,7 @@ import { MdMessage } from 'react-icons/md';
 import { FaAd } from 'react-icons/fa';
 import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
 import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
+import { useQueryClient } from "@tanstack/react-query";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -78,9 +79,12 @@ function StickyNavbar({ authenticated }) {
     { title: "Profile", path: `/profile/${auth?.id}` },
     { title: "Settings", path: `/settings` },
   ];
+  const queryClient = useQueryClient()
+
   const handleLogout = () => {
-    // auth.signOut();
     signOut()
+    queryClient.invalidateQueries({ queryKey: ['searchSpace', 'loggedInUser'] })
+
     navigate("/")
     window.location.reload();
   }

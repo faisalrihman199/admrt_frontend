@@ -18,10 +18,7 @@ instance.interceptors.request.use(
 
   (error) => {
     console.error("Request error:", error);
-    alert("alertign from axios Something Went wrong");
-    if (error.response && error.response.status == 401) {
-      window.location.href = "/login";
-    }
+
     return Promise.reject(error);
   }
 );
@@ -33,7 +30,9 @@ instance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status == 401) {
-      window.location.href = "/login";
+      if (window.location.pathname !== "/") {
+        window.location.href = "/login";
+      }
     }
     console.error("Response error:", error);
     return Promise.reject(error);

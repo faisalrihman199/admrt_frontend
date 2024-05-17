@@ -5,22 +5,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import { auth } from '../firebase/firebase';
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 const Home = () => {
   const [userId, setUserId] = useState('');
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
   const inputRef = useRef();
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId('');
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+  const auth = useAuthUser()
+
 
   const handleButtonClick = () => {
     if (isAuthenticated) {
@@ -52,17 +45,23 @@ const Home = () => {
                     placeholder="Search for ads ..."
                     required
                   /> */}
-                  <input type="text" ref={inputRef} className="block w-full p-5 px-4 text-sm text-gray-900 border-gray-300 rounded-lg border-blue-500 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                    placeholder="Search for ads ..."
-                    required
-                  />
-                  <button type="button"
-                    className="text-black absolute right-2.5 py-3 px-8 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-white text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    onClick={handleButtonClick}
-                  >
-                    Find places to advertise
-                  </button>
+                  {(!isAuthenticated || (isAuthenticated && auth.user_role !== 'space_host')) &&
+                    <>
+                      <input type="text" ref={inputRef} className="block w-full p-5 px-4 text-sm text-gray-900 border-gray-300 rounded-lg border-blue-500 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                        placeholder="Search for ads ..."
+                        required
+                      />
+
+                      <button type="button"
+                        className="text-black absolute right-2.5 py-3 px-8 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-white text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        onClick={handleButtonClick}
+                      >
+                        Find places to advertise
+                      </button>
+                    </>
+                  }
                 </div>
+
               </form>
               <div>
                 <h1 className="mt-3 font-light">Get Started now?<Link to="/register" className="text-blue-500 font-medium underline py-1 mx-2 cursor-pointer">Sign up now</Link></h1>
