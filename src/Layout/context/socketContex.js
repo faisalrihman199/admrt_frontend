@@ -106,7 +106,7 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated) {
       const socket = new WebSocket(
-        `ws://173.230.135.194:8080/ws?token=${cleanedToken}`
+        `wss://kuttabilai.com/ws?token=${cleanedToken}`
       );
 
       socket.onopen = () => {

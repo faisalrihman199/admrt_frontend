@@ -56,7 +56,11 @@ function ViewsProfile() {
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>
+    return (
+      <div className="flex items-center justify-center h-screen text-2xl">
+        Something went wrong ...
+      </div>
+    )
   }
 
   const userInfo = {
@@ -73,6 +77,7 @@ function ViewsProfile() {
     products: data?.products,
     portfolios: data?.portfolios,
     user_role: data?.user_role,
+    adSpaces: data?.ad_spaces
 
   };
   // const [loading, setLoading] = useState(true);
@@ -98,9 +103,13 @@ function ViewsProfile() {
               <EditBackground coverImageUrl={userInfo.coverImageUrl} />
               <EditeUser userInfo={userInfo} />
               <IntoDescription description={userInfo.description} />
-              <div>
-                <Specification long_term_service_availability={userInfo.long_term_service_availability} />
-              </div>
+              <SpaceHostViewPermission userRole={userInfo.user_role}>
+
+                <div>
+                  <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                </div>
+              </SpaceHostViewPermission>
+
             </div>
             <SpaceHostViewPermission userRole={userInfo.user_role}>
               <Portfolio userPortfolios={userInfo.portfolios} />
@@ -118,7 +127,7 @@ function ViewsProfile() {
             />
             <SocialMedia socials={userInfo.socialMedias} />
             <SpaceHostViewPermission userRole={userInfo.user_role}>
-              <MainAdSpace />
+              <MainAdSpace adSpaces={userInfo.adSpaces} />
             </SpaceHostViewPermission>
           </div>
         </div>

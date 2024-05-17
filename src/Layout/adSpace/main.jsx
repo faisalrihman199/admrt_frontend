@@ -6,8 +6,11 @@ import { Link } from 'react-router-dom';
 import { MdModeEditOutline } from "react-icons/md";
 import deleteIcon from '../../image/Delete.svg'
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
+import { addAddSpace, deleteAdSpace } from '../../service/addSpace';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
-export const MainAdSpace = () => {
+export const MainAdSpace = ({ adSpaces }) => {
   const [modal, setModal] = useState(false);
   const [link, setLink] = useState('');
   const [selectedType, setSelectedType] = useState('');
@@ -17,51 +20,46 @@ export const MainAdSpace = () => {
   const [editModal, setEditModal] = useState(false);
   const [userId, setUserId] = useState(null);
   const [editLink, setEditLink] = useState('');
+  const [selectedForDelete, setSelectedForDelete] = useState('');
 
   const printIcon = 'https://img.icons8.com/fluency/48/magazine.png';
   const transIcon = 'https://img.icons8.com/fluency/48/motorbike-helmet.png';
   const eventIcon = 'https://img.icons8.com/fluency/48/today.png';
   const otherIcon = 'https://img.icons8.com/cute-clipart/64/connection-status-off.png';
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId(null)
-      }
-    })
 
-    return () => unsubscribe()
+
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: addAddSpace,
+    onSuccess: () => {
+      queryClient.invalidateQueries('loggedInUser');
+
+    },
   })
 
-  const fetchData = useCallback(async () => {
-    try {
-      if (userId) {
-        const dataRef = doc(usersCollection, userId);
-        const dataDoc = await getDoc(dataRef);
-        if (dataDoc.exists()) {
-          setData(dataDoc.data());
-        }
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  console.log('adSpaces', adSpaces)
+  const authHeader = useAuthHeader()
 
   const handleSend = async () => {
     try {
       setBtnText('Loading...');
-      const ref = doc(usersCollection, userId);
-      await setDoc(ref, { addSpace: { link, type: selectedType } }, { merge: true });
+      if (!link.startsWith('https://')) {
+        setBtnText('Please enter a valid link');
+        setModal(false);
+
+        return;
+      }
+      mutation.mutate({
+        authHeader,
+        data: { space_type: selectedType, url: link }
+      })
+      console.log('im ahere', link, selectedType)
       setBtnText("Save");
       setLink('');
       setModal(false);
-      fetchData();
     } catch (err) {
       console.error(err);
       setBtnText('Try again');
@@ -79,13 +77,22 @@ export const MainAdSpace = () => {
     setLink('');
   };
 
+  const handleDeleteModalOpen = (id) => {
+
+    setDeleteModal(true);
+    setSelectedForDelete(id);
+
+
+  }
+
   const handleDeleteType = async () => {
     try {
-      const userId = auth.currentUser.uid;
-      const deleteRef = doc(usersCollection, userId);
-      await setDoc(deleteRef, { addSpace: {} }, { merge: true });
+
+      await deleteAdSpace({ authHeader, id: selectedForDelete });
+      queryClient.invalidateQueries('loggedInUser');
+
+      setSelectedForDelete('');
       setDeleteModal(false);
-      fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -202,9 +209,9 @@ export const MainAdSpace = () => {
                 <h1 className='mb-6 text-2xl font-semibold text-center'>
                   {selectedType ? 'Ad Space' : 'Select Space Type'}
                 </h1>
-                <p className='text-center text-gray-500'>
+                {/* <p className='text-center text-gray-500'>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto itaque labore, provident molestias!
-                </p>
+                </p> */}
                 {!selectedType ? (
                   <div className='mt-6 flex flex-col space-y-2'>
                     <div className="flex items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Print')}>
@@ -279,7 +286,7 @@ export const MainAdSpace = () => {
                       <button
                         onClick={handleSend}
                         className={`px-8 py-3 text-xs font-bold text-white uppercase rounded bg-blue-700 hover:bg-blue-600`}
-                        disabled={!link.startsWith('https://')}
+
                       >
                         {btnText}
                       </button>
@@ -309,27 +316,27 @@ export const MainAdSpace = () => {
         {/* )} */}
       </div>
       <div className='py-3 border-b-2'>
-        {data && data.addSpace && Object.entries(data.addSpace).length > 0 ? (
-          <div className='flex justify-between px-3'>
-            <Link to={data.addSpace.link || ''} className='w-full flex'>
+        {adSpaces && adSpaces.length > 0 ? adSpaces.map((adSpace) => (
+          <div className='flex justify-between px-3' key={adSpace.id}>
+            <Link to={adSpace.url || ''} className='w-full flex' target='_blank'>
               <img src={
-                data.addSpace.type === 'Event' ? eventIcon :
-                  data.addSpace.type === 'Transportation' ? transIcon :
-                    data.addSpace.type === 'Print' ? printIcon :
-                      data.addSpace.type === 'Other' ? otherIcon : null
-              } alt={data.addSpace.type} className='w-6 mr-2' />
-              <h1>{data.addSpace.type}</h1>
+                adSpace.space_type === 'Event' ? eventIcon :
+                  adSpace.space_type === 'Transportation' ? transIcon :
+                    adSpace.space_type === 'Print' ? printIcon :
+                      adSpace.space_type === 'Other' ? otherIcon : null
+              } alt={adSpace.space_type} className='w-6 mr-2' />
+              <h1>{adSpace.space_type}</h1>
             </Link>
             <AuthenticatedUserViewPermission>
               <div className='flex gap-3'>
-                <MdModeEditOutline className='text-gray-600 w-6 h-6' onClick={() => setEditModal(true)} />
-                <button onClick={() => setDeleteModal(true)}>
+                {/* <MdModeEditOutline className='text-gray-600 w-6 h-6' onClick={() => setEditModal(true)} /> */}
+                <button onClick={() => handleDeleteModalOpen(adSpace.id)}>
                   <img src={deleteIcon} alt='delete icon' className='text-red-600 hover:shadow-sm active:text-red-700 w-6 h-6 cursor-pointer' />
                 </button>
               </div>
             </AuthenticatedUserViewPermission>
           </div>
-        ) : (
+        )) : (
           <p className='text-center font-semibold text-gray-400'>Empty Ad Space</p>
         )}
 

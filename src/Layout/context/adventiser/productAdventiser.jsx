@@ -308,7 +308,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                       </div>
                       <div className='my-2'>
                         <label className='pl-2'>Product description</label>
-                        <input type="text"
+                        <textarea
                           className='border rounded-lg p-2 w-full'
                           value={descriptions}
                           onChange={(e) => setDescriptions(e.target.value)}
@@ -369,7 +369,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                 </AuthenticatedUserViewPermission>
 
                 <div className="flex items-center justify-start gap-4">
-                  <h2 className="font-semibold">{product.name}</h2>
+                  <h2 className="">{product.name}</h2>
                   <p className="text-gray-600">
                     {/* {truncateDescription(product.description, 35)} */}
                   </p>

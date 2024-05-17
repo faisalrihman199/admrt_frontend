@@ -13,7 +13,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { MdDelete } from "react-icons/md";
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
-import { updateProfile } from '../../service/profile'
+import { addLanguage, updateProfile } from '../../service/profile'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission'
 
@@ -74,19 +74,30 @@ export const Specification = ({ long_term_service_availability, language }) => {
             queryClient.invalidateQueries('loggedInUser')
 
         }
+    })
 
+    const languageMutation = useMutation({
+        mutationFn: addLanguage,
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries('loggedInUser')
+
+        }
     })
 
     const handleSaveDatabase = async (e) => {
         e.preventDefault();
         try {
-            let data = {};
-            if (formData.long_term_service_availability) data.long_term_service_availability = formData.long_term_service_availability;
-            if (formData.language) data.language = formData.language;
+
 
             mutation.mutate({
                 authHeader,
-                data
+                data: { long_term_service_availability: formData.long_term_service_availability }
+            })
+
+            languageMutation.mutate({
+                authHeader,
+                data: { language: formData.language }
             })
 
             if (mutation.isError) {
@@ -289,18 +300,20 @@ export const Specification = ({ long_term_service_availability, language }) => {
                                         <input type="text"
                                             name="long_term_service_availability"
                                             className='border rounded-lg w-full p-2'
-                                            value={formData.availability}
+                                            defaultValue={long_term_service_availability}
                                             onChange={handleChange}
                                         />
                                     </div>
                                     <div className='m-1'>
                                         <label>Language</label>
-                                        <input type="text"
-                                            name="language"
-                                            className='border rounded-lg w-full p-2'
-                                            value={formData.language}
-                                            onChange={handleChange}
-                                        />
+                                        <select name="language" className='border rounded-lg w-full p-2'
+                                            defaultValue={language}
+                                            onChange={handleChange}>
+                                            <option value="English">English</option>
+                                            <option value="French">French</option>
+                                            <option value="German">German</option>
+                                            <option value="Spanish">Spanish</option>
+                                        </select>
                                     </div>
                                 </div>
                                 {error && <p className="text-red-500">{error}</p>}
