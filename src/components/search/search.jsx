@@ -3,6 +3,9 @@ import { auth, db } from '../../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import search from '../../Layout/AuthPage/images/search-normal.svg';
 import { Link } from 'react-router-dom';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { useQuery } from '@tanstack/react-query';
+import { searchAdSpace } from '../../service/addSpace';
 
 const Search = () => {
   const inputRef = useRef(null);
@@ -11,37 +14,12 @@ const Search = () => {
   const [searchValue, setSearchValue] = useState('');
   const [usersData, setUsersData] = useState([]);
   const avatar = 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg';
+  const authHeader = useAuthHeader();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId('');
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const usersRef = collection(db, 'search');
-        const snapshot = await getDocs(usersRef);
-        const userData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setUsersData(userData);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const filteredUsers = usersData.filter(user =>
-    user.id.toLowerCase().includes(searchValue.toLowerCase()) && user.userId !== userId && user.split === 'adSpaceHost'
-  );
+  const { isPending, isError, data, error, refetch } = useQuery({
+    queryKey: ['searchSpace'],
+    queryFn: () => searchAdSpace({ authHeader, filterOptions: { q: inputRef.current.value } })
+  })
 
   const handleMouseDown = (event) => {
     if (inputRef.current && dropdownRef.current) {
@@ -74,25 +52,25 @@ const Search = () => {
           <img src={search} alt="" />
         </div>
       </div>
-      {searchValue && filteredUsers.length === 0 && (
+      {searchValue && (
         <div ref={dropdownRef} className="absolute mt-2 w-full bg-white border rounded-md shadow-lg">
           <p className="py-2 px-4 text-black">User not found</p>
         </div>
       )}
-      {searchValue && filteredUsers.length > 0 && (
+      {searchValue && (
         <div ref={dropdownRef} className="absolute mt-2 w-full bg-white border rounded-md shadow-lg">
           <ul className='m-1 border border-gray-300 rounded-sm'>
-            {filteredUsers.map((user, index) => (
-              <Link to={`/profile/${user.split}/${user.userId}`} key={index} onClick={() => setSearchValue('')}>
+            {data.filter(user => user.full_name.toLowerCase().includes(searchValue.toLowerCase())).map((user, index) => (
+              <Link to={`/profile/user/${user.id}`} key={index} onClick={() => setSearchValue('')}>
                 <div className='flex px-3 py-2 hover:bg-gray-100 border-b'>
                   <li key={index} className=''>
-                    <img src={user.imageUrl || avatar} alt="" className='w-10 rounded-full border border-blue-700 p-0.5' />
+                    <img src={user.profile_image || avatar} alt="" className='w-10 rounded-full border border-blue-700 p-0.5' />
                   </li>
                   <li
                     key={index}
                     className="py-2 px-4 cursor-pointer hover:bg-gray-100 text-black"
                   >
-                    {user.id}
+                    {user.full_name}
                   </li>
                 </div>
               </Link>

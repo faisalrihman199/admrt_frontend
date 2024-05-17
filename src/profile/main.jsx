@@ -52,7 +52,11 @@ function SiplePages() {
     }
 
     if (isError) {
-        return <span>Error: {error.message}</span>
+        return (
+            <div className="flex items-center justify-center h-screen text-2xl">
+                Something went wrong ...
+            </div>
+        )
     }
 
     const userInfo = {
@@ -69,6 +73,7 @@ function SiplePages() {
         products: data?.products,
         portfolios: data?.portfolios,
         user_role: data?.user_role,
+        adSpaces: data?.ad_spaces,
 
     };
 
@@ -160,7 +165,7 @@ function SiplePages() {
                         />
                         <SocialMedia socials={userInfo.socialMedias} />
                         <SpaceHostViewPermission userRole={userInfo.user_role}>
-                            <MainAdSpace />
+                            <MainAdSpace adSpaces={userInfo.adSpaces} />
                         </SpaceHostViewPermission>
 
                     </div>

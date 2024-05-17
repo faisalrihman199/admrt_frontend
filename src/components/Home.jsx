@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import svg1 from '../Layout/AuthPage/images/icon.svg';
 import image from '../Layout/AuthPage/images/image 27.png';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import { auth } from '../firebase/firebase';
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 
 const Home = () => {
   const [userId, setUserId] = useState('');
   const navigate = useNavigate();
-
+  const isAuthenticated = useIsAuthenticated();
+  const inputRef = useRef();
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
@@ -21,8 +23,10 @@ const Home = () => {
   }, []);
 
   const handleButtonClick = () => {
-    if (userId) {
-      navigate('/filter');
+    if (isAuthenticated) {
+      // navigate('/filter');
+      navigate(`/filter`, { state: { query: inputRef.current.value } });
+
     } else {
       navigate('/login');
     }
@@ -44,7 +48,11 @@ const Home = () => {
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                   </div>
-                  <input type="text" className="block w-full p-5 px-4 text-sm text-gray-900 border-gray-300 rounded-lg border-blue-500 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  {/* <input type="text" className="block w-full p-5 px-4 text-sm text-gray-900 border-gray-300 rounded-lg border-blue-500 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                    placeholder="Search for ads ..."
+                    required
+                  /> */}
+                  <input type="text" ref={inputRef} className="block w-full p-5 px-4 text-sm text-gray-900 border-gray-300 rounded-lg border-blue-500 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                     placeholder="Search for ads ..."
                     required
                   />

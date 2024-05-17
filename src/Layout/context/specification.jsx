@@ -295,12 +295,12 @@ export const Specification = ({ long_term_service_availability, language }) => {
                                     </div>
                                     <div className='m-1'>
                                         <label>Language</label>
-                                        <input type="text"
-                                            name="language"
-                                            className='border rounded-lg w-full p-2'
-                                            value={formData.language}
-                                            onChange={handleChange}
-                                        />
+                                        <select name="language" className='border rounded-lg w-full p-2' value={formData.language} onChange={handleChange}>
+                                            <option value="United States">United States</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="France">France</option>
+                                            <option value="Germany">Germany</option>
+                                        </select>
                                     </div>
                                 </div>
                                 {error && <p className="text-red-500">{error}</p>}
