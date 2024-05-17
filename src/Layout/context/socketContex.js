@@ -76,6 +76,7 @@ export const WebSocketProvider = ({ children }) => {
 
   const sendMessage = (action, body) => {
     if (state.socket && state.socket.readyState === WebSocket.OPEN) {
+      let socketSendParam;
       const message = { action, body };
       console.log("Message sent for action:", action);
       if (action === "SEND-MESSAGE") {
@@ -87,16 +88,17 @@ export const WebSocketProvider = ({ children }) => {
             body: body,
           },
         });
+        let { text, receiver_id } = body;
+        socketSendParam = {
+          action,
+          body: {
+            text,
+            receiver_id,
+          },
+        };
+      } else {
+        socketSendParam = message;
       }
-
-      let { text, receiver_id } = body;
-      let socketSendParam = {
-        action,
-        body: {
-          text,
-          receiver_id,
-        },
-      };
 
       state.socket.send(JSON.stringify(socketSendParam));
     }

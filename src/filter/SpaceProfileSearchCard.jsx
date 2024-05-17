@@ -9,6 +9,8 @@ import whatsapp from '../svgs/social-media/whatsapp-icon-logo-svgrepo-com.svg';
 import Linkedin from '../svgs/social-media/Rectangle 6594.svg';
 import { avatar } from '../modul/main';
 import { SocialIcon } from 'react-social-icons';
+import { PopoverCustomAnimation } from '../components/PopOver'
+import { PopoverContent } from '@material-tailwind/react';
 
 const platformIcons = (platform) => {
   switch (platform) {
@@ -38,7 +40,7 @@ const SpaceProfileSearchCard = ({ user }) => {
     setShowFullDescription(!showFullDescription);
   };
   return (
-    <div key={user?.uid} className='border rounded-lg p-3 shadow-md'>
+    <div key={user?.uid} className='border rounded-lg p-5 shadow-md max-w-sm max-h-60 bg-slate-50'>
       <div className='flex justify-between mt-5'>
         <div className='flex gap-4'>
           <div className='w-1/5'>
@@ -73,25 +75,34 @@ const SpaceProfileSearchCard = ({ user }) => {
         </div>
       </div>
       <div>
-        <div className='text-left p-3 mt-2'>
+        <div className='text-left p-3 mt-2 text-sm'>
           {showFullDescription ? (
-            user?.introDescription
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+              <div className="bg-white p-5 rounded shadow-lg max-w-md m-auto">
+                {user?.introDescription}
+                <button onClick={() => setShowFullDescription(false)} className="mt-4 block bg-blue-500 text-white p-2 rounded">
+                  Close
+                </button>
+              </div>
+            </div>
           ) : (
-            <>
+            <div className='text-gray-400'>
               {user?.introDescription && user?.introDescription.split(' ').slice(0, 15).join(' ')}
               {user?.introDescription && user?.introDescription.split(' ').length > 15 && ' ...'}
-            </>
+            </div>
           )}
-          <button onClick={toggleDescription} className="ml-2 text-gray-500">
+          <button onClick={toggleDescription} className="ml-2 text-gray-400 left-0">
+
             {showFullDescription ? 'Show Less' : 'Show More'}
           </button>
         </div>
+
       </div>
 
       <div className='m-3     rounded-xl'>
         <div className='p-1 flex justify-end'>
-          <Link to={`/profile/user/${user.userId}`} className='bg-gray-300 hover:bg-opacity-75 p-2 rounded-lg'>
-            <button className='w-44 text-white'>
+          <Link to={`/profile/user/${user.userId}`} className='  hover:bg-opacity-75 p-2 rounded-lg'>
+            <button className='w-44 text-gray-700 bg-gray-200 rounded'>
               View profile
             </button>
           </Link>

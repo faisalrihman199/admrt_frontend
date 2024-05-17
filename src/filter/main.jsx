@@ -55,6 +55,74 @@ const MainFilter = () => {
           introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
           split: 'user',
           userId: '10',
+        }, {
+          uid: '7',
+          profile_image: 'https://i.pravatar.cc/305',
+          fullName: 'Jane Doe',
+          topics: [
+            { id: '3', title: 'Marketing' },
+            { id: '4', title: 'Sales' },
+          ],
+          socialMedia: [
+            { id: '9', url: 'https://youtube.com/user2', social_media: 'yt' },
+            { id: '10', url: 'https://facebook.com/user2', social_media: 'fb' },
+            { id: '11', url: 'https://linkedin.com/user2', social_media: 'ln' },
+
+          ],
+          introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
+          split: 'user',
+          userId: '10',
+        }, {
+          uid: '7',
+          profile_image: 'https://i.pravatar.cc/305',
+          fullName: 'Jane Doe',
+          topics: [
+            { id: '3', title: 'Marketing' },
+            { id: '4', title: 'Sales' },
+          ],
+          socialMedia: [
+            { id: '9', url: 'https://youtube.com/user2', social_media: 'yt' },
+            { id: '10', url: 'https://facebook.com/user2', social_media: 'fb' },
+            { id: '11', url: 'https://linkedin.com/user2', social_media: 'ln' },
+
+          ],
+          introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
+          split: 'user',
+          userId: '10',
+        }, {
+          uid: '7',
+          profile_image: 'https://i.pravatar.cc/305',
+          fullName: 'Jane Doe',
+          topics: [
+            { id: '3', title: 'Marketing' },
+            { id: '4', title: 'Sales' },
+          ],
+          socialMedia: [
+            { id: '9', url: 'https://youtube.com/user2', social_media: 'yt' },
+            { id: '10', url: 'https://facebook.com/user2', social_media: 'fb' },
+            { id: '11', url: 'https://linkedin.com/user2', social_media: 'ln' },
+
+          ],
+          introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
+          split: 'user',
+          userId: '10',
+        }, {
+          uid: '7',
+          profile_image: 'https://i.pravatar.cc/305',
+          fullName: 'Jane Doe',
+          topics: [
+            { id: '3', title: 'Marketing' },
+            { id: '4', title: 'Sales' },
+          ],
+          socialMedia: [
+            { id: '9', url: 'https://youtube.com/user2', social_media: 'yt' },
+            { id: '10', url: 'https://facebook.com/user2', social_media: 'fb' },
+            { id: '11', url: 'https://linkedin.com/user2', social_media: 'ln' },
+
+          ],
+          introDescription: 'John Doe is a highly experienced software engineer with over 10 years of experience in the industry. He specializes in frontend development, particularly in React and Vue.js, and has a strong background in backend development with Node.js and Python. John has worked on a wide range of projects, from small startups to large corporations, and has a proven track record of delivering high-quality software solutions on time and within budget. He is a strong team player, but can also work independently when required. John is always looking to learn new technologies and improve his skills, and is passionate about creating software that makes a difference.',
+          split: 'user',
+          userId: '10',
         },
       ];
       let filteredResult = userData;
@@ -215,7 +283,7 @@ const MainFilter = () => {
       <div>
         <div className='p-3'>
           <div className='max-w-screen-2xl mx-auto px-3 md:px-0'>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4  gap-4">
               {filteredData.map(user => (
                 <SpaceProfileSearchCard key={user.uid} user={user} />
               ))}
