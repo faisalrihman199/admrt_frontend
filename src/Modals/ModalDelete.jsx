@@ -7,35 +7,19 @@ import { FaTrash } from 'react-icons/fa';
 
 const ModalDelete = ({ onDeleteMedia, name }) => {
     const [showModal, setShowModal] = useState(false);
-    const [userId, setUserId] = useState(null);
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                setUserId(user.uid);
-            } else {
-                setUserId(null);
-            }
-        })
 
-        return () => unsubscribe();
-    }, [])
-
-    const handleLinkSocialMedia = async () => {
+    const handleDelete = async () => {
         try {
-            const user = auth.currentUser;
-            if (!user) {
-                return;
-            }
-            const mediaDocRef = doc(db, 'users', userId, 'socialMedia', name);
-
-            await deleteDoc(mediaDocRef);
-
+            onDeleteMedia();
             setShowModal(false);
         } catch (error) {
-            console.log(error);
+            console.error('Error removing document: ', error);
         }
-    };
+    }
+
+
+
 
     return (
         <div>
@@ -69,7 +53,7 @@ const ModalDelete = ({ onDeleteMedia, name }) => {
                                     <button
                                         className="bg-red-700 text-white active:bg-red-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
-                                        onClick={handleLinkSocialMedia}
+                                        onClick={handleDelete}
                                     >
                                         Delete
                                     </button>

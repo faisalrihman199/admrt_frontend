@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SocialIcon } from "react-social-icons";
 import { avatar } from "../modul/main";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
 
@@ -22,18 +22,21 @@ const SpaceProfileSearchCard = ({ profile }) => {
     wa: 'whatsapp'
   }
 
+  const navigate = useNavigate();
+
 
 
   return (
     // <div key={profile?.id} className='border rounded-lg px-7  shadow-md max-w-sm max-h-65  '>
-    <div key={profile?.id} className='border rounded-lg px-7 shadow-md max-w-sm max-h-65 flex flex-col flex-wrap'>
+    <div key={profile?.id} className='border rounded-lg px-7 shadow-md max-w-sm max-h-65 px-10 flex flex-col flex-wrap hover:shadow-xl hover:cursor-pointer'
+      onClick={() => navigate(`/profile/user/${profile.id}`)}>
 
       {/* NAME AND IMAGE */}
-      <div className='flex gap-3 mt-5  '>
-        <div className='w-1/5'>
-          <img className='  rounded-full' src={profile?.profile_image || avatar} alt="iconYoutuber" />
-        </div>
+      <div className='flex gap-3 mt-5'>
         <div className=''>
+          <img className='h-20 w-20 rounded-full' src={profile?.profile_image || avatar} alt="iconYoutuber" />
+        </div>
+        <div className=' '>
           <h1 className='font-semibold'>{profile?.full_name}</h1>
           <h1 className='text-gray-500 text-sm'>{profile.topics && profile.topics.map(topic => topic.title).join(', ')}</h1>
         </div>
@@ -66,11 +69,11 @@ const SpaceProfileSearchCard = ({ profile }) => {
 
       </div>
       {/* SOCIAL MEDIA */}
-      <div className='flex gap-3 mb-2 p-3  justify-between '>
+      <div className='flex gap-3   p-3  justify-between margin-top: auto mt-5 '>
         {profile?.socials && profile.socials.length > 0 && (<p className="text-sm text-gray-500">Platforms:</p>)}
         <div className='flex gap-1 justify-end'>
           {profile?.socials && profile.socials.map(({ social_media, url }) => (
-            <div className="transform hover:scale-110 transition-transform duration-200 rounded-full hover:shadow-sm">
+            <div onClick={(event) => event.stopPropagation()} className="z-1 transform hover:scale-110 transition-transform duration-200 rounded-full hover:shadow-sm">
               <SocialIcon url={url} key={social_media} network={socialMediaNetworks[social_media]} target="_blank" rel="noopener noreferrer" style={{ height: 30, width: 30 }} />
             </div>
           ))
@@ -78,11 +81,13 @@ const SpaceProfileSearchCard = ({ profile }) => {
         </div>
       </div>
       {/* BUTTONS */}
-      <div className='flex m-3 rounded-x justify-end button-container mt-auto border-t'>
+      {/* <div className='flex   rounded-x justify-end button-container mt-auto border-t'>
         <Link to={`/profile/user/${profile.id}`} className='hover:bg-opacity-75 p-2 rounded-lg'>
-          <IoLogOutOutline className='w-6 h-6 text-gray-700   rounded' />
+          <button className="border-2 border-gray-300 px-2 py-1 rounded text-blue-500 hover:bg-blue-500 hover:text-white">
+            View Profile
+          </button>
         </Link>
-      </div>
+      </div> */}
     </div >
   );
 };

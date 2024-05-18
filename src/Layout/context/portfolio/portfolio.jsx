@@ -269,7 +269,7 @@ const Portfolio = ({ userPortfolios }) => {
           </div>
         </div>
       )}
-      <div className='border rounded-xl my-4 p-4'>
+      <div className='border rounded-xl my-4 p-4 '>
         <div className='flex justify-between border-b pb-4'>
           <div className='text-2xl font-semibold px-3'>
             {deleteSelect ?
@@ -294,7 +294,7 @@ const Portfolio = ({ userPortfolios }) => {
               </button>
             </div>
             :
-            <div className='flex flex-coll gap-3'>
+            <div className='flex flex-coll gap-3 '>
               <div className='m-auto cursor-pointer'>
                 {portfolios.length === 0 ? null : (
                   <MdDelete className='w-6 h-6'
@@ -326,37 +326,44 @@ const Portfolio = ({ userPortfolios }) => {
               <p className=' font-normal mt-2.5'>Select the portfolio you want to delete</p>
             </div>
           }
-          <div className='grid grid-cols-2 gap-4 p-3'>
+          <div className='grid grid-cols-2 gap-4 p-2  '>
             {userPortfolios ? (
               userPortfolios.map((product) => {
                 const images = [product.image1, product.image2, product.image3].filter(Boolean);
                 product.images = images;
                 return (
-                  <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg   backdrop-blur-sm'>
-
+                  <div key={product.id} className='border p-2 rounded-lg  bg-gray-50 cursor-pointer hover:shadow-lg backdrop-blur-sm '
+                    style={{ height: '300px' }}
+                  >
                     <AuthenticatedUserViewPermission>
-                      <div key={product.id} className=' p-2 rounded-lg cursor-pointer  relative'>
-                        <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
+                      <div className='  rounded-lg cursor-pointer relative'>
+                        <FaTrash className="absolute top-2 right-2 cursor-pointer z-10" onClick={() => handleDelete(product.id)} />
                       </div>
                     </AuthenticatedUserViewPermission>
-                    <div className="flex items-center justify-start gap-4">
 
-                    </div>
-                    <div>
-                      <h2 className="p-2">{product.title}</h2>
+                    <div className="flex items-center justify-start gap-4">
                       <p className="text-gray-600">
                         {/* {truncateDescription(product.description, 35)} */}
                       </p>
                     </div>
-                    <div className="md:h-128 lg:h-128 h-128 max-h-70" style={{ height: '220px', overflow: 'hidden' }}>
+                    <div className="md:h-128   lg:h-128 h-128 max-h-70 mt-3" style={{}}>
                       {product.youtube_url ? (
-                        <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
+                        <div className='flex justify-center items-center'>
+                          <ReactPlayer url={product.youtube_url} width='350px' height="230px" />
+                        </div>
                       ) : (
-                        <div key={product.id} className=' ' onClick={() => handleExpandItemImages(product)}>
+                        <div onClick={() => handleExpandItemImages(product)}>
                           <CarouselWithContent description={product.description} imageUrls={images} />
                         </div>
                       )}
                     </div>
+                    <h2 className="p-3 font-semibold text-center">
+                      <span className="text-gray-600 m-2 pb-3 text-sm">{product.title}</span>
+                    </h2>
+                    {/* <p className="text-gray-600">
+                  {truncateDescription(product.description, 35)}
+                </p> */}
+
                   </div>
                 );
               })

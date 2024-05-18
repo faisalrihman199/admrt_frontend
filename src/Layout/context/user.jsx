@@ -9,7 +9,7 @@ import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
 import { MdDelete } from "react-icons/md";
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addProfileTopic, updateProfile, updateSingleImage, userProfile } from "../../service/profile";
+import { addProfileTopic, deleteProfileTopic, updateProfile, updateSingleImage, userProfile } from "../../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Modal } from "../../components/Modal/Modal";
 import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadForm";
@@ -94,6 +94,16 @@ const EditeUser = ({ userInfo }) => {
 
     },
   })
+
+  const mutationDelete = useMutation({
+    mutationFn: deleteProfileTopic,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries('loggedInUser')
+
+    },
+  })
+
   const authHeader = useAuthHeader()
   const handleAddTodo = () => {
     const newTodo = {
@@ -211,6 +221,14 @@ const EditeUser = ({ userInfo }) => {
     }
   };
 
+  const handleDeleteTopic = async (id) => {
+    mutationDelete.mutate({
+      authHeader,
+      id
+    })
+  }
+
+
   return (
     <div className="flex  ml-4">
       {todoModal && (
@@ -241,7 +259,7 @@ const EditeUser = ({ userInfo }) => {
                             {topic.title}
                           </p>
                           <button
-                          // onClick={() => handleDeleteTopic(topic.id)}
+                            onClick={() => handleDeleteTopic(topic.id)}
                           >
                             <MdDelete />
                           </button>

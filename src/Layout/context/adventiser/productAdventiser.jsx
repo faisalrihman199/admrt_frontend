@@ -298,7 +298,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                       </div>
                     </div> */}
                     <div>
-                      <div className='my-2'>
+                      <div className='my-2 p-1'>
                         <label className='pl-2'>Product name</label>
                         <input type="text"
                           className='border rounded-lg p-2 w-full'
@@ -306,10 +306,10 @@ export const ProductAdventiser = ({ userProducts }) => {
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
-                      <div className='my-2'>
+                      <div className='my-2 p-1'>
                         <label className='pl-2'>Product description</label>
                         <textarea
-                          className='border rounded-lg p-2 w-full'
+                          className='border rounded-lg p-2 w-full h-32'
                           value={descriptions}
                           onChange={(e) => setDescriptions(e.target.value)}
                         />
@@ -337,7 +337,7 @@ export const ProductAdventiser = ({ userProducts }) => {
         </div>
       )}
       {(
-        <div className='flex justify-between mb-3'>
+        <div className='flex justify-between mb-3 '>
           <div>
             <h1 className='font-bold text-xl text-gray-800'>Products</h1>
             {/* <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
@@ -355,16 +355,20 @@ export const ProductAdventiser = ({ userProducts }) => {
 
         </div>
       )}
-      <div className='grid grid-cols-2 gap-4 p-6'>
+      <div className='grid grid-cols-2 gap-4 p-2 '>
         {userProducts ? (
           userProducts.map((product) => {
             const images = [product.image1, product.image2, product.image3].filter(Boolean);
             product.images = images;
             return (
-              <div key={product.id} className='border p-4 rounded-lg cursor-pointer hover:shadow-lg backdrop-blur-sm'>
+              <div key={product.id} className='border p-2 bg-gray-50  rounded-lg cursor-pointer hover:shadow-lg backdrop-blur-sm '
+                style={{ height: '300px' }}
+              >
                 <AuthenticatedUserViewPermission>
-                  <div className='p-2 rounded-lg cursor-pointer relative'>
-                    <FaTrash className="absolute top-2 right-2 cursor-pointer" onClick={() => handleDelete(product.id)} />
+                  <div className='rounded-lg cursor-pointer relative hover:shadow-lg'>
+                    <FaTrash className="absolute top-2 right-2 cursor-pointer border  z-10" onClick={(e) => {
+                      handleDelete(product.id)
+                    }} />
                   </div>
                 </AuthenticatedUserViewPermission>
 
@@ -373,7 +377,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                     {/* {truncateDescription(product.description, 35)} */}
                   </p>
                 </div>
-                <div className="md:h-128 border lg:h-128 h-128 max-h-70 mt-3" style={{}}>
+                <div className="md:h-128   lg:h-128 h-128 max-h-70 mt-3" style={{}}>
                   {product.youtube_url ? (
                     <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
                   ) : (
@@ -382,10 +386,12 @@ export const ProductAdventiser = ({ userProducts }) => {
                     </div>
                   )}
                 </div>
-                <h2 className="p-3 text-md font-semibold">
-                  <span className="text-gray-600">Name:</span>
-                  <span className="text-blue-700 ml-2">{product.name}</span>
+                <h2 className="p-3 font-semibold text-center">
+                  <span className="text-gray-600 m-2 pb-3 text-sm">{product.name}</span>
                 </h2>
+                {/* <p className="text-gray-600">
+                  {truncateDescription(product.description, 35)}
+                </p> */}
 
               </div>
             );

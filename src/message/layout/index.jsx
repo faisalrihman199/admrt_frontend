@@ -27,12 +27,9 @@ const MessageIndex = ({ isMobile }) => {
     const verifyPath = location.pathname === '/message';
 
 
-    const { socket, messages, sendMessage, conversationList } = useWebSocket();
+    const { socket, messages, sendMessage, conversationList, makeConversationRead } = useWebSocket();
     useEffect(() => {
-        // This effect runs when messages change
-        // if (messages.length > 0) {
-        //     console.log("New message received:", messages[messages.length - 1]);
-        // }
+
     }, [conversationList]);
 
 
@@ -42,27 +39,20 @@ const MessageIndex = ({ isMobile }) => {
     };
 
 
-    const calculateLastMessage = useCallback(async (userId) => {
+
+
+    const handleUnreadMessages = async (conversationId) => {
         try {
-            const messagesRef = collection(db, `messages/${userId}/${meId}`);
-            const messagesSnapshot = await getDocs(messagesRef);
-            let lastMessageCount = 0;
+            console.log('Marking conversation as read:', conversationId);
 
-            messagesSnapshot.forEach((doc) => {
-                const messageData = doc.data();
-                if (!messageData.seen) {
-                    lastMessageCount++;
-                }
-            });
+            makeConversationRead(conversationId);
 
-            return lastMessageCount;
+            // Then, you might want to update this conversation data in your database
+            // await updateConversation(conversation);
         } catch (error) {
-            console.error('Error calculating last message count:', error);
-            return 0;
+            console.error(error);
         }
-    }, [meId]);
-
-
+    }
     return (
         <div className="flex h-[88vh]  max-w-screen-2xl mx-auto antialiased text-gray-800">
             <div className="flex flex-row h-full w-full overflow-x-hidden  mx-3">
@@ -98,7 +88,9 @@ const MessageIndex = ({ isMobile }) => {
                                             )}
                                             {conversationList.map((data) => (
                                                 <div key={data.key}>
-                                                    <Link to={`/message/direct/${data.id}`} className="flex justify-between border-b hover:bg-gray-50">
+                                                    <Link
+                                                        onClick={() => handleUnreadMessages(data.id)}
+                                                        to={`/message/direct/${data.id}`} className="flex justify-between border-b hover:bg-gray-50">
                                                         <button className="py-4 flex w-full items-start justify-between cursor-pointer  hover:text-black">
                                                             <div className="flex gap-3">
                                                                 <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />

@@ -398,7 +398,9 @@ function StickyNavbar({ authenticated }) {
           )} */}
           {navigation.map((item, idx) => (
             <li key={idx}>
-              <Link className="block text-gray-600 hover:text-gray-900 lg:hover:bg-gray-50 lg:p-3" to={item.path}>
+              <Link
+                onClick={() => setState(false)}
+                className="block text-gray-600 hover:text-gray-900 lg:hover:bg-gray-50 lg:p-3" to={item.path}>
                 {item.title}
               </Link>
             </li>

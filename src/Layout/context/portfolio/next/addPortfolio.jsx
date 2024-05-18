@@ -12,6 +12,7 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { InputIcon } from '../../../../components/InputField/IconInputfield';
 import { FaYoutube } from 'react-icons/fa';
 import { useQueryClient } from '@tanstack/react-query';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 
 const ImagePreview = ({ file, index, handleRemove }) => (
@@ -115,6 +116,7 @@ const AddPortfolio = (props) => {
     const title = location.state?.title || '';
     const description = location.state?.description || '';
     const module = location.state?.module || '';
+    const authUser = useAuthUser
 
     const navigate = useNavigate()
     const { itemType, } = useParams();
@@ -215,7 +217,7 @@ const AddPortfolio = (props) => {
 
             setSaveLoading(false);
             queryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
-            navigate('/profile')
+            navigate(`/profile/${authUser.id}`)
         } catch (error) {
             console.error(error);
             setSaveLoading(false);
@@ -400,20 +402,15 @@ const AddPortfolio = (props) => {
                                     </div>
                                 )} */}
                                 {uploadFile.length > 0 ? (
-                                    <div className='my-6 ml-20 flex flex-wrap'>
+                                    <div className='my-6 ml-20 flex flex-wrap justify-center items-center'>
                                         {uploadFile.map((file, index) => (
                                             file.type.startsWith('image/') ? (
-                                                <>
-                                                    <ImagePreview
-                                                        key={index}
-                                                        file={file}
-                                                        index={index}
-                                                        handleRemove={handleRemoveuploadFile}
-                                                    />
-
-                                                </>
-
-
+                                                <ImagePreview
+                                                    key={index}
+                                                    file={file}
+                                                    index={index}
+                                                    handleRemove={handleRemoveuploadFile}
+                                                />
                                             ) : (
                                                 <FileLink key={index} file={file} />
                                             )

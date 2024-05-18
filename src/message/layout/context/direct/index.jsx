@@ -30,7 +30,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
 
     const authHeader = useAuthHeader()
-    const { socket, sendMessage, conversation, conversationList } = useWebSocket();
+    const { socket, sendMessage, conversation, conversationList, makeConversationRead } = useWebSocket();
     let userConversation = conversation[userId] || [];
     userConversation.sort((a, b) => a.created_at - b.created_at);
     const conversationWithUser = conversationList.find(conversation => conversation.id == userId);
@@ -58,6 +58,17 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
     };
     useEffect(scrollToBottom, [userConversation]);
+    const handleUnreadMessages = async (conversationId) => {
+        try {
+            console.log('Marking conversation as read:', conversationId);
+            makeConversationRead(conversationId);
+
+            // Then, you might want to update this conversation data in your database
+            // await updateConversation(conversation);
+        } catch (error) {
+            console.error(error);
+        }
+    }
     const handleMessageSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -68,7 +79,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
             const body = {
                 receiver_id: userId,
                 text: messageRef.current.value,
-                sender_id: authUser.id,
+                sender_id: authUser?.id,
                 created_at: timestampInMicroseconds,
                 full_name: newConversationUserName,
                 profile_image: newConversationUserProfileImage
@@ -137,26 +148,26 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
             }
 
 
-            renderedMessages.push(
-                <div key={msg?.id} style={messageWrapperStyle}>
+            renderedMessages.unshift(
+                <div key={msg?.id} style={{ ...messageWrapperStyle, maxWidth: '500px' }}>
                     <div className="text-center">
 
                     </div>
-                    <div className={`col-start-1 col-end-8 p-3 rounded-lg ${msg?.sender_id == authUser.id} ? 'justify-start' : 'justify-end'}`}  >
+                    <div className={`col-start-1 col-end-8 p-3 rounded-lg ${msg?.sender_id == authUser?.id} ? 'justify-start' : 'justify-end'}`}  >
                         <div>
-                            <div className={`flex flex-row items-center ${msg?.sender_id == authUser.id ? 'flex-row-reverse' : ''}`}>
+                            <div className={`flex flex-row items-center ${msg?.sender_id == authUser?.id ? 'flex-row-reverse' : ''}`}>
                                 <div
-                                    className={`flex items-center justify-center h-10 w-10 rounded-full border  flex-shrink-0 ${msg?.sender_id == authUser.id ? 'mr-3' : 'ml-3'}`}
+                                    className={`flex items-center justify-center h-12 w-12 rounded-full border  flex-shrink-0 ${msg?.sender_id == authUser?.id ? 'ml-3' : 'mr-3'}`}
                                 >
-                                    {msg?.sender_id == authUser.id ? (
-                                        <img src={authUser.profile_image || avatar} className='rounded-full' alt="" />
+                                    {msg?.sender_id == authUser?.id ? (
+                                        <img src={authUser?.profile_image || avatar} className='rounded-full' alt="" />
                                     ) : (
                                         <img src={profile_image || avatar} className='rounded-full' alt="" />
                                     )}
                                 </div>
-                                <div className="relative flex text-sm bg-white gap-2 py-2 px-4 shadow border rounded-xl" style={{ backgroundColor: msg?.sender_id == authUser.id ? '#CAF4FF' : '#FFF9D0' }}>
-                                    <div>{formattedMessage}</div>
-                                    <div className={`text-[10px] text-gray-500 flex justify-end items-end`}>{timeMessage}</div>
+                                <div className="relative flex   flex-col text-sm bg-white gap-2 py-3 px-4 shadow border rounded-md" style={{ backgroundColor: msg?.sender_id == authUser?.id ? '#CAF4FF' : '#FFF9D0' }}>
+                                    <div className="text-left mr-auto pr-20">{formattedMessage}</div>
+                                    <div className={`text-[10px] text-gray-500  ml-auto  `}>{timeMessage}</div>
                                     {/* <div className={`${sender !== 'You' ? 'flex justify-end mt-1' : 'hidden'}`}>
                                         {verifySeen === true ? (
                                             <IoCheckmarkDone className='w-4 h-4' />
@@ -180,7 +191,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
     // Render the chat component
     return (
-        <div className='mb-5'>
+        <div className=''>
             {isMobile ? (
                 <div className="border-b relative px-5 mb-3">
                     <div className="flex py-3">
@@ -204,25 +215,25 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                     </div>
                 </div>
             ) : null}
-            <div className={`flex flex-col w-full rounded-xl overflow-x-auto mb-3 p-4 ${isMobile ? 'border ' : ""}`} style={{ height: 'calc(100vh - 250px)' }}>
+            <div className={`flex flex-col w-full rounded-xl flex-col-reverse overflow-y-auto   p-4 ${isMobile ? 'border ' : ""}`} style={{ height: 'calc(100vh - 220px)' }}>
                 {userConversation.length === 0 && newConversationUserName ? (
                     <div className="flex flex-col items-center justify-center h-full">
                         <img src={newConversationUserProfileImage || avatar} className="w-12 h-12 rounded-full" alt="User" />
                         <p className="mt-2">Send message to <strong>{newConversationUserName}</strong></p>
                     </div>
                 ) : renderMessages()}
-                <div ref={messagesEndRef} />
             </div>
-            <div className='mt-auto'>
+            <div ref={messagesEndRef} />
+
+            <div className=' '>
                 <form onSubmit={handleMessageSubmit} className="flex flex-row items-center h-16 border rounded-xl bg-white w-full px-2">
                     <div class="flex-grow">
                         <div class="relative w-full">
                             <input
                                 ref={messageRef}
-                                class="flex w-full outline-none rounded-xl focus:outline-none pl-4 h-10"
+                                className="flex w-full outline-none rounded-xl focus:outline-none pl-4 h-10"
                                 placeholder='Type a message'
-                            // value={message}
-                            // onChange={(e) => { messageRef.current = e.target.value; }}
+                                onFocus={() => handleUnreadMessages(userId)}
                             />
                         </div>
                     </div>

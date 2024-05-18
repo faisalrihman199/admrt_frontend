@@ -52,6 +52,12 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia }) => {
             setError('Both Social Type and URL are required');
             return;
         }
+        const httpsUrlPattern = /^https:\/\/.*/;
+
+        if (!httpsUrlPattern.test(socialMediaUrl)) {
+            setError('Please enter a valid HTTPS URL');
+            return;
+        }
 
         onSelectSocialMedia({ social_media: socialMediaMapping[selectedOption], url: socialMediaUrl });
         setShowModal(false);
@@ -116,6 +122,7 @@ const ModalAddSocialMedia = ({ onSelectSocialMedia }) => {
                                             Add Media
                                         </h1>
                                     </button>
+                                    {error && <p className="text-red-500">{error}</p>}
                                 </div>
                             </div>
                         </div>
