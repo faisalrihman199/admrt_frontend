@@ -39,42 +39,43 @@ const SpaceProfileSearchCard = ({ profile }) => {
         </div>
       </div>
       {/* DESCRIPTION */}
-      <div>
-        <div className='text-left p-3 mt-2 text-sm'>
-          {showFullDescription ? (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-              <div className="bg-white p-5 rounded shadow-lg max-w-md m-auto">
-                {profile?.description}
-                <button onClick={() => setShowFullDescription(false)} className="mt-4 block bg-blue-500 text-white p-2 rounded">
-                  Close
-                </button>
-              </div>
+      <div className='text-left p-3 mt-2 text-sm'>
+        {showFullDescription ? (
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+            <div className="bg-white p-5 rounded shadow-lg max-w-md m-auto">
+              {profile?.description}
+              <button onClick={() => setShowFullDescription(false)} className="mt-4 block bg-blue-500 text-white p-2 rounded">
+                Close
+              </button>
             </div>
-          ) : (
-            <div className='text-gray-400'>
+          </div>
+        ) : (
+          <div className='text-gray-400'>
+            <div>
+              {profile?.description && profile?.description.split(' ').slice(0, 15).join(' ')}
+            </div>
+            {profile?.description && profile?.description.split(' ').length > 10 && (
               <div>
-                {profile?.description && profile?.description.split(' ').slice(0, 15).join(' ')}
-              </div>
-              {profile?.description && profile?.description.split(' ').length > 10 && (
-                <div>
-                  <button onClick={toggleDescription} className="ml-2 text-gray-400 left-0">
+                {/* <button onClick={toggleDescription} className="ml-2 text-gray-400 left-0">
                     Show More
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+                  </button> */}
+              </div>
+            )}
+          </div>
+        )}
 
-        </div>
       </div>
       {/* SOCIAL MEDIA */}
-      <div className='flex gap-3 mb-2  justify-end'>
-        {profile?.socials && profile.socials.map(({ social_media, url }) => (
-          <div className="transform hover:scale-110 transition-transform duration-200 rounded-full hover:shadow-sm">
-            <SocialIcon url={url} key={social_media} network={socialMediaNetworks[social_media]} target="_blank" rel="noopener noreferrer" style={{ height: 30, width: 30 }} />
-          </div>
-        ))
-        }
+      <div className='flex gap-3 mb-2 p-3  justify-between '>
+        {profile?.socials && profile.socials.length > 0 && (<p className="text-sm text-gray-500">Platforms:</p>)}
+        <div className='flex gap-1 justify-end'>
+          {profile?.socials && profile.socials.map(({ social_media, url }) => (
+            <div className="transform hover:scale-110 transition-transform duration-200 rounded-full hover:shadow-sm">
+              <SocialIcon url={url} key={social_media} network={socialMediaNetworks[social_media]} target="_blank" rel="noopener noreferrer" style={{ height: 30, width: 30 }} />
+            </div>
+          ))
+          }
+        </div>
       </div>
       {/* BUTTONS */}
       <div className='flex m-3 rounded-x justify-end button-container mt-auto border-t'>

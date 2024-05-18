@@ -82,10 +82,14 @@ function SiplePages() {
             <div className="max-w-screen-2xl mx-auto">
                 <div className="md:flex">
                     <div className="w-full order-2 md:w-2/3 ">
-                        <div className={"border p-2 md:p-5 rounded-xl"}>
-                            <EditBackground userId={userId} split={split} coverImageUrl={userInfo.coverImageUrl} />
-                            <EditeUser userInfo={userInfo} />
-                            <IntoDescription description={userInfo.description} />
+                        <div className='bg-gray-50'>
+
+                            <div className={"border p-2 md:p-5 rounded-xl"}>
+
+                                <EditBackground userId={userId} split={split} coverImageUrl={userInfo.coverImageUrl} />
+                                <EditeUser userInfo={userInfo} />
+                                <IntoDescription description={userInfo.description} />
+                            </div>
                         </div>
                         <SpaceHostViewPermission userRole={userInfo.user_role}>
 
