@@ -15,7 +15,8 @@ const Home = () => {
   const auth = useAuthUser()
 
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (event) => {
+
     if (isAuthenticated) {
       // navigate('/filter');
       navigate(`/filter`, { state: { query: inputRef.current.value } });
@@ -35,7 +36,7 @@ const Home = () => {
               <p className="my-2 w-full text-xs md:text-base font-light md:font-normal md:w-3/4">
                 AdMrt streamlines advertising by directly connecting advertisers and publishers, reducing complexities and agency fees. List your ad space with ease and start earning today.
               </p>
-              <form className="my-6 md:mt-12 sm:max-w-md md:max-w-lg ">
+              <form className="my-6 md:mt-12 sm:max-w-md md:max-w-lg " onSubmit={(event) => event.preventDefault()}>
                 <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -50,9 +51,15 @@ const Home = () => {
                       <input type="text" ref={inputRef} className="block w-full p-5 px-4 text-sm text-gray-900 border-gray-300 rounded-lg border-blue-500 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                         placeholder="Search for ads ..."
                         required
+                        onKeyPress={(event) => {
+                          if (event.key === 'Enter') {
+                            handleButtonClick();
+                          }
+                        }}
                       />
 
-                      <button type="button"
+                      <button
+                        type="button"
                         className="text-black absolute right-2.5 py-3 px-8 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-white text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         onClick={handleButtonClick}
                       >
@@ -63,9 +70,10 @@ const Home = () => {
                 </div>
 
               </form>
-              <div>
+              {!isAuthenticated && <div>
                 <h1 className="mt-3 font-light">Get Started now?<Link to="/register" className="text-blue-500 font-medium underline py-1 mx-2 cursor-pointer">Sign up now</Link></h1>
-              </div>
+              </div>}
+
               <div className="mt-12 text-base md:text-xl">
                 <div className="flex mb-5">
                   <img src={svg1} alt="icon" />

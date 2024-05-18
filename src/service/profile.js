@@ -31,6 +31,22 @@ export async function addProfileTopic({ authHeader, data }) {
   }
 }
 
+export async function deleteProfileTopic({ authHeader, id }) {
+  try {
+    console.log("im here");
+
+    const response = await apiClient.delete(`/profile/topics/${id}/`, {
+      headers: {
+        Authorization: authHeader,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export async function addLanguage({ authHeader, data }) {
   try {
     console.log("im here");
@@ -50,6 +66,21 @@ export async function addLanguage({ authHeader, data }) {
 export async function addProfileSocials({ authHeader, data }) {
   try {
     const response = await apiClient.post("/profile/socials/", data, {
+      headers: {
+        Authorization: authHeader,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteSocial({ authHeader, id }) {
+  try {
+    console.log("authHeader", authHeader);
+    const response = await apiClient.delete(`/profile/socials/${id}/`, {
       headers: {
         Authorization: authHeader,
       },

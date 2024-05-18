@@ -14,7 +14,7 @@ import { auth, usersCollection } from '../../../firebase/firebase'
 import { doc, getDoc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
-import { addProfileSocials } from '../../../service/profile';
+import { addProfileSocials, deleteSocial } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 
@@ -57,11 +57,20 @@ const SocialMedia = ({ socials }) => {
 
     };
 
-    const handleRemoveSocialMedia = (socialMediaName) => {
-        setSelectedSocialMedia((prevSelected) =>
-            prevSelected.filter((item) => item.name !== socialMediaName)
-        );
-    };
+    const mutationDelete = useMutation({
+        mutationFn: deleteSocial,
+        onSuccess: () => {
+            queryClient.invalidateQueries('loggedInUser')
+
+        },
+    })
+    const handleRemoveSocialMedia = (id) => {
+        // const handleDeleteTopic = async (id) => {
+        mutationDelete.mutate({
+            authHeader,
+            id
+        })
+    }
 
     const socialMediaPages =
     {
@@ -98,11 +107,11 @@ const SocialMedia = ({ socials }) => {
                     </div>
                 } */}
                 <div className='border'></div>
-                {currentSocials && currentSocials.map((socialMedia, index) => (
+                {socials && socials.map((socialMedia, index) => (
                     <div key={index} className='flex gap-4 my-4'>
                         <div className='w-5/6 flex justify-between'>
                             <a href={socialMedia.url ? socialMedia.url : '#'} target={socialMedia.url ? "_blank" : ''} rel="noopener noreferrer">
-                                <div className='flex items-center gap-2'>
+                                <div className='flex items-center gap-2 hover:shadow-xl hover:border hover:p-1'>
                                     {socialMediaPages.hasOwnProperty(socialMedia.social_media) && <img src={socialMediaPages[socialMedia.social_media].icon} alt={socialMedia.social_media} />}
                                     {socialMedia.url && <h1>{
                                         (() => {
@@ -121,7 +130,9 @@ const SocialMedia = ({ socials }) => {
                                     <div className='flex gap-5'>
                                         {/* <CheckMedia selectedSocialMedia={selectedSocialMedia} userId={userId} /> */}
                                         <div className='h-6 w-6 cursor-pointer'>
-                                            <ModalDelete onDeleteMedia={handleRemoveSocialMedia} name={socialMedia.social_media} />
+                                            <ModalDelete
+                                                onDeleteMedia={() => handleRemoveSocialMedia(socialMedia.id)}
+                                                name={socialMedia.social_media} />
                                         </div>
                                     </div>
                                 )}

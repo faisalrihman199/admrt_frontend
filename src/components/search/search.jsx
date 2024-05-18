@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { auth, db } from '../../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import search from '../../Layout/AuthPage/images/search-normal.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useQuery } from '@tanstack/react-query';
 import { searchAdSpace } from '../../service/addSpace';
@@ -39,7 +39,7 @@ const Search = () => {
   //     document.removeEventListener('mousedown', handleMouseDown);
   //   };
   // }, []);
-
+  const navigate = useNavigate();
   return (
     <div className="relative mr-3">
       <div className="relative w-full  lg:w-72">
@@ -50,17 +50,25 @@ const Search = () => {
           className="p-3 w-full h-10 z-20 text-sm text-gray-900 bg-blue-50 rounded-full border outline-none focus:border-blue-500"
           placeholder="Search"
           required
+          onKeyPress={(event) => {
+            if (event.key === 'Enter') {
+              navigate(`/filter`, { state: { query: searchValue } });
+            }
+          }
+          }
         />
-        <div className="absolute top-0 right-0 p-2 pr-3 text-sm font-medium h-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300">
+        <div
+          onClick={() => navigate(`/filter`, { state: { query: searchValue } })}
+          className="hover:cursor-pointer absolute top-0 right-0 p-2 pr-3 text-sm font-medium h-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300">
           <img src={search} alt="" />
         </div>
       </div>
-      {searchValue && (
+      {/* {searchValue && (
         <div ref={dropdownRef} className="absolute mt-2 w-full bg-white border rounded-md shadow-lg">
           <p className="py-2 px-4 text-black">User not found</p>
         </div>
-      )}
-      {searchValue && (
+      )} */}
+      {/* {searchValue && (
         <div ref={dropdownRef} className="absolute mt-2 w-full bg-white border rounded-md shadow-lg">
           <ul className='m-1 border border-gray-300 rounded-sm'>
             {data.filter(user => user.full_name.toLowerCase().includes(searchValue.toLowerCase())).map((user, index) => (
@@ -80,7 +88,7 @@ const Search = () => {
             ))}
           </ul>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

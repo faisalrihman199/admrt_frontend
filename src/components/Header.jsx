@@ -15,14 +15,7 @@ const Header = () => {
           <p class="font-normal text-lg mt-2.5 text-gray-400">Promote Smarter – here is how! </p>
         </div>
         <div class=" mt-32 mb-4 max-w-full mx-auto max-w-screen-2xl max-auto place-content-center justify-center justify-items-center grid md:grid-cols-2 lg:grid-cols-4 gap-x-1 gap-y-20">
-          {/* <div class=" number ease-in duration-700 cursor-pointer hover:shadow-2xl rounded-xl overflow-hidden max-w-xs order-first lg:order-none  ">
-            <div class=" py-5 px-6 sm:px-8">
-              <h1 class=" font-bold text-lg border  rounded-full text-center py-2.5 w-12 mb-2.5 ">1</h1>
-              <h2 class="text-xl sm:text-2xl text-gray-800 font-semibold mb-3">Search for ad spaces</h2>
-              <p class="text-gray-500 -relaxed">Use our website to find the proper ad space. Filter ad spaces based on type, price, views, demographic and geographic areas.</p>
-            </div>
-          </div> */}
-          <div class="shadow-2xl number ease-in duration-700 cursor-pointer rounded-xl overflow-hidden max-w-xs order-first lg:order-none">
+          <div class="  number ease-in duration-700 cursor-pointer rounded-xl hover:shadow-2xl overflow-hidden max-w-xs order-first lg:order-none">
             <div class="py-5 px-6 sm:px-8">
               <h1 class="font-bold text-lg border rounded-full text-center py-2.5 w-12 mb-2.5">1</h1>
               <h2 class="text-xl sm:text-2xl text-gray-800 font-semibold mb-3">Search for ad spaces</h2>

@@ -63,6 +63,19 @@ const socketReducer = (state, action) => {
       const conversationList = Object.values(action.payload).flat();
       console.log("conversationList", conversationList);
       return { ...state, conversationList };
+    case "MAKE_CONVERSATION_READ":
+      const updatedConversationListForAlreadyRead = state.conversationList.map(
+        (conversation) => {
+          if (conversation.id === action.payload) {
+            return { ...conversation, unread_messages: 0 };
+          }
+          return conversation;
+        }
+      );
+      return {
+        ...state,
+        conversationList: updatedConversationListForAlreadyRead,
+      };
     default:
       return state;
   }
@@ -103,6 +116,14 @@ export const WebSocketProvider = ({ children }) => {
       state.socket.send(JSON.stringify(socketSendParam));
     }
   };
+
+  const makeConversationRead = (conversationId) => {
+    dispatch({
+      type: "MAKE_CONVERSATION_READ",
+      payload: conversationId,
+    });
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       const socket = new WebSocket(
@@ -172,7 +193,9 @@ export const WebSocketProvider = ({ children }) => {
   }, [isAuthenticated]);
 
   return (
-    <WebSocketContext.Provider value={{ ...state, sendMessage }}>
+    <WebSocketContext.Provider
+      value={{ ...state, sendMessage, makeConversationRead }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

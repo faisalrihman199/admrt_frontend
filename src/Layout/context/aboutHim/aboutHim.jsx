@@ -146,9 +146,9 @@ const AboutHim = ({ location, website, joinDate }) => {
                             </div>
                             <div>
                                 <h1>{currentLocation ||
-                                    <><span>none.</span>
+                                    <><span>--</span>
                                         <AuthenticatedUserViewPermission>
-                                            <span> Please fill in your information!</span>
+                                            <span> Please fill in your location!</span>
                                         </AuthenticatedUserViewPermission>
                                     </>
                                 }
@@ -175,11 +175,11 @@ const AboutHim = ({ location, website, joinDate }) => {
                             <div>
                                 {currentWebsite
                                     ? <a href={currentWebsite} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{currentWebsite}</a>
-                                    : <h1> <><span>none.</span>
+                                    : <><span>--</span>
                                         <AuthenticatedUserViewPermission>
-                                            <span> Please fill in your information!</span>
+                                            <span> Please fill your website!</span>
                                         </AuthenticatedUserViewPermission>
-                                    </></h1>
+                                    </>
                                 }
                             </div>
                         </div>

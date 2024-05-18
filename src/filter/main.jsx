@@ -6,11 +6,14 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { CustomSpinner } from '../components/Spinner';
 import { useLocation } from 'react-router-dom';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import { MdClearAll } from 'react-icons/md';
+import { Spinner } from '@material-tailwind/react';
 
 const MainFilter = () => {
   const formRef = useRef();
   const location = useLocation();
   const query = location.state?.query || '';
+  const [applyFilerLoader, setApplyFilterLoader] = useState(false);
 
   // const [applyFilter, setApplyFilter] = useState(false);
   let finalfilterOptions = {};
@@ -30,7 +33,7 @@ const MainFilter = () => {
 
   const isAuthenticated = useIsAuthenticated();
 
-  const { isPending, isError, data, error, refetch } = useQuery({
+  const { isLoading, isPending, isError, data, error, refetch, isRefetching } = useQuery({
     queryKey: ['searchSpace'],
     queryFn: () => searchAdSpace({ authHeader, filterOptions: finalfilterOptionsRef.current }),
     retry: false,
@@ -38,46 +41,50 @@ const MainFilter = () => {
 
   })
 
+  console.log('isPending', isPending);
 
   const handleApplyFilter = useCallback(() => {
-    const filterOptions = getFilterOptions();
-    const mediaShortForms = {
-      'youtube': 'yt',
-      'facebook': 'fb',
-      'instagram': 'in',
-      'tiktok': 'tt',
-      'event': 'ev',
-      'transportation': 'tr',
-      'print': 'pr'
-    };
+    try {
+      const filterOptions = getFilterOptions();
+      const mediaShortForms = {
+        'youtube': 'yt',
+        'facebook': 'fb',
+        'instagram': 'in',
+        'tiktok': 'tt',
+        'event': 'ev',
+        'transportation': 'tr',
+        'print': 'pr'
+      };
 
-    let newFilterOptions = {};
+      let newFilterOptions = {};
 
-    if (filterOptions.nameOrExpertise) {
-      newFilterOptions.q = filterOptions.nameOrExpertise;
+      if (filterOptions.nameOrExpertise) {
+        newFilterOptions.q = filterOptions.nameOrExpertise;
+      }
+
+      if (filterOptions.country) {
+        newFilterOptions.country = filterOptions.country;
+      }
+
+      Object.entries(filterOptions.mediaFilters)
+        .filter(([key, value]) => value === true)
+        .forEach(([key, value]) => {
+          newFilterOptions[mediaShortForms[key]] = value;
+        });
+
+      finalfilterOptions = newFilterOptions;
+
+      console.log('newFilterOptions', newFilterOptions);
+      console.log('finalfilterOptions', finalfilterOptions);
+
+      // refetch();
+      finalfilterOptionsRef.current = newFilterOptions;
+      queryClient.invalidateQueries({ queryKey: ['searchSpace'], filterOptions: finalfilterOptionsRef.current });
+      refetch();
+    } catch (error) {
+      console.error('Error updating user data:', error);
+      alert('Something Went wrong');
     }
-
-    if (filterOptions.country) {
-      newFilterOptions.country = filterOptions.country;
-    }
-
-    Object.entries(filterOptions.mediaFilters)
-      .filter(([key, value]) => value === true)
-      .forEach(([key, value]) => {
-        newFilterOptions[mediaShortForms[key]] = value;
-      });
-
-    // console.log('newFilterOptions', newFilterOptions);
-    // setApplyFilter(prev => !prev);
-    finalfilterOptions = newFilterOptions;
-
-    console.log('newFilterOptions', newFilterOptions);
-    console.log('finalfilterOptions', finalfilterOptions);
-
-    // refetch();
-    finalfilterOptionsRef.current = newFilterOptions;
-    queryClient.invalidateQueries({ queryKey: ['searchSpace'], filterOptions: finalfilterOptionsRef.current });
-    refetch();
   }, []);
 
   const getFilterOptions = () => {
@@ -97,15 +104,19 @@ const MainFilter = () => {
     };
   };
 
+  const clearFilter = () => {
+    formRef.current.reset();
+    finalfilterOptionsRef.current = {};
+    queryClient.invalidateQueries({ queryKey: ['searchSpace'], filterOptions: finalfilterOptionsRef.current });
+    refetch();
+  }
+
 
   // const { isPending, isError, data, error } = useQuery({
   //   queryKey: ['viewUserProfile', { authHeader }],
   //   queryFn: searchAdSpace,
   // })
 
-  if (isPending) {
-    return <CustomSpinner />;
-  }
 
 
 
@@ -123,13 +134,25 @@ const MainFilter = () => {
         <div className='border rounded-lg p-2 md:p-8'>
           <div className='flex justify-between'>
             <div className='text-xl md:text-3xl font-bold'><h1>Filter</h1></div>
-            <div className='text-base md:text-xl text-red-500'><h1>Clear Filter</h1></div>
+            <button className='text-sm md:text-base text-red-500 flex items-center border p-2 rounded hover:shadow-md'
+              onClick={clearFilter}
+            >
+              <MdClearAll className='mr-1' />
+              <h1>Clear Filter</h1>
+            </button>
           </div>
-          <form ref={formRef} className='p-2 mt-4'>
+          <form ref={formRef}
+            onSubmit={(event) => event.preventDefault()}
+            className='p-2 mt-4'>
             <div>
               <h1 className='text-base font-semibold'>Name or Topic</h1>
               <input
                 type="text"
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    handleApplyFilter();
+                  }
+                }}
                 name="nameOrExpertise"
                 placeholder='Enter Name or Expertise'
                 className="block w-full py-3 mt-2 text-gray-900 input text-base"
@@ -140,18 +163,21 @@ const MainFilter = () => {
               <div className='flex justify-between'>
                 <div className='flex gap-5 mt-4'>
                   {['youtube', 'tiktok', 'instagram', 'facebook', 'transportation', 'event', 'print'].map(mediaType => (
-                    <div className="flex font-medium text-gray-700" key={mediaType}>
+                    <label
+                      className="flex hover:rounded font-medium text-gray-700 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black hover:border hover:shadow-md border-transparent rounded p-2"
+                      htmlFor={mediaType}
+                      key={mediaType}
+                    >
                       <input
+                        id={mediaType}
                         className="accent-blue-600 peer mt-1.5"
                         type="checkbox"
                         name={mediaType}
                       />
-                      <label className="text-gray-900 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black" htmlFor={mediaType}>
-                        <h1 className="text-sm md:text-base md:text-start pl-1 md:pl-3 mt-1 md:mt-0.5">
-                          {mediaType.charAt(0).toUpperCase() + mediaType.slice(1)}
-                        </h1>
-                      </label>
-                    </div>
+                      <h1 className="text-sm md:text-base md:text-start pl-1 md:pl-3 mt-1 md:mt-0.5 text-gray-900">
+                        {mediaType.charAt(0).toUpperCase() + mediaType.slice(1)}
+                      </h1>
+                    </label>
                   ))}
                 </div>
                 <div className='flex -mt-7'>
@@ -175,15 +201,35 @@ const MainFilter = () => {
           </form>
         </div>
         <div className='text-center -translate-y-3 md:-translate-y-7'>
-          <button type="button" onClick={handleApplyFilter} className="px-3 py-1 md:px-9 md:py-4 shadow-2xl text-sm md:text-base font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center">
-            Apply Filter
+          <button
+            type="button"
+            onClick={handleApplyFilter}
+            disabled={isRefetching}
+            className={`px-3 py-1 md:px-9 md:py-4 shadow-2xl text-sm md:text-base font-medium text-white ${isRefetching ? 'bg-gray-400' : 'bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300'} rounded-lg text-center`}
+          >
+            {isRefetching ? (
+              <Spinner
+                type="ThreeDots"
+                color="#00BFFF"
+                height={50}
+                width={50}
+                timeout={3000} //3 secs
+              />
+            ) : (
+              'Apply Filter'
+            )}
           </button>
         </div>
       </div>
       <div>
-        <div className='p-3'>
-          <div className='max-w-screen-2xl mx-auto px-3 md:px-0'>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <div className='max-w-screen-3xl mx-auto px-3 md:px-0 my-10'>
+          {isPending && (
+            <CustomSpinner />
+          )}
+
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-5">
               {data && data.map(space => (
                 <SpaceProfileSearchCard key={space.id} profile={space} />
               ))}
