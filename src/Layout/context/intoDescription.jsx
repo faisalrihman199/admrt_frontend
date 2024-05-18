@@ -119,7 +119,7 @@ const IntoDescription = ({ description }) => {
                 </form>
             )}
             {(
-                <div className="mt-5">
+                <div className="mt-5 ">
                     <div className="flex justify-between">
                         <div className="flex items-start justify-between">
                             <AuthenticatedUserViewPermission>

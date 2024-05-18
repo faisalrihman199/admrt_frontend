@@ -369,12 +369,11 @@ export const ProductAdventiser = ({ userProducts }) => {
                 </AuthenticatedUserViewPermission>
 
                 <div className="flex items-center justify-start gap-4">
-                  <h2 className="">{product.name}</h2>
                   <p className="text-gray-600">
                     {/* {truncateDescription(product.description, 35)} */}
                   </p>
                 </div>
-                <div className="md:h-128 lg:h-128 h-128 max-h-70 mt-3" style={{ height: '200px', overflow: 'hidden' }}>
+                <div className="md:h-128 border lg:h-128 h-128 max-h-70 mt-3" style={{}}>
                   {product.youtube_url ? (
                     <ReactPlayer url={product.youtube_url} width='450px' height="260px" />
                   ) : (
@@ -383,6 +382,11 @@ export const ProductAdventiser = ({ userProducts }) => {
                     </div>
                   )}
                 </div>
+                <h2 className="p-3 text-md font-semibold">
+                  <span className="text-gray-600">Name:</span>
+                  <span className="text-blue-700 ml-2">{product.name}</span>
+                </h2>
+
               </div>
             );
           })

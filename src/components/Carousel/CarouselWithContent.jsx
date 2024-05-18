@@ -4,13 +4,13 @@ export function CarouselWithContent({ description, imageUrls, fullScreenMode = f
     console.log('imageUrls', imageUrls)
 
     return (
-        <Carousel className="rounded-xl   w-full" autoplay={!fullScreenMode}>
+        <Carousel className="rounded-xl    " autoplay={!fullScreenMode}>
             {imageUrls.map((imageUrl, index) => (
-                <div key={index} className="relative   w-full">
+                <div key={index} className="relative dsds">
                     <img
                         src={imageUrl}
                         alt={`image ${index + 1}`}
-                        className="  w-full object-cover"
+                        className="object-cover "
                     />
                     {fullScreenMode && index === 0 && (
                         <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/75">
