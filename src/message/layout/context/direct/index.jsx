@@ -191,7 +191,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
     // Render the chat component
     return (
-        <div className=''>
+        <div className='overflow-hidden'>
             {isMobile ? (
                 <div className="border-b relative px-5 mb-3">
                     <div className="flex py-3">
@@ -215,7 +215,8 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                     </div>
                 </div>
             ) : null}
-            <div className={`flex flex-col w-full rounded-xl flex-col-reverse overflow-y-auto   p-4 ${isMobile ? 'border ' : ""}`} style={{ height: 'calc(100vh - 220px)' }}>
+            <div className={`flex flex-col w-full rounded-xl flex-col-reverse overflow-y-auto      p-4 ${isMobile ? 'border ' : ""}`} style={{ height: 'calc(100vh - 220px)' }}>
+
                 {userConversation.length === 0 && newConversationUserName ? (
                     <div className="flex flex-col items-center justify-center h-full">
                         <img src={newConversationUserProfileImage || avatar} className="w-12 h-12 rounded-full" alt="User" />
