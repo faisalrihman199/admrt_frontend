@@ -30,6 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CustomSpinner } from "../components/Spinner";
 import EditBackground from '../Layout/context/editeBackground';
 import { Button } from '@material-tailwind/react';
+import { UserProfileSkeleton } from '../components/Skeleton/userProfile/userProfileSkeleton';
 
 function ViewsProfile() {
   const authHeader = useAuthHeader()
@@ -52,7 +53,8 @@ function ViewsProfile() {
 
 
   if (isPending) {
-    return <CustomSpinner />
+    // return <CustomSpinner />
+    return <UserProfileSkeleton />
   }
 
   if (isError) {
@@ -88,6 +90,9 @@ function ViewsProfile() {
     <div className="App">
 
       <div className="max-w-screen-2xl mx-auto">
+        {isPending && (
+          <UserProfileSkeleton />
+        )}
         <div className="md:flex">
           <div className="w-full order-2 md:w-2/3">
             <div className={"border p-2 md:p-5 rounded-xl"}>

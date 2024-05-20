@@ -25,7 +25,7 @@ const socketReducer = (state, action) => {
 
     case "ADD_MESSAGE_TO_CONVERSATION":
       const updatedConversationList = state.conversationList.find(
-        (conversation) => conversation.id === action.payload.userId
+        (conversation) => conversation.userId == action.payload.userId
       )
         ? state.conversationList
         : [
@@ -33,6 +33,7 @@ const socketReducer = (state, action) => {
               id: action.payload.userId,
               full_name: action.payload.body.full_name,
               profile_image: action.payload.body.profile_image,
+              userId: action.payload.body.sender_id,
             },
             ...state.conversationList,
           ];
@@ -50,6 +51,7 @@ const socketReducer = (state, action) => {
     case "SET_MESSAGES":
       return { ...state, messages: action.payload };
     case "SET_CONVERSATION":
+      console.log("SET_CONVERSATION", action.payload);
       return {
         ...state,
         conversation: {
@@ -57,16 +59,22 @@ const socketReducer = (state, action) => {
           [action.payload.partner_id]: action.payload.conversation,
         },
       };
+
     case "SET_UNREAD_CONVERSATIONS":
       return { ...state, unreadConversations: action.payload };
     case "SET_CONVERSATION_LIST":
-      const conversationList = Object.values(action.payload).flat();
+      const conversationList = Object.entries(action.payload).map(
+        ([userId, conversation]) => ({
+          ...conversation,
+          userId,
+        })
+      );
       console.log("conversationList", conversationList);
       return { ...state, conversationList };
     case "MAKE_CONVERSATION_READ":
       const updatedConversationListForAlreadyRead = state.conversationList.map(
         (conversation) => {
-          if (conversation.id === action.payload) {
+          if (conversation.userId === action.payload) {
             return { ...conversation, unread_messages: 0 };
           }
           return conversation;
@@ -124,6 +132,25 @@ export const WebSocketProvider = ({ children }) => {
     });
   };
 
+  const updateConversationList = (conversationList) => {
+    console.log("updating conversationList", conversationList);
+    dispatch({
+      type: "SET_CONVERSATION_LIST",
+      payload: conversationList,
+    });
+  };
+
+  const updateConversation = (userId, conversation) => {
+    console.log("updating conversation", conversation);
+    dispatch({
+      type: "SET_CONVERSATION",
+      payload: {
+        partner_id: userId,
+        conversation,
+      },
+    });
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       const socket = new WebSocket(
@@ -157,12 +184,12 @@ export const WebSocketProvider = ({ children }) => {
             });
             break;
 
-          case "CONVERSATION-LIST":
-            dispatch({
-              type: "SET_CONVERSATION_LIST",
-              payload: message.body.summary,
-            });
-            break;
+          // case "CONVERSATION-LIST":
+          //   dispatch({
+          //     type: "SET_CONVERSATION_LIST",
+          //     payload: message.body.summary,
+          //   });
+          //   break;
           default:
             console.log("Unhandled message action:", message.action);
         }
@@ -194,7 +221,13 @@ export const WebSocketProvider = ({ children }) => {
 
   return (
     <WebSocketContext.Provider
-      value={{ ...state, sendMessage, makeConversationRead }}
+      value={{
+        ...state,
+        sendMessage,
+        makeConversationRead,
+        updateConversationList,
+        updateConversation,
+      }}
     >
       {children}
     </WebSocketContext.Provider>

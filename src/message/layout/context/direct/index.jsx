@@ -11,6 +11,8 @@ import EmojiPicker from 'emoji-picker-react';
 import { useWebSocket } from '../../../../Layout/context/socketContex';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import { getChatConversation } from '../../../../service/chat';
+import useDeepCompareEffect from '../../../../hooks/useDeepCompareEffect';
 
 const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
     const { userId } = useParams();
@@ -22,7 +24,6 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
     const [emojiModal, setEmojiModal] = useState(false);
     const [message, setMessage] = useState('');
     const messageRef = useRef('');
-
     const location = useLocation();
 
     const newConversationUserName = location.state?.newConverSationUserName || '';
@@ -30,26 +31,34 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
 
     const authHeader = useAuthHeader()
-    const { socket, sendMessage, conversation, conversationList, makeConversationRead } = useWebSocket();
-    let userConversation = conversation[userId] || [];
-    userConversation.sort((a, b) => a.created_at - b.created_at);
-    const conversationWithUser = conversationList.find(conversation => conversation.id == userId);
+    const { socket, sendMessage, conversation, conversationList, makeConversationRead, updateConversation } = useWebSocket();
+    // let userConversation = conversation[userId] || [];
+    const [userConversation, setUserConversation] = useState(conversation[userId] || []);
+
+    userConversation.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    const conversationData = conversationList.find(conversation => conversation.userId == userId);
+    const conversationWithUser = conversation[userId];
     const { profile_image = '', full_name = '' } = conversationWithUser || {};
     console.log('conversationWithUser', conversationWithUser)
 
     const authUser = useAuthUser()
-    console.log('authUser', authUser)
+
+    useDeepCompareEffect(() => {
+        setUserConversation(conversation[userId] || []);
+    }, [conversation[userId]]);
 
     useEffect(() => {
-        if (!userConversation || userConversation.length === 0) {
-            console.log('Fetching conversation with user:', userId);
-            sendMessage('FETCH-CONVERSATION', { partner_id: userId });
+        if (!conversationWithUser) {
+            getChatConversation(authHeader, userId).then((data) => {
+                console.log('llllll:', data)
+                updateConversation(userId, data)
+            });
         }
     }, [userId]);
 
-    useEffect(() => {
-        userConversation = conversation[userId];
-    }, [conversation]);
+    // useEffect(() => {
+    //     userConversation = conversation[userId];
+    // }, [conversation]);
 
     const messagesEndRef = useRef(null);
 
@@ -58,17 +67,17 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
     };
     useEffect(scrollToBottom, [userConversation]);
+
     const handleUnreadMessages = async (conversationId) => {
         try {
             console.log('Marking conversation as read:', conversationId);
             makeConversationRead(conversationId);
 
-            // Then, you might want to update this conversation data in your database
-            // await updateConversation(conversation);
         } catch (error) {
             console.error(error);
         }
     }
+
     const handleMessageSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -117,8 +126,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
         userConversation.forEach((msg) => {
             // const messageDate = msg.created_at;
             const messageDateString = 'Today'
-            const timestampInMilliseconds = msg?.created_at / 1000;
-            const date = new Date(timestampInMilliseconds);
+            const date = new Date(msg?.created_at);
             const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
             const formattedMessage = `${msg?.text}`;
             const verifySeen = msg?.seen;
@@ -162,7 +170,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                                     {msg?.sender_id == authUser?.id ? (
                                         <img src={authUser?.profile_image || avatar} className='rounded-full' alt="" />
                                     ) : (
-                                        <img src={profile_image || avatar} className='rounded-full' alt="" />
+                                        <img src={profile_image || conversationData?.profile_image || avatar} className='rounded-full' alt="" />
                                     )}
                                 </div>
                                 <div className="relative flex   flex-col text-sm bg-white gap-2 py-3 px-4 shadow border rounded-md" style={{ backgroundColor: msg?.sender_id == authUser?.id ? '#CAF4FF' : '#FFF9D0' }}>
@@ -277,6 +285,8 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                 </form>
             </div>
             {/* {JSON.stringify(conversation)} */}
+            {/* {JSON.stringify(conversationList)} */}
+
 
         </div>
     )

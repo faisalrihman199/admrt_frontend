@@ -8,6 +8,9 @@ import { VscEmptyWindow } from "react-icons/vsc"
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
 import EmojiPicker from 'emoji-picker-react';
 import { useWebSocket } from "../../Layout/context/socketContex";
+import { getChatConversationList } from "../../service/chat";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { useQuery } from "@tanstack/react-query";
 // import { avatar } from '../../../../modul/main';
 
 const MessageIndex = ({ isMobile }) => {
@@ -25,12 +28,21 @@ const MessageIndex = ({ isMobile }) => {
     const { userId } = useParams();
     const location = useLocation();
     const verifyPath = location.pathname === '/message';
+    const authHeader = useAuthHeader();
 
+    const { conversationList, makeConversationRead, updateConversationList } = useWebSocket();
+    useEffect(() => {
+        let conversationListData = getChatConversationList(authHeader).then((data) => {
+            console.log('conversationListData:', data)
+            updateConversationList(data.conversations)
+        });
+    }, []);
 
-    const { socket, messages, sendMessage, conversationList, makeConversationRead } = useWebSocket();
     useEffect(() => {
 
     }, [conversationList]);
+
+
 
 
     const openModal = (userId) => {
@@ -86,11 +98,13 @@ const MessageIndex = ({ isMobile }) => {
                                                     </div>
                                                 </div>
                                             )}
+                                            {/* <p>{JSON.stringify(conversationList)}</p> */}
+
                                             {conversationList.map((data) => (
-                                                <div key={data.key}>
+                                                <div key={data.key} >
                                                     <Link
-                                                        onClick={() => handleUnreadMessages(data.id)}
-                                                        to={`/message/direct/${data.id}`} className="flex justify-between border-b hover:bg-gray-50">
+                                                        onClick={() => handleUnreadMessages(data?.userId)}
+                                                        to={`/message/direct/${data?.userId}`} className="flex justify-between border-b hover:bg-gray-50">
                                                         <button className="py-4 flex w-full items-start justify-between cursor-pointer  hover:text-black">
                                                             <div className="flex gap-3">
                                                                 <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
@@ -207,7 +221,7 @@ const MessageIndex = ({ isMobile }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
