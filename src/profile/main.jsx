@@ -22,6 +22,7 @@ import AdvertiserViewPermission from '../components/Permissions/AdvertiserViewPe
 import { useParams } from 'react-router-dom';
 import AuthenticatedUserViewPermission from '../components/Permissions/AuthenticatedUserViewPermission';
 import { otherUserProfile } from '../service/orherUser';
+import { UserProfileSkeleton } from '../components/Skeleton/userProfile/userProfileSkeleton';
 
 function SiplePages() {
 
@@ -47,9 +48,7 @@ function SiplePages() {
 
 
 
-    if (isPending) {
-        return <CustomSpinner />
-    }
+
 
     if (isError) {
         return (
@@ -78,8 +77,14 @@ function SiplePages() {
     };
 
     return (
+        // <UserProfileSkeleton />
         <div className="App">
+
             <div className="max-w-screen-2xl mx-auto">
+                {isPending && (
+                    // return <CustomSpinner />
+                    <UserProfileSkeleton />
+                )}
                 <div className="md:flex">
                     <div className="w-full order-2 md:w-2/3 ">
                         <div className='bg-gray-50'>
@@ -178,7 +183,8 @@ function SiplePages() {
                     </div>
                 </div>
             </div>
-        </div>);
+        </div>
+    );
 }
 
 export default SiplePages

@@ -4,9 +4,11 @@ import React, {
   useEffect,
   useContext,
   useState,
+  useRef,
 } from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
+import { getChatConversationList } from "../../service/chat";
 
 const WebSocketContext = createContext();
 
@@ -24,18 +26,19 @@ const socketReducer = (state, action) => {
       return { ...state, socket: action.payload };
 
     case "ADD_MESSAGE_TO_CONVERSATION":
-      const updatedConversationList = state.conversationList.find(
-        (conversation) => conversation.id === action.payload.userId
-      )
-        ? state.conversationList
-        : [
-            {
-              id: action.payload.userId,
-              full_name: action.payload.body.full_name,
-              profile_image: action.payload.body.profile_image,
-            },
-            ...state.conversationList,
-          ];
+      let updatedConversationList = [...state.conversationList];
+      const existingConversationIndex = updatedConversationList.findIndex(
+        (conversation) => conversation.userId == action.payload.userId
+      );
+
+      if (existingConversationIndex > 0) {
+        const existingConversation = updatedConversationList.splice(
+          existingConversationIndex,
+          1
+        )[0];
+        updatedConversationList.unshift(existingConversation);
+      }
+
       return {
         ...state,
         conversation: {
@@ -50,6 +53,7 @@ const socketReducer = (state, action) => {
     case "SET_MESSAGES":
       return { ...state, messages: action.payload };
     case "SET_CONVERSATION":
+      console.log("SET_CONVERSATION", action.payload);
       return {
         ...state,
         conversation: {
@@ -57,16 +61,22 @@ const socketReducer = (state, action) => {
           [action.payload.partner_id]: action.payload.conversation,
         },
       };
+
     case "SET_UNREAD_CONVERSATIONS":
       return { ...state, unreadConversations: action.payload };
     case "SET_CONVERSATION_LIST":
-      const conversationList = Object.values(action.payload).flat();
+      const conversationList = Object.entries(action.payload).map(
+        ([userId, conversation]) => ({
+          ...conversation,
+          userId,
+        })
+      );
       console.log("conversationList", conversationList);
       return { ...state, conversationList };
     case "MAKE_CONVERSATION_READ":
       const updatedConversationListForAlreadyRead = state.conversationList.map(
         (conversation) => {
-          if (conversation.id === action.payload) {
+          if (conversation.userId === action.payload) {
             return { ...conversation, unread_messages: 0 };
           }
           return conversation;
@@ -124,6 +134,52 @@ export const WebSocketProvider = ({ children }) => {
     });
   };
 
+  const updateConversationList = (conversationList) => {
+    console.log("updating conversationList", conversationList);
+    dispatch({
+      type: "SET_CONVERSATION_LIST",
+      payload: conversationList,
+    });
+  };
+
+  const updateConversation = (userId, conversation) => {
+    console.log("updating conversation", conversation);
+    dispatch({
+      type: "SET_CONVERSATION",
+      payload: {
+        partner_id: userId,
+        conversation,
+      },
+    });
+  };
+
+  const getConverSationList = async () => {
+    try {
+      // const conversationList = await getChatConversationList(authHeader);
+      // console.log("conversationList", conversationList);
+      getChatConversationList(authHeader).then((data) => {
+        console.log("conversationListData:", data);
+        updateConversationList(data.conversations);
+      });
+      // dispatch({
+      //   type: "SET_CONVERSATION_LIST",
+      //   payload: conversationList,
+      // });
+    } catch (error) {
+      console.error("Error fetching conversation list:", error);
+    }
+  };
+  const doesConversationExist = (userId, state) => {
+    console.log("doesConversationExist", userId, state.conversationList);
+    return state.conversationList.some(
+      (conversation) => conversation.userId == userId
+    );
+  };
+  const stateRef = useRef();
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
   useEffect(() => {
     if (isAuthenticated) {
       const socket = new WebSocket(
@@ -134,6 +190,7 @@ export const WebSocketProvider = ({ children }) => {
         console.log("WebSocket connection established");
         dispatch({ type: "SET_SOCKET", payload: socket });
       };
+      stateRef.current = state;
 
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
@@ -141,6 +198,16 @@ export const WebSocketProvider = ({ children }) => {
         switch (message.action) {
           case "NEW-MESSAGE":
             console.log("NEW-MESSAGE RECEIVED from socket", message);
+
+            if (
+              doesConversationExist(message.body.sender_id, stateRef.current) ==
+              false
+            ) {
+              console.log(
+                "conversation does not exist, calling getConverSationList"
+              );
+              getConverSationList();
+            }
             dispatch({
               type: "ADD_MESSAGE_TO_CONVERSATION",
               payload: {
@@ -157,12 +224,6 @@ export const WebSocketProvider = ({ children }) => {
             });
             break;
 
-          case "CONVERSATION-LIST":
-            dispatch({
-              type: "SET_CONVERSATION_LIST",
-              payload: message.body.summary,
-            });
-            break;
           default:
             console.log("Unhandled message action:", message.action);
         }
@@ -194,7 +255,14 @@ export const WebSocketProvider = ({ children }) => {
 
   return (
     <WebSocketContext.Provider
-      value={{ ...state, sendMessage, makeConversationRead }}
+      value={{
+        ...state,
+        sendMessage,
+        makeConversationRead,
+        updateConversationList,
+        getConverSationList,
+        updateConversation,
+      }}
     >
       {children}
     </WebSocketContext.Provider>

@@ -8,6 +8,9 @@ import { useLocation } from 'react-router-dom';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { MdClearAll } from 'react-icons/md';
 import { Spinner } from '@material-tailwind/react';
+import { CardPlacehoderSkeleton } from '../components/Skeleton/AddSpace/AddSpaceSearchCardSkeleton';
+import { AddSpaceSearchCardSkeletonWrapper } from '../components/Skeleton/AddSpace/AddSpaceSearchCardSkeletonWrapper';
+import { UserProfileSkeleton } from '../components/Skeleton/userProfile/userProfileSkeleton';
 
 const MainFilter = () => {
   const formRef = useRef();
@@ -207,32 +210,37 @@ const MainFilter = () => {
             disabled={isRefetching}
             className={`px-3 py-1 md:px-9 md:py-4 shadow-2xl text-sm md:text-base font-medium text-white ${isRefetching ? 'bg-gray-400' : 'bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300'} rounded-lg text-center`}
           >
-            {isRefetching ? (
-              <Spinner
-                type="ThreeDots"
-                color="#00BFFF"
-                height={50}
-                width={50}
-                timeout={3000} //3 secs
-              />
+            <div className="flex items-center">
+              {isRefetching && <Spinner type="ThreeDots" color="#00BFFF" height={20} width={20} />}
+              <span>Apply Filter</span>
+            </div>
+            {/* {isRefetching ? (
+              // <CustomSpinner />
+              <CardPlacehoderSkeleton />
             ) : (
               'Apply Filter'
-            )}
+            )} */}
           </button>
         </div>
       </div>
       <div>
 
         <div className='max-w-screen-3xl mx-auto px-3 md:px-0 my-10'>
-          {isPending && (
-            <CustomSpinner />
-          )}
-
+          {(isPending || isRefetching) && <AddSpaceSearchCardSkeletonWrapper />}
+          {/* <AddSpaceSearchCardSkeletonWrapper /> */}
           <div className="flex justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-5">
+
+            {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-5"> */}
+            <div className="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
+
+              {/* {/* {isPending || isRefetching ? (
+                Array(4).fill().map((_, i) => <CardPlacehoderSkeleton key={i} />)
+              ) : ( */}
               {data && data.map(space => (
                 <SpaceProfileSearchCard key={space.id} profile={space} />
-              ))}
+              ))
+              }
+
             </div>
           </div>
         </div>
