@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Navbar, Typography, IconButton } from "@material-tailwind/react";
 import Logo from '../images/Group 1000005596 (2).svg'
+import AddictiveAdLogo from '../images/addictiveAdd.svg'
+
 import userPhoto from '../Layout/AuthPage/images/Group 1000005937.svg'
 import { Link, useNavigate } from "react-router-dom";
 import Notification from '../images/notification.svg'
@@ -468,7 +470,7 @@ function StickyNavbar({ authenticated }) {
         <Navbar className="sticky bg-transparent border-none backdrop-none backdrop-blur-none shadow-none top-0 z-10 h-max max-w-full rounded-none px-6 py-6 lg:px-6 lg:py-4">
           <div className="flex items-center justify-between text-blue-gray-900">
             <Typography as="a" href="/" className="mr-4 text-black cursor-pointer py-1.5 font-medium">
-              <img className="w-36 md:w-44" src={Logo} alt="Logo" />
+              <img className="w-60 text-blue-500 fill-current" src={AddictiveAdLogo} alt="Logo" />
             </Typography>
             <div className="flex items-center gap-4">
               <div className="hidden lg:block">{isAuthenticated ? getUser : ghostUser}</div>

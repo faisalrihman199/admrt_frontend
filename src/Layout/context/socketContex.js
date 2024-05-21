@@ -180,6 +180,7 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
   useEffect(() => {
     if (isAuthenticated) {
       const socket = new WebSocket(
