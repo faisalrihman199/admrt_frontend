@@ -49,7 +49,7 @@ const Footer = ({ authenticated }) => {
                   </li>
                   {!isAuthenticated && (
                     <li>
-                      <Link to={isAuthenticated ? "/" : "/adSpaceHost/registasion"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                      <Link to={isAuthenticated ? "/" : "/register"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
                         Become An Ad Host
                       </Link>
                     </li>
