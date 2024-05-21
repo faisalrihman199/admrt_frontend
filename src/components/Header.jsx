@@ -112,12 +112,12 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className=" w-full  " style={{ paddingTop: '200px', paddingBottom: '200px', backgroundColor: '#FAFAFA' }}>
-        <div className='md:flex items-center max-w-screen-2xl justify-end w-full px-8 py-20 md:py-0 mx-auto xl:px-5'>
+      <div className="w-full" style={{ paddingTop: '100px', paddingBottom: '200px', backgroundColor: '#FAFAFA' }}>
+        <div className='md:flex items-center max-w-screen-2xl justify-end w-full px-8 py-20 md:py-0   mx-auto xl:px-5'>
           <div class="md:w-1/2 w-full mb-6 md:mb-0">
             <img class="" src={fff} alt="" />
           </div>
-          <div class="md:w-1/2 md:ml-4 items-center ">
+          <div class="p-10 md:w-1/2 md:ml-4 items-center ">
             <div class="">
               <h1 class="font-bold text-4xl -10">Why use AdMrt?</h1>
             </div>
