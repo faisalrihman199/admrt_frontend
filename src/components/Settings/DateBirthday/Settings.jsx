@@ -173,7 +173,7 @@ const Settings = () => {
       )}
 
       <div className="md:flex my-12 bg-white m-auto max-w-screen-2xl justify-center items-center px-4 py-6 sm:px-6 lg:px-8">
-        <div className="w-full h-96 border border-gray-100 bg-white py-8 px-3 md:px-10 mb-5 rounded-2xl md:0 md:w-1/3">
+        <div className=" border-gray-100 w-full  border border-gray-100 bg-white py-8 px-3 md:px-10 mb-5 rounded-2xl md:0 md:w-1/3">
           <div className=''>
             <div className="mb-6">
               <h3 className="font-bold text-2xl text-start">Settings</h3>
@@ -211,39 +211,11 @@ const Settings = () => {
             </div>
           </div>
         </div>
-        {/* <div className="w-full md:w-2/3 md:ml-8 py-8 px-3 md:px-10 border border-gray-100 bg-white p-4 rounded-2xl">
-          <div className="text-start">
-            <div className="mb-6">
-              <h3 className="font-bold text-xl">Account Settings</h3>
-            </div>
-            <form>
-              <div className="grid gap-6 mb-6 md:grid-cols-2">
-                <div>
-                  <label htmlFor="first_name" className="block mb-2 text-base font-medium text-gray-900 dark:text-black">Full Name</label>
-                  <input type="text" id="first_name" className="bg-gray-50 border px-4 py-3 text-base border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Name" value={fullName} onChange={(e) => { setFullName(e.target.value) }} required />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block mb-2 text-base font-medium text-gray-900 dark:text-black">Email</label>
-                  <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 px-4 py-3 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="example@gmail.com" value={email} onChange={(e) => { setEmail(e.target.value) }} required />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block mb-2 text-base font-medium text-gray-900 dark:text-black">Birthday</label>
-                  <input type="date" id="birthday" className="bg-gray-50 border border-gray-300 text-gray-900 px-4 py-3 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value={dateBirthday} onChange={(e) => { setDateBirthday(e.target.value) }} required />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block mb-2 text-base font-medium text-gray-900 dark:text-black">Phone number</label>
-                  <input type="tel" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 px-4 py-3 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="123-45-678" value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value) }} pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required />
-                </div>
-              </div>
-            </form>
-          </div>
-          <div>
-            <div className="mb-6 mt-10 py-6 text-center md:text-end">
-              <button className="w-full md:w-64 rounded-lg py-3 bg-blue-500 text-white hover:shadow-lg font-medium font-medium text-sm md:text-base shadow-indigo-700/40 text-center" onClick={() => setModal(true)}>Save Change</button>
-            </div>
-          </div>
-        </div> */}
-        {selectedSettingsType === 'Account' ? <AccountSettings /> : <NotificationSetting />}
+
+        <div className='md:w-2/3'>
+          {selectedSettingsType === 'Account' ? <AccountSettings /> : <NotificationSetting />}
+
+        </div>
       </div>
     </div>
   );
