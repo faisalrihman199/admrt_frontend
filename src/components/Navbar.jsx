@@ -175,7 +175,9 @@ function StickyNavbar({ authenticated }) {
   const ghostUser = (
     <div className="flex">
       <ul className="mt-2 mb-2 mr-6 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-        <Search className={"mr-8"} />
+        {isAuthenticated && auth?.user_role === 'advertiser' && (
+          <Search className={"mr-8"} />
+        )}
         <Typography
           as="li"
           variant="small"
@@ -261,7 +263,9 @@ function StickyNavbar({ authenticated }) {
   const getUser = (
     <div className="flex items-center gap-2">
       <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center ml-8">
-        <Search />
+        {isAuthenticated && auth?.user_role === 'advertiser' && (
+          <Search className={"mr-8"} />
+        )}
         <Typography
           as="li"
           variant="small"
