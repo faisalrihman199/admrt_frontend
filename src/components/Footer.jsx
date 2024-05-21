@@ -2,10 +2,13 @@ import React, { useState } from 'react'
 import white from '../Layout/AuthPage/images/Group white.svg'
 import { Link } from 'react-router-dom'
 import { BsFillTelephoneInboundFill } from 'react-icons/bs';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 const Footer = ({ authenticated }) => {
   const [isPhoneHovered, setIsPhoneHovered] = useState(false);
-
+  const isAuthenticated = useIsAuthenticated();
+  const authUser = useAuthUser();
   return (
     <div>
       <footer class="mt-0 footer bg-[#18181B]">
@@ -27,26 +30,30 @@ const Footer = ({ authenticated }) => {
               <div>
                 <p class="font-medium text-white text-base font-light text-base font-light">Services</p>
                 <ul class="mt-6 space-y-4 text-sm">
+                  {!isAuthenticated && (
+                    <li>
+                      <Link to="/register" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
+                        Sign Up
+                      </Link>
+                    </li>
+                  )}
                   <li>
-                    <Link to="/register" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
-                      Sign Up
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
+                    <Link to="/about" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <Link to={authenticated ? "/" : "/advertiser/registasion"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                    <Link to={isAuthenticated && authUser?.user_role == 'advertiser' ? "/filter" : "/login"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
                       Find The Best Places To Advertise
                     </Link>
                   </li>
-                  <li>
-                    <Link to={authenticated ? "/" : "/adSpaceHost/registasion"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
-                      Become An Ad Space Host
-                    </Link>
-                  </li>
+                  {!isAuthenticated && (
+                    <li>
+                      <Link to={isAuthenticated ? "/" : "/adSpaceHost/registasion"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                        Become An Ad isAuthenticated Host
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </div>
               <div>
@@ -76,7 +83,7 @@ const Footer = ({ authenticated }) => {
           <div class="flex flex-col justify-between pt-5 pb-10 border-t border-gray-800 sm:flex-row">
             <p className='text-white'>More services coming soon.</p>
             <p class="text-sm text-neutral-500 text-base font-light">
-              ©2022 admrt. All rights reserved.
+              ©2024 admrt. All rights reserved.
             </p>
             <div class="mb-6 flex items-center text-neutral-500 ">
               <Link
