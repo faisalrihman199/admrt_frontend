@@ -125,13 +125,20 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
 
         userConversation.forEach((msg) => {
-            // const messageDate = msg.created_at;
-            const messageDateString = 'Today'
             const date = new Date(msg?.created_at);
+            const today = new Date();
+
+            const isToday = (date.getFullYear() === today.getFullYear() &&
+                date.getMonth() === today.getMonth() &&
+                date.getDate() === today.getDate());
+
+
+            const messageDateString = 'Today'
+            // const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
             const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            const formattedDate = date.toLocaleDateString('en-US');
             const formattedMessage = `${msg?.text}`;
-            const verifySeen = msg?.seen;
-            const timeMessage = formattedTime;
+            const timeMessage = isToday ? formattedTime : `${formattedDate}, ${formattedTime}`;
             let dateComponent = null;
 
             if (messageDateString !== lastDate) {
