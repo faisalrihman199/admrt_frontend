@@ -289,7 +289,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                 </form>
             </div>
             {/* {JSON.stringify(conversation)} */}
-            {JSON.stringify(conversationList)}
+            {/* {JSON.stringify(conversationList)} */}
 
 
         </div>
