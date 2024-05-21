@@ -121,6 +121,10 @@ function StickyNavbar({ authenticated }) {
     }
   };
 
+  const handleNavClick = () => {
+    setOpenNav(!openNav);
+  };
+
   const handleRequestRemove = async (username) => {
     try {
       const userRef = doc(db, 'users', userId);
@@ -250,6 +254,7 @@ function StickyNavbar({ authenticated }) {
       </IconButton>
     </div>
   );
+
 
   const getUser = (
     <div className="flex items-center gap-2">
@@ -390,21 +395,29 @@ function StickyNavbar({ authenticated }) {
             <Search />
             <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
               <AdvertiserViewPermission userRole={auth?.user_role}>
-                <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
+                <Link
+                  onClick={handleNavClick}
+                  to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
                   <FaAd className="mr-1 self-start" />
                   <h1>Find Ad spaces</h1>
                 </Link>
               </AdvertiserViewPermission>
             </Typography>
             <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
-              <Link to={`/message`} className="flex items-center hover:text-blue-700 ">
+              <Link
+                onClick={handleNavClick}
+
+                to={`/message`} className="flex items-center hover:text-blue-700 ">
                 <MdMessage className="mr-1 self-start" />
                 <h1>Messages</h1>
               </Link>
             </Typography>
             {navigation.map((item, idx) => (
               <Typography as="li" key={idx} variant="small" className="p-1 text-black text-lg font-normal">
-                <Link to={item.path} className="flex items-center hover:text-blue-700 hover:duration-500 ">
+                <Link
+                  onClick={handleNavClick}
+
+                  to={item.path} className="flex items-center hover:text-blue-700 hover:duration-500 ">
                   {item.title}
                 </Link>
               </Typography>

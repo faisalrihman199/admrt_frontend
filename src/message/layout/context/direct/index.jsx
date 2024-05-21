@@ -85,11 +85,12 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
             if (messageRef.current.value === '') return;
             const now = new Date();
             const timestampInMicroseconds = now.getTime() * 1000;
+            const timestampInISOFormat = now.toISOString();
             const body = {
                 receiver_id: userId,
                 text: messageRef.current.value,
                 sender_id: authUser?.id,
-                created_at: timestampInMicroseconds,
+                created_at: timestampInISOFormat,
                 full_name: newConversationUserName,
                 profile_image: newConversationUserProfileImage
             };
@@ -175,15 +176,18 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                                 </div>
                                 <div className="relative flex   flex-col text-sm bg-white gap-2 py-3 px-4 shadow border rounded-md" style={{ backgroundColor: msg?.sender_id == authUser?.id ? '#CAF4FF' : '#FFF9D0' }}>
                                     <div className="text-left mr-auto pr-20">{formattedMessage}</div>
-                                    <div className={`text-[10px] text-gray-500  ml-auto  `}>{timeMessage}</div>
-                                    {/* <div className={`${sender !== 'You' ? 'flex justify-end mt-1' : 'hidden'}`}>
-                                        {verifySeen === true ? (
-                                            <IoCheckmarkDone className='w-4 h-4' />
-                                        ) : (
-                                            <IoCheckmark className='flex w-3 h-3' />
-                                        )}
-                                    </div> */}
+                                    <div className={`text-[10px] text-gray-500 flex  ml-auto  `}><span>{timeMessage}</span><span className='ml-1'>{msg?.sender_id == authUser?.id && (
+                                        <>
+                                            {msg?.delivered === true ? (
+                                                <IoCheckmarkDone className='w-4 h-4' />
+                                            ) : (
+                                                <IoCheckmark className='flex w-3 h-3' />
+                                            )}
+                                        </>
+                                    )}</span></div>
+
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -199,7 +203,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
     // Render the chat component
     return (
-        <div className='overflow-hidden'>
+        <div className='w-full sm:w-auto overflow-hidden'>
             {isMobile ? (
                 <div className="border-b relative px-5 mb-3">
                     <div className="flex py-3">
@@ -285,7 +289,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                 </form>
             </div>
             {/* {JSON.stringify(conversation)} */}
-            {/* {JSON.stringify(conversationList)} */}
+            {JSON.stringify(conversationList)}
 
 
         </div>

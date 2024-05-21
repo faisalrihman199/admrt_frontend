@@ -52,11 +52,6 @@ function ViewsProfile() {
 
 
 
-  if (isPending) {
-    // return <CustomSpinner />
-    return <UserProfileSkeleton />
-  }
-
   if (isError) {
     return (
       <div className="flex items-center justify-center h-screen text-2xl">
@@ -88,55 +83,62 @@ function ViewsProfile() {
 
   return (
     <div className="App">
+      <div>
+        {isPending ? (
+          <div className='mx-20'>
+            <UserProfileSkeleton />
+          </div>
+        ) : (
 
-      <div className="max-w-screen-2xl mx-auto">
-        {isPending && (
-          <UserProfileSkeleton />
-        )}
-        <div className="md:flex">
-          <div className="w-full order-2 md:w-2/3">
-            <div className={"border p-2 md:p-5 rounded-xl"}>
-              <div className='m-2' style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button
-                  color="blue"
-                  ripple="light"
-                  onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
-                >
-                  Send Message
-                </Button>
-              </div>
-              <EditBackground coverImageUrl={userInfo.coverImageUrl} />
-              <EditeUser userInfo={userInfo} />
-              <IntoDescription description={userInfo.description} />
-              <SpaceHostViewPermission userRole={userInfo.user_role}>
+          <div className="max-w-screen-2xl mx-auto">
 
-                <div>
-                  <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+            <div className="md:flex">
+              <div className="w-full order-2 md:w-2/3">
+                <div className={"border p-2 md:p-5 rounded-xl"}>
+                  <div className='m-2 flex justify-end'>
+                    <Button
+                      color="blue"
+                      ripple="light"
+                      onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
+                    >
+                      Send Message
+                    </Button>
+                  </div>
+                  <EditBackground coverImageUrl={userInfo.coverImageUrl} />
+                  <EditeUser userInfo={userInfo} />
+                  <IntoDescription description={userInfo.description} />
+                  <SpaceHostViewPermission userRole={userInfo.user_role}>
+
+                    <div>
+                      <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                    </div>
+                  </SpaceHostViewPermission>
+
                 </div>
-              </SpaceHostViewPermission>
+                <SpaceHostViewPermission userRole={userInfo.user_role}>
+                  <Portfolio userPortfolios={userInfo.portfolios} />
+                </SpaceHostViewPermission>
 
+                <AdvertiserViewPermission userRole={userInfo.user_role}>
+                  <ProductAdventiser userProducts={userInfo.products} />
+                </AdvertiserViewPermission>
+              </div>
+              <div class="w-full py-0 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
+                <AboutHim
+                  location={userInfo.location}
+                  website={userInfo.website}
+                  joinDate={userInfo.joinDate}
+                />
+                <SocialMedia socials={userInfo.socialMedias} />
+                <SpaceHostViewPermission userRole={userInfo.user_role}>
+                  <MainAdSpace adSpaces={userInfo.adSpaces} />
+                </SpaceHostViewPermission>
+              </div>
             </div>
-            <SpaceHostViewPermission userRole={userInfo.user_role}>
-              <Portfolio userPortfolios={userInfo.portfolios} />
-            </SpaceHostViewPermission>
-
-            <AdvertiserViewPermission userRole={userInfo.user_role}>
-              <ProductAdventiser userProducts={userInfo.products} />
-            </AdvertiserViewPermission>
           </div>
-          <div class="w-full py-0 max-[1200px]:px-4 px-10 order-1 md:order-2 md:w-1/3">
-            <AboutHim
-              location={userInfo.location}
-              website={userInfo.website}
-              joinDate={userInfo.joinDate}
-            />
-            <SocialMedia socials={userInfo.socialMedias} />
-            <SpaceHostViewPermission userRole={userInfo.user_role}>
-              <MainAdSpace adSpaces={userInfo.adSpaces} />
-            </SpaceHostViewPermission>
-          </div>
-        </div>
+        )}
       </div>
+
     </div>
   );
 }

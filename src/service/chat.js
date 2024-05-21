@@ -26,6 +26,6 @@ export async function getChatConversation(authHeader, partner_id) {
     console.log("called api");
     return response.data;
   } catch (error) {
-    throw error;
+    return [];
   }
 }
