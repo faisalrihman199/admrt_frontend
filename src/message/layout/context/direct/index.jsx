@@ -48,12 +48,12 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
     }, [conversation[userId]]);
 
     useEffect(() => {
-        if (!conversationWithUser) {
-            getChatConversation(authHeader, userId).then((data) => {
-                console.log('llllll:', data)
-                updateConversation(userId, data)
-            });
-        }
+        // if (!conversationWithUser) {
+        getChatConversation(authHeader, userId).then((data) => {
+            console.log('llllll:', data)
+            updateConversation(userId, data)
+        });
+        // }
     }, [userId]);
 
     // useEffect(() => {
@@ -258,7 +258,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                         </div>
                     </div>
                     <div class="ml-4 flex gap-3 px-6">
-                        <div
+                        {/* <div
                             class="items-center justify-center rounded-xl text-white py-1 flex-shrink-0"
                         >
                             {emojiModal && (
@@ -281,7 +281,7 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                                     <path d="M10.0996 5.90015H10.1066" stroke="#171725" stroke-linecap="round" stroke-linejoin="round" />
                                 </g>
                             </svg>
-                        </div>
+                        </div> */}
                         <button
                             class="flex items-center justify-center rounded-xl text-white flex-shrink-0"
                             type="submit"
