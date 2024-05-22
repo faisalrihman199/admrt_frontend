@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 
 const User = () => {
+
     const { userUID } = useParams();
     const [fullName, setFullName] = useState('');
     const [userImg, setUserImg] = useState('');
