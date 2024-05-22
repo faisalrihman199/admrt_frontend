@@ -119,6 +119,7 @@ function App() {
           }
         >
           <Route index element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route element={<AuthOutlet fallbackPath="/" />}>
             {AuthUserRoutes.map((route) => (
               <Route key={route.id} path={route.path} element={route.element} />
