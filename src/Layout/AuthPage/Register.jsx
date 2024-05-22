@@ -69,7 +69,7 @@ function Register() {
   };
 
   return (
-    <div className="login-container min-h-screen md:flex">
+    <div className="login-container min-h-screen md:flex ">
       {modal && (
         <>
           <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none bg-black bg-opacity-25 focus:outline-none">
@@ -145,14 +145,14 @@ function Register() {
                       </span>
                     </div>
                   </Link>
-                  <div onClick={() => handleProviderSelection('google')} className="mt-3 flex justify-center items-center text-center w-full social-card text-gray-800 md:font-normal google border font-light rounded-xl py-4 px-4 text-center hover:border-blue-600  hover:shadow-md md:px-16">
+                  {/* <div onClick={() => handleProviderSelection('google')} className="mt-3 flex justify-center items-center text-center w-full social-card text-gray-800 md:font-normal google border font-light rounded-xl py-4 px-4 text-center hover:border-blue-600  hover:shadow-md md:px-16">
                     <img src={svg3} alt="" />
                     <span className="ml-1 md:ml-2">Continue with Google</span>
-                  </div>
-                  <div onClick={() => handleProviderSelection('facebook')} className="mt-3 flex justify-center items-center text-center w-full social-card text-gray-800 md:font-normal google border font-light rounded-xl py-4 px-4 text-center hover:border-blue-600  hover:shadow-md md:px-16">
-                    <img src={svg4} alt="" />
-                    <span className="ml-1 md:ml-2">Continue with Facebook</span>
-                  </div>
+                  </div> */}
+                  {/* <div onClick={() => handleProviderSelection('facebook')} className="mt-3 flex justify-center items-center text-center w-full social-card text-gray-800 md:font-normal google border font-light rounded-xl py-4 px-4 text-center hover:border-blue-600  hover:shadow-md md:px-16"> */}
+                  {/* <img src={svg4} alt="" /> */}
+                  {/* <span className="ml-1 md:ml-2">Continue with Facebook</span> */}
+                  {/* </div> */}
                 </div>
               </div>
             </div>

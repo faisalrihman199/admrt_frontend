@@ -51,8 +51,8 @@ const CreateAnAcc = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters');
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[@$!%*#?&]/.test(password)) {
+      setErrorMessage('Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
       return;
     }
 
@@ -68,11 +68,11 @@ const CreateAnAcc = () => {
   };
 
   return (
-    <div className="login-container min-h-screen md:flex ">
+    <div className="login-container min-h-screen md:flex">
       <div className="md:w-1/2">
         <SlideShow />
       </div>
-      <div className="w-full px-2 md:flex justify-center items-center ">
+      <div className="w-full px-2 md:flex justify-center items-center  ">
         <div className="w-full sm:w-full p-2 md:w-auto p-2 xl:w-3/5 lg:p-2">
           <div>
             <div>
@@ -80,7 +80,7 @@ const CreateAnAcc = () => {
               <p className="mt-2 text-base font-light md:mt-12">Already have an account?<span className="text-purple-700 font-normal cursor-pointer "><Link to="/login"> Login </Link></span></p>
             </div>
           </div>
-          <form onSubmit={handleConfimAuth}>
+          <form className='' onSubmit={handleConfimAuth}>
             <div>
               <label className="block mt-8">
                 <h3 className="text-lg font-normal">Full Name / Business Name</h3>

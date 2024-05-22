@@ -32,7 +32,7 @@ const Footer = ({ authenticated }) => {
                 <ul class="mt-6 space-y-4 text-sm">
                   {!isAuthenticated && (
                     <li>
-                      <Link to="/register" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
+                      <Link to="/continue" class="text-neutral-500 text-base font-light  transition hover:text-[#2B59FF]">
                         Sign Up
                       </Link>
                     </li>
@@ -49,7 +49,7 @@ const Footer = ({ authenticated }) => {
                   </li>
                   {!isAuthenticated && (
                     <li>
-                      <Link to={isAuthenticated ? "/" : "/register"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                      <Link to={isAuthenticated ? "/" : "/continue"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
                         Become An Ad Host
                       </Link>
                     </li>

@@ -213,7 +213,7 @@ function StickyNavbar({ authenticated }) {
             <h1 className='text-center buttonSignIn'>Sign In</h1>
           </div>
         </Link>
-        <Link to="/register">
+        <Link to="/continue">
           <div>
             <button className='buttonSignUp hover:bg-blue-100 h-10 p-2 px-8'>Sign Up</button>
           </div>
@@ -266,6 +266,11 @@ function StickyNavbar({ authenticated }) {
         {isAuthenticated && auth?.user_role === 'advertiser' && (
           <Search className={"mr-8"} />
         )}
+        <Typography as="li" variant="small" className="p-5 text-black text-lg font-normal">
+          <Link to="/about" className="flex items-center hover:text-blue-700 hover:box-shadow: -1px 1px 10px 0px rgba(0,122,255,0.75);">
+            <h1>About</h1>
+          </Link>
+        </Typography>
         <Typography
           as="li"
           variant="small"
@@ -278,6 +283,7 @@ function StickyNavbar({ authenticated }) {
             </Link>
           </AdvertiserViewPermission>
         </Typography>
+
         <Typography
           as="li"
           variant="small"
@@ -456,7 +462,7 @@ function StickyNavbar({ authenticated }) {
                   <h1 className="text-center buttonSignIn">Sign In</h1>
                 </div>
               </Link>
-              <Link to="/register">
+              <Link to="/continue">
                 <div>
                   <button className="buttonSignUp hover:bg-blue-100 h-10 p-2 px-8">Sign Up</button>
                 </div>

@@ -104,7 +104,7 @@ function Login() {
               <h1 className="mb-2 font-normal text-3xl lg:text-5xl sm:text-3xl">
                 Sign In
               </h1>
-              <p className="my-4 text-sm md:text-base font-light md:my-8">Don’t have an account? <span className="text-blue-700 font-normal cursor-pointer"><a href="/register">Create an account</a></span></p>
+              <p className="my-4 text-sm md:text-base font-light md:my-8">Don’t have an account? <span className="text-blue-700 font-normal cursor-pointer"><a href="/continue">Create an account</a></span></p>
               {/* {loginErrorMessage && <p className="text-red-500">{loginErrorMessage}</p>} */}
               <form className="md:space-y-6" onSubmit={handleLogin}>
                 {errorMessage &&
@@ -160,9 +160,9 @@ function Login() {
                 </button>
               </form>
               <div className="relative flex items-center justify-center w-full my-10 border border-t">
-                <div className="absolute px-5 bg-white">or</div>
+                {/* <div className="absolute px-5 bg-white">or</div> */}
               </div>
-              <div className="mt-3 flex justify-center items-center text-center w-full social-card text-gray-800 md:font-normal google border font-light rounded-xl py-4 px-4 text-center hover:border-blue-600 hover:shadow-md md:px-16"
+              {/* <div className="mt-3 flex justify-center items-center text-center w-full social-card text-gray-800 md:font-normal google border font-light rounded-xl py-4 px-4 text-center hover:border-blue-600 hover:shadow-md md:px-16"
                 onClick={handleGoogleLogin}
               >
                 <img src={svg1} alt="Google" />
@@ -173,7 +173,7 @@ function Login() {
               >
                 <img src={svg2} alt="Facebook" />
                 <span className="ml-1 md:ml-2">Sign in with Facebook</span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
