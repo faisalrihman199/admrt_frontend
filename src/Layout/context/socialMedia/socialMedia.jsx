@@ -46,7 +46,7 @@ const SocialMedia = ({ socials }) => {
                 data: { social_media: addedSocial.social_media, url: addedSocial.url }
             })
 
-            setCurrentSocials((prevSelected) => [...prevSelected, addedSocial]);
+            // setCurrentSocials((prevSelected) => [...prevSelected, addedSocial]);
 
 
         } catch (error) {
