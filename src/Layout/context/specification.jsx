@@ -97,21 +97,13 @@ export const Specification = ({ long_term_service_availability, languages }) => 
         e.preventDefault();
         try {
 
-
             mutation.mutate({
                 authHeader,
-                data: { long_term_service_availability: formData.long_term_service_availability }
+                data: {
+                    long_term_service_availability: formData.long_term_service_availability,
+                    languages: selectedLanguages.map(lang => lang.value).join(', ')
+                }
             })
-
-            if (selectedLanguages.length > 0) {
-
-                const selectedLanguagesPayload = selectedLanguages.map(lang => lang.value);
-
-                languageMutation.mutate({
-                    authHeader,
-                    data: selectedLanguagesPayload
-                })
-            }
 
             if (mutation.isError) {
                 console.error("Error saving changes");
@@ -249,10 +241,10 @@ export const Specification = ({ long_term_service_availability, languages }) => 
                                 <div
                                     className='text-xs md:text-sm md:font-semibold text-[#2B59FF] flex justify-center items-center  gap-4'>
                                     <h1>
-                                        {languages && languages.length > 0
+                                        {/* {languages && languages.length > 0
                                             ? languages.map(lang => lang.language).join(', ')
-                                            : 'No languages found'}
-
+                                            : 'No languages found'} */}
+                                        {languages ? languages : 'No languages found'}
                                     </h1>
                                 </div>
                             </li>
