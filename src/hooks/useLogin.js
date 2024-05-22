@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { QUERY_KEY } from "../constants/queryKeys";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import { userLoginApi } from "../service/auth";
+import { setProfileImageToLocalStorage } from "../util/localStorageUtils";
 
 export function useLogIn() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export function useLogIn() {
           // refresh: data.refresh,
           userState: data.user,
         });
+        setProfileImageToLocalStorage(data?.user?.profile_image);
         window.location.href = "/";
       } else {
         console.error("im here");

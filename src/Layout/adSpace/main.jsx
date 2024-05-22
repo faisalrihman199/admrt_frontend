@@ -9,6 +9,7 @@ import AuthenticatedUserViewPermission from '../../components/Permissions/Authen
 import { addAddSpace, deleteAdSpace } from '../../service/addSpace';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { FaFileDownload, FaLink } from 'react-icons/fa';
 
 export const MainAdSpace = ({ adSpaces }) => {
   const [modal, setModal] = useState(false);
@@ -367,10 +368,10 @@ export const MainAdSpace = ({ adSpaces }) => {
         </AuthenticatedUserViewPermission>
         {/* )} */}
       </div>
-      <div className='py-3 border-b-2'>
+      <div className='py-3 border-b-2 space-y-3'>
         {adSpaces && adSpaces.length > 0 ? adSpaces.map((adSpace) => (
           <div className='flex justify-between px-3' key={adSpace.id}>
-            <Link to={adSpace.url || ''} className='w-full flex' target='_blank'>
+            <div className='w-full flex space-x-5'>
               <img src={
                 adSpace.space_type === 'Event' ? eventIcon :
                   adSpace.space_type === 'Transportation' ? transIcon :
@@ -378,7 +379,9 @@ export const MainAdSpace = ({ adSpaces }) => {
                       adSpace.space_type === 'Other' ? otherIcon : null
               } alt={adSpace.space_type} className='w-6 mr-2' />
               <h1>{adSpace.space_type}</h1>
-            </Link>
+              {adSpace.url && <a href={adSpace.url} target='_blank' rel='noopener noreferrer'><FaLink /></a>}
+              {adSpace.file && <a href={adSpace.file} target='_blank' rel='noopener noreferrer'><FaFileDownload /></a>}
+            </div>
             <AuthenticatedUserViewPermission>
               <div className='flex gap-3'>
                 {/* <MdModeEditOutline className='text-gray-600 w-6 h-6' onClick={() => setEditModal(true)} /> */}

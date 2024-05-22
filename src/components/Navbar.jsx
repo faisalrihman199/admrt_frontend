@@ -21,9 +21,10 @@ import { MdMessage } from 'react-icons/md';
 import { FaAd } from 'react-icons/fa';
 import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
 import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryCache, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userProfile } from "../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { getProfileImageFromLocalStorage } from "../util/localStorageUtils";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -85,6 +86,22 @@ function StickyNavbar({ authenticated }) {
   ];
   const queryClient = useQueryClient()
   const authHeader = useAuthHeader()
+
+  const [profileImage, setProfileImage] = useState(getProfileImageFromLocalStorage());
+
+
+  console.log(profileImage)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log('Storage change detected');
+      setProfileImage(getProfileImageFromLocalStorage());
+    };
+
+    window.addEventListener('profileImageChange', handleStorageChange);
+    return () => {
+      window.removeEventListener('profileImageChange', handleStorageChange);
+    };
+  }, []);
 
   const handleLogout = () => {
     signOut()
@@ -158,11 +175,10 @@ function StickyNavbar({ authenticated }) {
       e.target.onerror = null;
       e.target.src = defaultAvate;
     }
-
-    // if (data?.profile_image) {
-    //   return <img src={data.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
-    // }
-    if (auth?.profile_image) {
+    if (profileImage) {
+      return <img src={profileImage} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
+    }
+    else if (auth?.profile_image) {
       return <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
     } else if (auth?.full_name) {
       return (
