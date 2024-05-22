@@ -86,11 +86,11 @@ function StickyNavbar({ authenticated }) {
   const queryClient = useQueryClient()
   const authHeader = useAuthHeader()
 
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ['loggedInUser', { authHeader }],
-    queryFn: userProfile,
-    staleTime: 300 * 60 * 1000,
-  })
+  // const { isPending, isError, data, error } = useQuery({
+  //   queryKey: ['loggedInUser', { authHeader }],
+  //   queryFn: userProfile,
+  //   staleTime: 300 * 60 * 1000,
+  // })
 
   const handleLogout = () => {
     signOut()
@@ -165,9 +165,10 @@ function StickyNavbar({ authenticated }) {
       e.target.src = defaultAvate;
     }
 
-    if (data?.profile_image) {
-      return <img src={data.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
-    } else if (auth?.profile_image) {
+    // if (data?.profile_image) {
+    //   return <img src={data.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
+    // }
+    if (auth?.profile_image) {
       return <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
     } else if (auth?.full_name) {
       return (
@@ -214,9 +215,9 @@ function StickyNavbar({ authenticated }) {
           variant="small"
           className="p-1 text-black text-lg font-normal"
         >
-          <a href="/contact" className="flex items-center hover:text-blue-700 ">
+          <Link to="/contact" className="flex items-center hover:text-blue-700 ">
             <h1>Contact</h1>
-          </a>
+          </Link>
         </Typography>
       </ul>
       <div className='cursor-pointer hidden lg:flex buttonSign'>

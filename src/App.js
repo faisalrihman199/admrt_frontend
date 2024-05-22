@@ -85,6 +85,8 @@ function App() {
     // { id: 9, path: "/message", element: <MessageIndex /> },
     // { id: 10, path: "/message/direct/:userId", element: <DirectIndexPage /> },
     { id: 8, path: "*", element: <NotFound /> },
+    { id: 9, path: "/about", element: <About /> },
+    { id: 10, path: "/contact", element: <Contact /> },
   ];
 
   const GhostUser = [
@@ -94,8 +96,8 @@ function App() {
       path: "/register",
       element: <Register authenticated={handleRegister} />,
     },
-    // { id: 3, path: "/about", element: <About /> },
-    // { id: 4, path: "/contact", element: <Contact /> },
+    { id: 3, path: "/about", element: <About /> },
+    { id: 4, path: "/contact", element: <Contact /> },
     { id: 5, path: "/continue", element: <Continue /> },
     { id: 6, path: "/:split/registration", element: <CreateAnAcc /> },
     { id: 7, path: "/forgotPassword", element: <ForgotPassword /> },
