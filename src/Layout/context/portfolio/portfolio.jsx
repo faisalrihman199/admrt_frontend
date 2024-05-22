@@ -281,6 +281,7 @@ const Portfolio = ({ userPortfolios }) => {
       setErrorMessageTitle(false);
       setErrorMessageDescription(false);
       setError('');
+      setFiles([]);
 
       queryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
       // navigate(`/profile/${authUser?.id}`)
@@ -289,6 +290,21 @@ const Portfolio = ({ userPortfolios }) => {
       // setSaveLoading(false);
 
     }
+  }
+
+  const handleCancel = () => {
+    setModal(false);
+    setStep(1);
+    setTitle('');
+    setDescription('');
+    setImages([]);
+    setPortfolioType('');
+    setYoutubeLink('');
+    setErrorYoutubeLink('');
+    setErrorMessageTitle(false);
+    setErrorMessageDescription(false);
+    setError('');
+    setFiles([]);
   }
   return (
     <div>
@@ -456,7 +472,7 @@ const Portfolio = ({ userPortfolios }) => {
                   <button
                     className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setModal(false)}
+                    onClick={() => handleCancel()}
                   >
                     <h1 className='text-xs md:text-sm'>
                       Cancel
