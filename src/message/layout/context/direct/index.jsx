@@ -48,12 +48,12 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
     }, [conversation[userId]]);
 
     useEffect(() => {
-        if (!conversationWithUser) {
-            getChatConversation(authHeader, userId).then((data) => {
-                console.log('llllll:', data)
-                updateConversation(userId, data)
-            });
-        }
+        // if (!conversationWithUser) {
+        getChatConversation(authHeader, userId).then((data) => {
+            console.log('llllll:', data)
+            updateConversation(userId, data)
+        });
+        // }
     }, [userId]);
 
     // useEffect(() => {
