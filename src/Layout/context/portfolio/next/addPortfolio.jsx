@@ -116,7 +116,7 @@ const AddPortfolio = (props) => {
     const title = location.state?.title || '';
     const description = location.state?.description || '';
     const module = location.state?.module || '';
-    const authUser = useAuthUser
+    const authUser = useAuthUser()
 
     const navigate = useNavigate()
     const { itemType, } = useParams();
@@ -217,7 +217,7 @@ const AddPortfolio = (props) => {
 
             setSaveLoading(false);
             queryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
-            navigate(`/profile/${authUser.id}`)
+            navigate(`/profile/${authUser?.id}`)
         } catch (error) {
             console.error(error);
             setSaveLoading(false);

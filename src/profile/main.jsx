@@ -30,16 +30,11 @@ function SiplePages() {
     const authUser = useAuthUser()
     const { userId } = useParams();
 
-
     const { isPending, isError, data, error } = useQuery({
         queryKey: ['loggedInUser', { authHeader }],
         queryFn: userProfile,
         staleTime: 5 * 60 * 1000,
     })
-
-
-
-
 
     const [split, setSplit] = useState(null);
     const [advertiserProfile, setAdvertiserProfile] = useState(false);
@@ -73,6 +68,7 @@ function SiplePages() {
         portfolios: data?.portfolios,
         user_role: data?.user_role,
         adSpaces: data?.ad_spaces,
+        languages: data?.languages,
 
     };
 
@@ -99,7 +95,7 @@ function SiplePages() {
                         <SpaceHostViewPermission userRole={userInfo.user_role}>
 
                             <div className='py-5'>
-                                <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                                <Specification long_term_service_availability={userInfo.long_term_service_availability} languages={userInfo.languages} />
                             </div>
                         </SpaceHostViewPermission>
 

@@ -16,8 +16,9 @@ import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import { addLanguage, updateProfile } from '../../service/profile'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission'
+import Select from 'react-select';
 
-export const Specification = ({ long_term_service_availability, language }) => {
+export const Specification = ({ long_term_service_availability, languages }) => {
     const { split, userUID } = useParams();
     const [open, setOpen] = useState(true);
     const [meId, setMeId] = useState(null);
@@ -32,6 +33,7 @@ export const Specification = ({ long_term_service_availability, language }) => {
         language: ''
     });
 
+    const [selectedLanguages, setSelectedLanguages] = useState([]);
     const location = useLocation();
     const { pathname } = location;
 
@@ -85,6 +87,12 @@ export const Specification = ({ long_term_service_availability, language }) => {
         }
     })
 
+    const options = [
+        { value: 'English', label: 'English' },
+        { value: 'French', label: 'French' },
+        { value: 'German', label: 'German' },
+        { value: 'Spanish', label: 'Spanish' }
+    ];
     const handleSaveDatabase = async (e) => {
         e.preventDefault();
         try {
@@ -95,10 +103,15 @@ export const Specification = ({ long_term_service_availability, language }) => {
                 data: { long_term_service_availability: formData.long_term_service_availability }
             })
 
-            languageMutation.mutate({
-                authHeader,
-                data: { language: formData.language }
-            })
+            if (selectedLanguages.length > 0) {
+
+                const selectedLanguagesPayload = selectedLanguages.map(lang => lang.value);
+
+                languageMutation.mutate({
+                    authHeader,
+                    data: selectedLanguagesPayload
+                })
+            }
 
             if (mutation.isError) {
                 console.error("Error saving changes");
@@ -235,7 +248,12 @@ export const Specification = ({ long_term_service_availability, language }) => {
                                 </div>
                                 <div
                                     className='text-xs md:text-sm md:font-semibold text-[#2B59FF] flex justify-center items-center  gap-4'>
-                                    <h1>{formData.language || 'none'}</h1>
+                                    <h1>
+                                        {languages && languages.length > 0
+                                            ? languages.map(lang => lang.language).join(', ')
+                                            : 'No languages found'}
+
+                                    </h1>
                                 </div>
                             </li>
                         </ul>
@@ -306,14 +324,22 @@ export const Specification = ({ long_term_service_availability, language }) => {
                                     </div>
                                     <div className='m-1'>
                                         <label>Language</label>
-                                        <select name="language" className='border rounded-lg w-full p-2'
+                                        {/* <select name="language" className='border rounded-lg w-full p-2'
                                             defaultValue={language}
                                             onChange={handleChange}>
                                             <option value="English">English</option>
                                             <option value="French">French</option>
                                             <option value="German">German</option>
                                             <option value="Spanish">Spanish</option>
-                                        </select>
+                                        </select> */}
+                                        <Select
+                                            defaultValue={options[0]}
+                                            onChange={setSelectedLanguages}
+                                            options={options}
+                                            isSearchable={true}
+                                            isMulti={true}
+                                        />
+
                                     </div>
                                 </div>
                                 {error && <p className="text-red-500">{error}</p>}

@@ -34,7 +34,8 @@ const SpaceProfileSearchCard = ({ profile }) => {
       {/* NAME AND IMAGE */}
       <div className='flex gap-3 mt-5'>
         <div className=''>
-          <img className='h-20 w-20 rounded-full' src={profile?.profile_image || avatar} alt="iconYoutuber" />
+          {/* <img className='h-20 w-20 rounded-full' src={profile?.profile_image || avatar} alt="iconYoutuber" /> */}
+          <img className='h-20 w-20 rounded-full object-cover ' src={profile?.profile_image || avatar} alt="iconYoutuber" />
         </div>
         <div className=' '>
           <h1 className='font-semibold'>{profile?.full_name}</h1>
