@@ -5,6 +5,7 @@ export async function addAddSpace({ authHeader, data }) {
     const response = await apiClient.post("/profile/ad-space/", data, {
       headers: {
         Authorization: authHeader,
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
