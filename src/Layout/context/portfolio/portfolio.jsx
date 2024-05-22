@@ -203,12 +203,6 @@ const Portfolio = ({ userPortfolios }) => {
     processFiles(files);
   };
 
-  // const processFiles = (files) => {
-  //   const validFiles = files.filter(file =>
-  //     file.size <= 5 * 1024 * 1024 &&
-  //     ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'].includes(file.type)
-  //   );
-
   //   if (validFiles.length !== files.length) {
   //     setError('Some files were rejected. Ensure they are valid formats and within size limit.');
   //   } else {
@@ -225,14 +219,16 @@ const Portfolio = ({ userPortfolios }) => {
     );
 
     if (validFiles.length !== files.length) {
+      console.log('some files were rejected')
       setError('Some files were rejected. Ensure they are valid formats and within size limit.');
     } else {
       setError('');
     }
+    console.log('processFiles files', files)
 
     const imageFiles = validFiles.map(file => URL.createObjectURL(file));
     setImages([...images, ...imageFiles]);
-    setFiles([...files, ...validFiles]); // Update files state
+    setFiles(prevFiles => [...prevFiles, ...validFiles]);// Update files state
   };
 
   const handleDragOver = (e) => {
@@ -287,7 +283,7 @@ const Portfolio = ({ userPortfolios }) => {
       setError('');
 
       queryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
-      navigate(`/profile/${authUser?.id}`)
+      // navigate(`/profile/${authUser?.id}`)
     } catch (error) {
       console.error(error);
       // setSaveLoading(false);
