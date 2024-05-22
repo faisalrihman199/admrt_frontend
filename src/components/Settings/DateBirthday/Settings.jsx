@@ -7,6 +7,9 @@ import { deleteUser } from 'firebase/auth';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import AccountSettings from '../Account/AccountSetting';
 import NotificationSetting from '../Notification/NotificationSetting';
+import { useQuery } from '@tanstack/react-query';
+import { userProfile } from '../../../service/profile';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
 const Settings = () => {
   const [userId, setUserId] = useState(null);
@@ -47,6 +50,14 @@ const Settings = () => {
 
   //   return () => fetchUser();
   // }, []);
+  const authHeader = useAuthHeader();
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['loggedInUser', { authHeader }],
+    queryFn: userProfile,
+    staleTime: 5 * 60 * 1000,
+  })
+
 
   const handleSaveChanges = async () => {
     try {
@@ -184,7 +195,9 @@ const Settings = () => {
                   onClick={() => setSelectedSettingsType('Account')}
                   className={`flex items-center justify-center mt-8 w-full text-lg font-medium p-4 rounded-2xl mb-2.5 border ${selectedSettingsType === 'Account' ? 'border-blue-500 text-blue-500' : ''}`}
                 >
-                  {auth?.profile_image ? (
+                  {data?.profile_image ? (
+                    <img className="mr-4 w-10 h-10 rounded-full" src={data.profile_image} alt="" />
+                  ) : auth?.profile_image ? (
                     <img className="mr-4 w-10 h-10 rounded-full" src={auth.profile_image} alt="" />
                   ) : auth?.full_name ? (
                     <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center bg-orange-200 text-xl">
