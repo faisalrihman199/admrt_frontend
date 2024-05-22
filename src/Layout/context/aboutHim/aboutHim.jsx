@@ -200,7 +200,7 @@ const AboutHim = ({ location, website, joinDate }) => {
                                 <img src={shape3} alt='' />
                             </div>
                             <div>
-                                <h1>Joined {joinDate ? new Date(joinDate).toLocaleDateString('en-GB') : 'Unknown'}</h1>
+                                <h1>Joined <span className="ml-2">{joinDate ? new Date(joinDate).toLocaleDateString('en-US') : 'Unknown'}</span></h1>
                             </div>
                         </div>
                         {/* <div className='flex justify-center items-center cursor-pointer'>

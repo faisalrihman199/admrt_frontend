@@ -110,10 +110,10 @@ const SocialMedia = ({ socials }) => {
                 {socials && socials.map((socialMedia, index) => (
                     <div key={index} className='flex gap-4 my-4'>
                         <div className='w-5/6 flex justify-between'>
-                            <a href={socialMedia.url ? socialMedia.url : '#'} target={socialMedia.url ? "_blank" : ''} rel="noopener noreferrer">
+                            <a href={socialMedia?.url ? socialMedia?.url : '#'} target={socialMedia?.url ? "_blank" : ''} rel="noopener noreferrer">
                                 <div className='flex items-center gap-2 hover:shadow-xl hover:border hover:p-1'>
                                     {socialMediaPages.hasOwnProperty(socialMedia.social_media) && <img src={socialMediaPages[socialMedia.social_media].icon} alt={socialMedia.social_media} />}
-                                    {socialMedia.url && <h1>{
+                                    {/* {socialMedia.url && <h1>{
                                         (() => {
                                             const parts = socialMedia.url.split('/');
                                             let username = parts.pop();
@@ -122,7 +122,13 @@ const SocialMedia = ({ socials }) => {
                                             }
                                             return username;
                                         })()
-                                    }</h1>}
+                                    }</h1>} */}
+                                    <h1>
+                                        {socialMedia && socialMediaPages && socialMediaPages[socialMedia.social_media]
+                                            ? socialMediaPages[socialMedia.social_media].name
+                                            : '--'}
+                                    </h1>
+                                    {/* <h1>{socialMedia?.social_media}</h1> */}
                                 </div>
                             </a>
                             <AuthenticatedUserViewPermission>

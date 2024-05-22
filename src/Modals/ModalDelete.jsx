@@ -47,7 +47,7 @@ const ModalDelete = ({ onDeleteMedia, name }) => {
                                         onClick={() => setShowModal(false)}
                                     >
                                         <h1 className='text-xs md:text-sm'>
-                                            Cansel
+                                            Cancel
                                         </h1>
                                     </button>
                                     <button

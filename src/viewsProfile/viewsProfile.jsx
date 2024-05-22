@@ -94,23 +94,30 @@ function ViewsProfile() {
 
             <div className="md:flex">
               <div className="w-full order-2 md:w-2/3">
-                <div className={"border p-2 md:p-5 rounded-xl"}>
-                  <div className='m-2 flex justify-end'>
-                    <Button
-                      color="blue"
-                      ripple="light"
-                      onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
-                    >
-                      Send Message
-                    </Button>
+                <div className={" p-2 md:p-5 rounded-xl"}>
+                  <div className=' border bg-gray-50 rounded-xl'>
+
+                    <div className='m-2 flex justify-end'>
+                      <Button
+                        color="blue"
+                        ripple="light"
+                        onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
+                      >
+                        Send Message
+                      </Button>
+                    </div>
+                    <div className={" p-2 md:p-5 "}>
+
+                      <EditBackground coverImageUrl={userInfo.coverImageUrl} />
+                      <EditeUser userInfo={userInfo} />
+                      <IntoDescription description={userInfo.description} />
+                    </div>
                   </div>
-                  <EditBackground coverImageUrl={userInfo.coverImageUrl} />
-                  <EditeUser userInfo={userInfo} />
-                  <IntoDescription description={userInfo.description} />
+
                   <SpaceHostViewPermission userRole={userInfo.user_role}>
 
                     <div>
-                      <Specification long_term_service_availability={userInfo.long_term_service_availability} />
+                      <Specification long_term_service_availability={userInfo.long_term_service_availability} languages={userInfo.languages} />
                     </div>
                   </SpaceHostViewPermission>
 

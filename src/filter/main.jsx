@@ -225,7 +225,7 @@ const MainFilter = () => {
       </div>
       <div>
 
-        <div className='max-w-screen-3xl mx-auto px-3 md:px-0 my-10'>
+        <div className='max-w-screen-3xl mx-10 px-3 sm:px-5 md:px-8 lg:px-10 xl:px-12 2xl:px-0 my-10'>
           {(isPending || isRefetching) && <AddSpaceSearchCardSkeletonWrapper />}
           {/* <AddSpaceSearchCardSkeletonWrapper /> */}
           <div className="flex justify-center">

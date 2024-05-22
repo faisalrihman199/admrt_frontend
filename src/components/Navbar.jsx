@@ -21,7 +21,9 @@ import { MdMessage } from 'react-icons/md';
 import { FaAd } from 'react-icons/fa';
 import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
 import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { userProfile } from "../service/profile";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -41,6 +43,8 @@ function StickyNavbar({ authenticated }) {
   const signOut = useSignOut()
   const isAuthenticated = useIsAuthenticated()
   const auth = useAuthUser()
+
+
 
   useEffect(() => {
     const handleDropDown = (e) => {
@@ -80,6 +84,13 @@ function StickyNavbar({ authenticated }) {
     { title: "Settings", path: `/settings` },
   ];
   const queryClient = useQueryClient()
+  const authHeader = useAuthHeader()
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['loggedInUser', { authHeader }],
+    queryFn: userProfile,
+    staleTime: 300 * 60 * 1000,
+  })
 
   const handleLogout = () => {
     signOut()
@@ -154,7 +165,9 @@ function StickyNavbar({ authenticated }) {
       e.target.src = defaultAvate;
     }
 
-    if (auth?.profile_image) {
+    if (data?.profile_image) {
+      return <img src={data.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
+    } else if (auth?.profile_image) {
       return <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
     } else if (auth?.full_name) {
       return (
@@ -287,9 +300,9 @@ function StickyNavbar({ authenticated }) {
         <Typography
           as="li"
           variant="small"
-          className="p-1 text-black text-lg font-normal"
+          className={`p-1 text-black text-lg font-normal ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
         >
-          <Link to={`/message`} className="flex items-center hover:text-blue-700 ">
+          <Link to={`/message`} className="flex items-center hover:text-blue-700  ">
             <MdMessage className="mr-1 self-start" />
             <h1>Messages</h1>
           </Link>
@@ -415,6 +428,7 @@ function StickyNavbar({ authenticated }) {
                 </Link>
               </AdvertiserViewPermission>
             </Typography>
+
             <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
               <Link
                 onClick={handleNavClick}
@@ -480,7 +494,7 @@ function StickyNavbar({ authenticated }) {
         <Navbar className="sticky bg-transparent border-none backdrop-none backdrop-blur-none shadow-none top-0 z-10 h-max max-w-full rounded-none px-6 py-6 lg:px-6 lg:py-4">
           <div className="flex items-center justify-between text-blue-gray-900">
             <Typography as="a" href="/" className="mr-4 text-black cursor-pointer py-1.5 font-medium">
-              <img className="w-60 text-blue-500 fill-current" src={AddictiveAdLogo} alt="Logo" />
+              <img className="w-50 h-10  " src={Logo} alt="Logo" />
             </Typography>
             <div className="flex items-center gap-4">
               <div className="hidden lg:block">{isAuthenticated ? getUser : ghostUser}</div>

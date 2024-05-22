@@ -156,7 +156,7 @@ const Settings = () => {
                   onClick={() => setDeleteModal(false)}
                 >
                   <h1 className='text-xs md:text-sm'>
-                    Cansel
+                    Cancel
                   </h1>
                 </button>
                 <button

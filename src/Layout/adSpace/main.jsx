@@ -205,7 +205,7 @@ export const MainAdSpace = ({ adSpaces }) => {
               <button onClick={handleModalClose} className='absolute top-3 right-3'>
                 <VscChromeClose className='w-6 h-6 p-1 rounded-full text-red-500 bg-pink-200' />
               </button>
-              <div className="p-6">
+              <div className="p-10 my-10">
                 <h1 className='mb-6 text-2xl font-semibold text-center'>
                   {selectedType ? 'Ad Space' : 'Select Space Type'}
                 </h1>
@@ -213,8 +213,8 @@ export const MainAdSpace = ({ adSpaces }) => {
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto itaque labore, provident molestias!
                 </p> */}
                 {!selectedType ? (
-                  <div className='mt-6 flex flex-col space-y-2'>
-                    <div className="flex items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Print')}>
+                  <div className='mt-6 flex flex-col space-y-5 p-1'>
+                    <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Print')}>
                       <input
                         id="bordered-radio-1"
                         type="radio"
@@ -226,7 +226,7 @@ export const MainAdSpace = ({ adSpaces }) => {
                         <label htmlFor="bordered-radio-1" className="w-full py-4 ms-2 text-sm font-medium text-blue-700">Print</label>
                       </div>
                     </div>
-                    <div className="flex items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Transportation')}>
+                    <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Transportation')}>
                       <input
                         id="bordered-radio-2"
                         type="radio"
@@ -238,7 +238,7 @@ export const MainAdSpace = ({ adSpaces }) => {
                         <label htmlFor="bordered-radio-2" className="w-full py-4 ms-2 text-sm font-medium text-blue-700">Transportation</label>
                       </div>
                     </div>
-                    <div className="flex items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Event')}>
+                    <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Event')}>
                       <input
                         id="bordered-radio-3"
                         type="radio"
@@ -250,7 +250,7 @@ export const MainAdSpace = ({ adSpaces }) => {
                         <label htmlFor="bordered-radio-3" className="w-full py-4 ms-2 text-sm font-medium text-blue-700">Event</label>
                       </div>
                     </div>
-                    <div className="flex items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Other')}>
+                    <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Other')}>
                       <input
                         id="bordered-radio-4"
                         type="radio"
@@ -274,6 +274,15 @@ export const MainAdSpace = ({ adSpaces }) => {
                         value={link}
                         required
                         onChange={(e) => setLink(e.target.value)}
+                      />
+                    </div>
+                    <div className='mt-6'>
+                      <label className='mb-3 text-center block'>Your {selectedType} File</label>
+                      <input
+                        type="file"
+                        className='w-full p-2 border rounded-lg'
+                        required
+                        onChange={(e) => setLink(e.target.files[0])}
                       />
                     </div>
                     <div className="flex justify-center p-6 border-t border-solid border-blue-200 rounded-b">

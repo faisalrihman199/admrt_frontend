@@ -94,8 +94,8 @@ function App() {
       path: "/register",
       element: <Register authenticated={handleRegister} />,
     },
-    { id: 3, path: "/about", element: <About /> },
-    { id: 4, path: "/contact", element: <Contact /> },
+    // { id: 3, path: "/about", element: <About /> },
+    // { id: 4, path: "/contact", element: <Contact /> },
     { id: 5, path: "/continue", element: <Continue /> },
     { id: 6, path: "/:split/registration", element: <CreateAnAcc /> },
     { id: 7, path: "/forgotPassword", element: <ForgotPassword /> },
@@ -120,6 +120,8 @@ function App() {
         >
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+
           <Route element={<AuthOutlet fallbackPath="/" />}>
             {AuthUserRoutes.map((route) => (
               <Route key={route.id} path={route.path} element={route.element} />

@@ -66,7 +66,7 @@ const IntoDescription = ({ description }) => {
                                 <div className="relative p-6 flex-auto flex justify-center items-start">
                                     <div>
                                         <h1>
-                                            Use this space to show clients you have the skills and experience they're looking for.
+                                            {/* Use this space to show clients you have the skills and experience they're looking for.
                                             <br />
                                             <ul className="my-3">
                                                 <li className="flex">
@@ -78,10 +78,11 @@ const IntoDescription = ({ description }) => {
                                                 <li className="flex">
                                                     <BsDot className="mt-1" /> Keep it short and make sure it's error-free
                                                 </li>
-                                            </ul>
+                                            </ul> */}
+                                            Introduce yourself to brands and advertisers. Explain your AdSpace
                                         </h1>
                                         <div
-                                            className="break-words overflow-hidden h-48 w-full"
+                                            className="break-words overflow-hidden my-5 h-48 w-full"
                                             open={isDialogOpened}
                                             onClose={() => setIsDialogOpened(false)}
                                         >
@@ -143,10 +144,11 @@ const IntoDescription = ({ description }) => {
                         </div>
                     </div>
                     <div className="border my-5"></div>
-                    <div className="items overflow-hidden w-full break-words">
+                    <div className="items overflow-hidden w-full break-words text-left">
                         <ShowMoreText lines={3} more="more" less="less" className="content-css">
                             {description && description.trim().length > 0 ? (
-                                <div dangerouslySetInnerHTML={{ __html: description }} />
+                                // <div dangerouslySetInnerHTML={{ __html: description }} />
+                                <p>{description}</p>
                             ) : (
                                 <p>No description available</p>
                             )}

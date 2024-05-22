@@ -160,7 +160,7 @@ const Portfolio = ({ userPortfolios }) => {
                   }}
                 >
                   <h1 className='text-xs md:text-sm'>
-                    Cansel
+                    Cancel
                   </h1>
                 </button>
                 <button
@@ -217,7 +217,7 @@ const Portfolio = ({ userPortfolios }) => {
                     onClick={() => setModal(false)}
                   >
                     <h1 className='text-xs md:text-sm'>
-                      Cansel
+                      Cancel
                     </h1>
                   </button>
                   <button
