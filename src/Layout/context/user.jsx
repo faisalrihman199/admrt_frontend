@@ -15,6 +15,7 @@ import { Modal } from "../../components/Modal/Modal";
 import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadForm";
 import AuthenticatedUserViewPermission from "../../components/Permissions/AuthenticatedUserViewPermission";
 import SpaceHostViewPermission from "../../components/Permissions/SpaceHostViewPermission";
+import { setProfileImageToLocalStorage } from "../../util/localStorageUtils";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
@@ -191,6 +192,7 @@ const EditeUser = ({ userInfo }) => {
 
       if (imageUploadResponse?.profile_image) {
         // setCurrentProfileImageUrl(imageUploadResponse?.profile_image);
+        setProfileImageToLocalStorage(imageUploadResponse?.profile_image);
         queryClient.invalidateQueries('loggedInUser')
 
         setModalOpen(false);
