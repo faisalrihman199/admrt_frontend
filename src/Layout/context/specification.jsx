@@ -17,6 +17,7 @@ import { addLanguage, updateProfile } from '../../service/profile'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission'
 import Select from 'react-select';
+import languageData from '../../util/languageData'
 
 export const Specification = ({ long_term_service_availability, languages }) => {
     const { split, userUID } = useParams();
@@ -87,12 +88,10 @@ export const Specification = ({ long_term_service_availability, languages }) => 
         }
     })
 
-    const options = [
-        { value: 'English', label: 'English' },
-        { value: 'French', label: 'French' },
-        { value: 'German', label: 'German' },
-        { value: 'Spanish', label: 'Spanish' }
-    ];
+    const options = languageData.map(language => ({
+        value: language,
+        label: language,
+    }));
     const handleSaveDatabase = async (e) => {
         e.preventDefault();
         try {
