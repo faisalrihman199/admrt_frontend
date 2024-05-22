@@ -71,7 +71,7 @@ const Home = () => {
 
               </form>
               {!isAuthenticated && <div>
-                <h1 className="mt-3 font-light">Get Started now?<Link to="/register" className="text-blue-500 font-medium underline py-1 mx-2 cursor-pointer">Sign up now</Link></h1>
+                <h1 className="mt-3 font-light">Get Started now?<Link to="/continue" className="text-blue-500 font-medium underline py-1 mx-2 cursor-pointer">Sign up now</Link></h1>
               </div>}
 
               <div className="mt-12 text-base md:text-xl">
