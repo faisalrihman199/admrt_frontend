@@ -86,12 +86,6 @@ function StickyNavbar({ authenticated }) {
   const queryClient = useQueryClient()
   const authHeader = useAuthHeader()
 
-  // const { isPending, isError, data, error } = useQuery({
-  //   queryKey: ['loggedInUser', { authHeader }],
-  //   queryFn: userProfile,
-  //   staleTime: 300 * 60 * 1000,
-  // })
-
   const handleLogout = () => {
     signOut()
     queryClient.invalidateQueries({ queryKey: ['searchSpace', 'loggedInUser'] })

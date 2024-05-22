@@ -237,6 +237,7 @@ const Portfolio = ({ userPortfolios }) => {
 
   const removeImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
+    setFiles(files.filter((_, i) => i !== index)); // Update files state
   };
   const handleSubmit = async () => {
     // setSaveLoading(true);
@@ -357,72 +358,71 @@ const Portfolio = ({ userPortfolios }) => {
                   onClick={() => setModal(false)}>
                   <VscChromeClose className=' w-6 h-6 p-1 rounded-full text-white bg-gray-700 hover:bg-opacity-75 cursor-pointer' />
                 </div>
-                {step == 1 && (
+                {/* {step == 1 && ( */}
 
-                  <div className="relative p-2 md:p-6 justify-center items-start">
-                    <div className='border-b'>
-                      <h1 className='text-center mb-6 text-2xl md:text-3xl font-semibold'>Add new portfolio</h1>
-                    </div>
-                    <div className='pt-2'>
-                      <div className="space-y-5">
-                        <p className='pl-1'>Name</p>
-                        <input type="text"
-                          placeholder='Writing portfolio name'
-                          className={`w-full p-2 border rounded-lg ${errorMessageTitle ? "border-red-600" : ""}`}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                        />
-                        {errorMessageTitle && <p className='text-red-600'>Please enter portfolio title</p>}
+                <div className="relative md:p-6 justify-center items-start">
+                  <div className='border-b'>
+                    <h1 className='text-center mb-6 text-2xl md:text-3xl font-semibold'>Add new portfolio</h1>
+                  </div>
+                  <div className='pt-2 px-10 '>
+                    <div className="space-y-5">
+                      <p className='pl-1'>Name</p>
+                      <input type="text"
+                        placeholder='Writing portfolio name'
+                        className={`w-full p-2 border rounded-lg ${errorMessageTitle ? "border-red-600" : ""}`}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                      {errorMessageTitle && <p className='text-red-600'>Please enter portfolio title</p>}
 
-                        <p className='pl-1'>Portfolio Type</p>
-                        <div className="w-full p-2 border rounded-lg">
-                          <label className="mr-4">
-                            <input
-                              type="radio"
-                              value="youtube"
-                              checked={portfolioType === 'youtube'}
-                              onChange={(e) => setPortfolioType(e.target.value)}
-                            />
-                            YouTube
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              value="image"
-                              checked={portfolioType === 'image'}
-                              onChange={(e) => setPortfolioType(e.target.value)}
-                            />
-                            Image
-                          </label>
-                        </div>
-                        {portfolioType === 'youtube' && (
-                          <>
-                            <p className='pl-1'>YouTube Link</p>
-                            <input type="text"
-                              placeholder='Enter YouTube link'
-                              className={`w-full p-2 border rounded-lg`}
-                              value={youtubeLink}
-                              onChange={(e) => setYoutubeLink(e.target.value)}
-                            />
-                            {errorYoutubeLink && <p className='text-red-600'>{errorYoutubeLink}</p>}
-
-                          </>
-                        )}
+                      <p className='pl-1'>Portfolio Type</p>
+                      <div className="w-full p-2 border rounded-lg">
+                        <label className="mr-4">
+                          <input
+                            type="radio"
+                            value="youtube"
+                            checked={portfolioType === 'youtube'}
+                            onChange={(e) => setPortfolioType(e.target.value)}
+                          />
+                          YouTube
+                        </label>
+                        <label>
+                          <input
+                            type="radio"
+                            value="image"
+                            checked={portfolioType === 'image'}
+                            onChange={(e) => setPortfolioType(e.target.value)}
+                          />
+                          Image
+                        </label>
                       </div>
+                      {portfolioType === 'youtube' && (
+                        <>
+                          <p className='pl-1'>YouTube Link</p>
+                          <input type="text"
+                            placeholder='Enter YouTube link'
+                            className={`w-full p-2 border rounded-lg`}
+                            value={youtubeLink}
+                            onChange={(e) => setYoutubeLink(e.target.value)}
+                          />
+                          {errorYoutubeLink && <p className='text-red-600'>{errorYoutubeLink}</p>}
+
+                        </>
+                      )}
                     </div>
                   </div>
-                )}
-                {step == 2 && (
-
+                </div>
+                {/* )} */}
+                {/* {step == 2 && ( */}
+                {portfolioType === 'image' && (
                   <div className="relative px-20 mx-auto justify-center items-center">
                     <div className="border-0 rounded-lg   relative flex flex-col w-full bg-white outline-none focus:outline-none">
                       <div className="relative p-2 md:p-2 border-b flex-auto flex justify-center items-start">
-                        <div>
+                        {/* <div>
                           <h1 className='text-center text-2xl md:text-3xl font-semibold'>Add Image</h1>
-                        </div>
+                        </div> */}
                       </div>
                       <div className=''>
-                        <p className='text-gray-700 text-center mb-2'>.jpg, .gif, .png, .pdf, up to 5 MB, no more than 3000 px</p>
                         <div
                           className={` h-40 rounded-2xl border-2 border-dashed border-blue-600 flex items-center justify-center ${error && 'border-red-600'}`}
                           onDrop={handleDrop}
@@ -436,6 +436,8 @@ const Portfolio = ({ userPortfolios }) => {
                           </label>
                           <input id="file" type="file" className="hidden" onChange={handleFileChange} multiple />
                         </div>
+                        <p className='text-gray-700 text-center mb-2'>.jpg, .gif, .png, .pdf, up to 5 MB, no more than 3000 px</p>
+
                         {error && <div className='text-red-600 rounded font-semibold text-center'>{error}</div>}
                       </div>
                       <div className="p-4 mt-10 grid grid-cols-8 md:grid-cols-8  gap-2">
@@ -468,6 +470,7 @@ const Portfolio = ({ userPortfolios }) => {
 
                   </div>
                 )}
+                {/* )} */}
                 <div className="flex items-center justify-center p-2 md:p-6 border-t border-solid gap-4 border-blue Gray-200 rounded-b">
                   <button
                     className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -478,7 +481,7 @@ const Portfolio = ({ userPortfolios }) => {
                       Cancel
                     </h1>
                   </button>
-                  {step === 2 && (
+                  {/* {step === 2 && (
                     <button
                       className="bg-gray-700 text-white active:bg-gray-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
@@ -488,13 +491,17 @@ const Portfolio = ({ userPortfolios }) => {
                         Previous
                       </h1>
                     </button>
-                  )}
+                  )} */}
                   <button
                     className="bg-blue-700 text-white active:bg-red-600 font-bold uppercase text-xs md:text-sm p-2 md:px-8 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={portfolioType == 'image' && step != 2 ? handleNextButton : handleSubmit}
+                    // onClick={portfolioType == 'image' && step != 2 ? handleNextButton : handleSubmit}
+                    onClick={handleSubmit}
+
                   >
-                    {loading ? "Loading..." : (portfolioType == 'image' && step != 2 ? "Next" : "Submit")}
+                    {/* {loading ? "Loading..." : (portfolioType == 'image' && step != 2 ? "Next" : "Submit")} */}
+                    {loading ? "Loading..." : "Submit"}
+
                   </button>
 
                 </div>
