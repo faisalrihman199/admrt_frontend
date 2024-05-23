@@ -599,7 +599,9 @@ export const ProductAdventiser = ({ userProducts }) => {
 
         </div>
       )}
-      <div className='grid grid-cols-2 gap-4 p-2 '>
+      {/* <div className='grid grid-cols-2 gap-4 p-2 '> */}
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 p-2'>
+
         {userProducts ? (
           userProducts.map((product) => {
             const images = [product.image1, product.image2, product.image3].filter(Boolean);

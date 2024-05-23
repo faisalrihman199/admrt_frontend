@@ -382,13 +382,14 @@ const EditeUser = ({ userInfo }) => {
         </div>
       )}
       <div className="relative -mt-10">
-        <img
-          key={croppedImage}
-          // src={croppedImage || avatarUrl.current}
-          src={userInfo.profileImage || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
-          alt="...leading. please make refresh"
-          className="w-[150px] h-[150px] rounded-full border-8 border-white"
-        />
+        <div className="relative -mt-10 w-[150px] h-[150px]">
+          <img
+            key={croppedImage}
+            src={userInfo.profileImage || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
+            alt="...leading. please make refresh"
+            className="w-full h-full rounded-full border-8 border-white object-cover"
+          />
+        </div>
         <AuthenticatedUserViewPermission>
 
           <button

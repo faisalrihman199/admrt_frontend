@@ -18,14 +18,14 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { MdMessage } from 'react-icons/md';
-import { FaAd } from 'react-icons/fa';
+import { FaAd, FaRegUser, FaUserCheck } from 'react-icons/fa';
 import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
 import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
 import { QueryCache, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userProfile } from "../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { getProfileImageFromLocalStorage } from "../util/localStorageUtils";
-import { IoMdHome } from "react-icons/io";
+import { IoIosLogIn, IoMdHome } from "react-icons/io";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -491,27 +491,39 @@ function StickyNavbar({ authenticated }) {
               </Link>
             </Typography>
             <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
-              <a href="/contact" className="flex items-center hover:text-blue-700 ">
+              <Link to="/contact" className="flex items-center hover:text-blue-700 ">
                 <h1>Contact</h1>
+              </Link>
+            </Typography>
+            <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
+              <Link to="/login" className="flex items-center gap-x-2 hover:text-blue-700 hover:box-shadow: -1px 1px 10px 0px rgba(0,122,255,0.75);">
+                <IoIosLogIn />
+                <h1>Sign In</h1>
+              </Link>
+            </Typography>
+            <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
+              <a href="/continue" className="flex items-center gap-x-2 hover:text-blue-700 ">
+                <FaRegUser />
+                <h1>Sign Up</h1>
               </a>
             </Typography>
-            <div className="flex flex-col items-center">
-              <Link to="/login">
-                <div className="hover:bg-blue-100 signIndiv h-10 p-2 px-8">
-                  <img src={userPhoto} alt="User" className="h-5 mr-2" />
-                  <h1 className="text-center buttonSignIn">Sign In</h1>
-                </div>
-              </Link>
-              <Link to="/continue">
-                <div>
-                  <button className="buttonSignUp hover:bg-blue-100 h-10 p-2 px-8">Sign Up</button>
-                </div>
-              </Link>
-            </div>
+            {/* <div className="flex flex items-center"> */}
+            {/* <Link to="/login"> */}
+            {/* <div className="hover:bg-blue-100 signIndiv h-10 p-2 px-8"> */}
+            {/* <img src={userPhoto} alt="User" className="h-5 mr-2" /> */}
+            {/* <h1 className="text-center  ">Sign In</h1> */}
+            {/* </div> */}
+            {/* </Link> */}
+            {/* <Link to="/continue">
+              <div className="hover:bg-blue-100 signIndiv h-10 p-2 px-8" >
+                <button className="  text-center">Sign Up</button>
+              </div>
+            </Link> */}
+            {/* </div> */}
           </>
         )}
       </ul>
-    </div>
+    </div >
   );
 
   return (
