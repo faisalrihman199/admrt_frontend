@@ -18,14 +18,15 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { MdMessage } from 'react-icons/md';
-import { FaAd, FaRegUser, FaUserCheck } from 'react-icons/fa';
+import { FaAd, FaHome, FaRegUser, FaRegUserCircle, FaUserCheck } from 'react-icons/fa';
 import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
 import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
 import { QueryCache, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userProfile } from "../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { getProfileImageFromLocalStorage } from "../util/localStorageUtils";
-import { IoIosLogIn, IoMdHome } from "react-icons/io";
+import { IoIosLogIn, IoMdExit, IoMdHome } from "react-icons/io";
+import { IoSettingsOutline } from "react-icons/io5";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -445,6 +446,13 @@ function StickyNavbar({ authenticated }) {
           <>
             <Search />
             <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
+              <Link to="/" className="flex items-center hover:text-blue-700  hover:duration-700">
+                <FaHome className="mr-2" />
+                <h1>Home</h1>
+              </Link>
+            </Typography>
+
+            <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
               <AdvertiserViewPermission userRole={auth?.user_role}>
                 <Link
                   onClick={handleNavClick}
@@ -460,22 +468,46 @@ function StickyNavbar({ authenticated }) {
                 onClick={handleNavClick}
 
                 to={`/message`} className="flex items-center hover:text-blue-700 ">
-                <MdMessage className="mr-1 self-start" />
+                <MdMessage className=" mr-2  " />
                 <h1>Messages</h1>
               </Link>
             </Typography>
-            {navigation.map((item, idx) => (
+            <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
+              <Link
+                onClick={handleNavClick}
+
+                to={`/profile/${auth?.id}`} className="flex items-center hover:text-blue-700 hover:duration-500 ">
+                <FaRegUserCircle className="mr-2" />
+                Profile
+              </Link>
+            </Typography>
+
+            <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
+              <Link
+                onClick={handleNavClick}
+
+                to="/settings" className="flex items-center hover:text-blue-700 hover:duration-500 ">
+                <IoSettingsOutline className="mr-2" />
+                Settings
+              </Link>
+            </Typography>
+            {/* {navigation.map((item, idx) => (
               <Typography as="li" key={idx} variant="small" className="p-1 text-black text-lg font-normal">
                 <Link
                   onClick={handleNavClick}
 
                   to={item.path} className="flex items-center hover:text-blue-700 hover:duration-500 ">
+                  <FaRegUserCircle className="mr-2" />
                   {item.title}
                 </Link>
               </Typography>
-            ))}
+            ))} */}
             <button onClick={handleLogout} className="block w-full text-justify text-red-600 hover:text-red-500 py-3">
-              Logout
+              <div className="flex items-center gap-x-2 text-red-600 hover:text-red-500 text-lg">
+                <IoMdExit />
+                Logout
+              </div>
+
             </button>
           </>
         ) : (
