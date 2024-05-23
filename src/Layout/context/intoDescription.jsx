@@ -147,8 +147,8 @@ const IntoDescription = ({ description }) => {
                     <div className="items overflow-hidden w-full break-words text-left">
                         <ShowMoreText lines={3} more="more" less="less" className="content-css">
                             {description && description.trim().length > 0 ? (
-                                // <div dangerouslySetInnerHTML={{ __html: description }} />
-                                <p>{description}</p>
+                                <div dangerouslySetInnerHTML={{ __html: description.replace(/\n/g, '<br />') }} />
+                                // <p>{description}</p>
                             ) : (
                                 <p>No description available</p>
                             )}
