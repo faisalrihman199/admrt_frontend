@@ -606,7 +606,7 @@ const Portfolio = ({ userPortfolios }) => {
               <p className=' font-normal mt-2.5'>Select the portfolio you want to delete</p>
             </div>
           }
-          <div className='grid grid-cols-2 gap-4 p-2  '>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 p-2'>
             {userPortfolios ? (
               userPortfolios.map((product) => {
                 const images = [product.image1, product.image2, product.image3].filter(Boolean);
