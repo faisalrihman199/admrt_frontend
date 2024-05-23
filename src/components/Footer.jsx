@@ -25,7 +25,7 @@ const Footer = ({ authenticated }) => {
               </p>
             </div>
             <div
-              class=" grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-2"
+              class=" grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-3"
             >
               <div>
                 <p class="font-medium text-white text-base font-light text-base font-light">Links</p>
@@ -75,6 +75,21 @@ const Footer = ({ authenticated }) => {
                     <Link to={"mailto:jacob@admrt.com"} className="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
                       Email: <span className="text-neutral-600">Contact@amdrt.com</span>
                     </Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <p class="font-medium text-white">Our Other Businesses</p>
+                <ul class="mt-6 space-y-4 text-sm">
+                  <li>
+                    <a href="https://www.addictiveads.com" target="_blank" rel="noopener noreferrer" class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                      Addictive Ads
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.kosher11.com" target="_blank" rel="noopener noreferrer" class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                      Kosher11
+                    </a>
                   </li>
                 </ul>
               </div>
