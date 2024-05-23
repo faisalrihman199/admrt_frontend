@@ -184,7 +184,7 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated) {
       const socket = new WebSocket(
-        `wss://kuttabilai.com/ws?token=${cleanedToken}`
+        `${process.env.REACT_APP_WEBSOCKET_URL}?token=${cleanedToken}`
       );
 
       socket.onopen = () => {
