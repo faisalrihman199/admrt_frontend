@@ -89,8 +89,13 @@ const Home = () => {
           <div className="w-full bg-2  shadow-2xl rounded-xl py-8 px-10 md:w-2/5 backdrop-blur-md">
             <div className="text-center h-auto overflow-hidden rounded-md  sm:rounded-xl">
               <h1 className="text-3xl font-semibold">Sell your ad space</h1>
-              <Link to="/continue">
+              {/* <Link to="/continue">
                 <button className="my-5 py-2 px-12 text-white rounded-full bg-blue-600"><h1>Host ads now</h1></button>
+              </Link> */}
+              <Link to={auth?.user_role === 'space_host' ? `/profile/${auth.id}` : '/filter'}>
+                <button className="my-5 py-2 px-12 text-white rounded-full bg-blue-600">
+                  <h1>Host ads now</h1>
+                </button>
               </Link>
               <div className="flex justify-center items-center">
                 <img className="img-fluid text-center" src={image} alt="" />

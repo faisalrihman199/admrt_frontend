@@ -25,6 +25,7 @@ import { QueryCache, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userProfile } from "../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { getProfileImageFromLocalStorage } from "../util/localStorageUtils";
+import { IoMdHome } from "react-icons/io";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -290,18 +291,32 @@ function StickyNavbar({ authenticated }) {
         {isAuthenticated && auth?.user_role === 'advertiser' && (
           <Search className={"mr-8"} />
         )}
-        <Typography as="li" variant="small" className="p-5 text-black text-lg font-normal">
+        {/* <Typography as="li" variant="small" className="p-5 text-black text-lg font-normal">
           <Link to="/about" className="flex items-center hover:text-blue-700 hover:box-shadow: -1px 1px 10px 0px rgba(0,122,255,0.75);">
             <h1>About</h1>
           </Link>
-        </Typography>
+        </Typography> */}
+        {/* home */}
         <Typography
           as="li"
           variant="small"
-          className="p-1 text-black max-[1280px]:text-base text-lg font-normal mr-3"
+          // className="p-1 text-black text-lg font-normal "
+          className={`p-1 text-black   text-lg font-normal mr-3 ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
+        >
+          <Link to="/" className="flex items-center hover:text-blue-700  hover:duration-700">
+            <IoMdHome className="mr-1 self-start" />
+            <h1>Home</h1>
+          </Link>
+        </Typography>
+
+        <Typography
+          as="li"
+          variant="small"
+          className={`p-1 text-black text-lg font-normal ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
+
         >
           <AdvertiserViewPermission userRole={auth?.user_role}>
-            <Link to="/filter" className="flex items-center hover:text-blue-700 hover:duration-500 ">
+            <Link to="/filter" className="flex items-center text-black  hover:text-blue-700 hover:duration-500 ">
               <FaAd className="mr-1 self-start" />
               <h1>Find Ad spaces</h1>
             </Link>

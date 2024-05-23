@@ -81,6 +81,7 @@ const AboutHim = ({ location, website, joinDate }) => {
                                         className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-indigo-600"
                                         placeholder="Location"
                                         id="address"
+                                        defaultValue={location}
                                         onChange={(e) => setLocationInput(e.target.value)}
                                     // value={currentLocation}
                                     />
@@ -92,6 +93,7 @@ const AboutHim = ({ location, website, joinDate }) => {
                                         className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-indigo-600"
                                         placeholder="Enter Website. Ex: admrt.com"
                                         id="site"
+                                        defaultValue={website}
                                         onChange={(e) => setWebsiteInput(e.target.value)}
                                     // value={currentWebsite}
                                     />
@@ -145,7 +147,7 @@ const AboutHim = ({ location, website, joinDate }) => {
                                 <img src={shape1} alt='' />
                             </div>
                             <div>
-                                <h1>{currentLocation ||
+                                <h1>{location ||
                                     <><span>--</span>
                                         <AuthenticatedUserViewPermission>
                                             <span> Please fill in your location!</span>
@@ -173,8 +175,8 @@ const AboutHim = ({ location, website, joinDate }) => {
                                 <img src={shape2} alt='' />
                             </div>
                             <div>
-                                {currentWebsite
-                                    ? <a href={currentWebsite} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{currentWebsite}</a>
+                                {website
+                                    ? <a href={website} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{website}</a>
                                     : <><span>--</span>
                                         <AuthenticatedUserViewPermission>
                                             <span> Please fill your website!</span>
