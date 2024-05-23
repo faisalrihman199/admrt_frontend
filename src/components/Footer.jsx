@@ -62,7 +62,7 @@ const Footer = ({ authenticated }) => {
                   <li>
 
                     <Link
-                      to=""
+                      to="/contact"
                       class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]"
                       onMouseEnter={() => setIsPhoneHovered(true)}
                       onMouseLeave={() => setIsPhoneHovered(false)}
