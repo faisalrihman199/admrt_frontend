@@ -28,7 +28,7 @@ const Footer = ({ authenticated }) => {
               class=" grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-2"
             >
               <div>
-                <p class="font-medium text-white text-base font-light text-base font-light">Services</p>
+                <p class="font-medium text-white text-base font-light text-base font-light">Links</p>
                 <ul class="mt-6 space-y-4 text-sm">
                   {!isAuthenticated && (
                     <li>
@@ -67,7 +67,7 @@ const Footer = ({ authenticated }) => {
                       onMouseEnter={() => setIsPhoneHovered(true)}
                       onMouseLeave={() => setIsPhoneHovered(false)}
                     >
-                      Phone Number: {isPhoneHovered && <>tel:</>} <span class="text-neutral-600">732-503-8255</span>
+                      Phone Number:  <span class="text-neutral-600">732-503-8255</span>
 
                     </Link>
                   </li>
