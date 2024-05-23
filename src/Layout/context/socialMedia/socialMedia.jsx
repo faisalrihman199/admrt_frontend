@@ -108,10 +108,10 @@ const SocialMedia = ({ socials }) => {
                 } */}
                 <div className='border'></div>
                 {socials && socials.map((socialMedia, index) => (
-                    <div key={index} className='flex gap-4 my-4'>
+                    <div key={index} className='flex gap-4 my-4 transition duration-700 ease-in-out hover:shadow-xl hover:border hover:p-2'>
                         <div className='w-5/6 flex justify-between'>
                             <a href={socialMedia?.url ? socialMedia?.url : '#'} target={socialMedia?.url ? "_blank" : ''} rel="noopener noreferrer">
-                                <div className='flex items-center gap-2 hover:shadow-xl hover:border hover:p-1'>
+                                <div className='flex items-center gap-2 '>
                                     {socialMediaPages.hasOwnProperty(socialMedia.social_media) && <img src={socialMediaPages[socialMedia.social_media].icon} alt={socialMedia.social_media} />}
                                     {/* {socialMedia.url && <h1>{
                                         (() => {
