@@ -10,6 +10,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { userRegisterApi } from '../../service/auth';
 import { useLogIn } from '../../hooks/useLogin';
+import Alert from '../../components/allert';
 
 
 const CreateAnAcc = () => {
@@ -158,7 +159,9 @@ const CreateAnAcc = () => {
                 </div>
               </div>
             </div>
-            {errorMessage && <p className="p-2 rounded-lg error-message text-white bg-red-400 border-2 border-red-800 text-center">{errorMessage}</p>}
+            {errorMessage && (
+              <Alert type='error' message={errorMessage} />
+            )}
             <button type='submit' className="w-full mt-2 social-card bg-blue-500 text-white google border rounded-xl  py-2 text-center hover:border-blue-600  hover:shadow-md md:px-16">
               <div className="text-center text-gray-800 font-normal py-2 px-4 rounded inline-flex items-center">
                 <span className="ml-1 md:ml-2 text-white">{loading ? "Loading..." : "Sign Up"}</span>
