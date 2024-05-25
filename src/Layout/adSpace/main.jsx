@@ -28,7 +28,8 @@ export const MainAdSpace = ({ adSpaces }) => {
   const transIcon = 'https://img.icons8.com/fluency/48/motorbike-helmet.png';
   const eventIcon = 'https://img.icons8.com/fluency/48/today.png';
   const otherIcon = 'https://img.icons8.com/cute-clipart/64/connection-status-off.png';
-
+  const emailIcon = 'https://img.icons8.com/?size=100&id=D9x0PpvvT1AL&format=png&color=000000'
+  const smsIcon = 'https://img.icons8.com/?size=100&id=KyjQs4PcdH76&format=png&color=000000'
 
 
 
@@ -48,10 +49,20 @@ export const MainAdSpace = ({ adSpaces }) => {
   const handleSend = async () => {
     try {
       setBtnText('Loading...');
-      if (!link.startsWith('https://')) {
+      if (selectedType === 'Email' && !/\S+@\S+\.\S+/.test(link)) {
+        setBtnText('Please enter a valid email');
+        setModal(false);
+        return;
+      }
+      if (selectedType === 'SMS' && !/^\+?[1-9]\d{1,14}$/.test(link)) {
+        setBtnText('Please enter a valid phone number');
+
+        setModal(false);
+        return;
+      }
+      if (selectedType !== 'Email' && selectedType !== 'SMS' && !link.startsWith('https://')) {
         setBtnText('Please enter a valid link');
         setModal(false);
-
         return;
       }
 
@@ -275,6 +286,30 @@ export const MainAdSpace = ({ adSpaces }) => {
                         <label htmlFor="bordered-radio-3" className="w-full py-4 ms-2 text-sm font-medium text-blue-700">Event</label>
                       </div>
                     </div>
+                    <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Email')}>
+                      <input
+                        id="bordered-radio-4"
+                        type="radio"
+                        name="bordered-radio"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 accent-blue-700"
+                      />
+                      <div className='flex'>
+                        <img src={emailIcon} alt="connection-status-off" className='w-6 m-auto ml-2' />
+                        <label htmlFor="bordered-radio-4" className="w-full py-4 ms-2 text-sm font-medium text-blue-700">Email</label>
+                      </div>
+                    </div>
+                    <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('SMS')}>
+                      <input
+                        id="bordered-radio-4"
+                        type="radio"
+                        name="bordered-radio"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 accent-blue-700"
+                      />
+                      <div className='flex'>
+                        <img src={smsIcon} alt="connection-status-off" className='w-6 m-auto ml-2' />
+                        <label htmlFor="bordered-radio-4" className="w-full py-4 ms-2 text-sm font-medium text-blue-700">Sms</label>
+                      </div>
+                    </div>
                     <div className="flex   items-center ps-4 border border-blue-700 rounded-lg cursor-pointer" onClick={() => handleTypeSelect('Other')}>
                       <input
                         id="bordered-radio-4"
@@ -291,10 +326,12 @@ export const MainAdSpace = ({ adSpaces }) => {
                 ) : (
                   <div>
                     <div className='mt-6'>
-                      <label className='mb-3 text-center block'>Your {selectedType} link</label>
+                      <label className='mb-3 text-center block'>
+                        Your {selectedType === 'Email' ? 'email' : selectedType === 'SMS' ? 'phone number' : 'link'}
+                      </label>
                       <input
                         type="text"
-                        placeholder={`https://...`}
+                        placeholder={selectedType === 'Email' ? 'Enter your email...' : selectedType === 'SMS' ? 'Enter your phone number...' : 'https://...'}
                         className='w-full p-2 border rounded-lg'
                         value={link}
                         required
@@ -376,7 +413,9 @@ export const MainAdSpace = ({ adSpaces }) => {
                 adSpace.space_type === 'Event' ? eventIcon :
                   adSpace.space_type === 'Transportation' ? transIcon :
                     adSpace.space_type === 'Print' ? printIcon :
-                      adSpace.space_type === 'Other' ? otherIcon : null
+                      adSpace.space_type === 'Email' ? emailIcon :
+                        adSpace.space_type === 'SMS' ? smsIcon :
+                          adSpace.space_type === 'Other' ? otherIcon : null
               } alt={adSpace.space_type} className='w-6 mr-2' />
               <h1>{adSpace.space_type}</h1>
               {adSpace.url && <a href={adSpace.url} target='_blank' rel='noopener noreferrer'><FaLink /></a>}

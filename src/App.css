@@ -6,7 +6,8 @@
 }
 
 .home-con {
-  background-image: url('../src/Layout/AuthPage/images/bg.svg');
+  /* background-image: url('../src/Layout/AuthPage/images/bg.svg'); */
+  background-color: #f6f7ff;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
