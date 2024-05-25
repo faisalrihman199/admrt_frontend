@@ -22,6 +22,8 @@ const CreateAnAcc = () => {
   const [type, setType] = useState('password');
   const [icon, setIcon] = useState(eyeOff);
   const [loading, setLoading] = useState(false);
+  const [showPasswordMessage, setShowPasswordMessage] = useState(false);
+
   const { split } = useParams();
   const navigate = useNavigate();
   const logIn = useLogIn();
@@ -43,27 +45,43 @@ const CreateAnAcc = () => {
 
     if (!fullName.trim() || !email.trim() || !phoneNumber.trim() || !password.trim() || !country.trim()) {
       setErrorMessage('All fields are required.');
+      setLoading(false)
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
       setErrorMessage('Invalid email address');
+      setLoading(false)
       return;
     }
 
     if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[@$!%*#?&]/.test(password)) {
       setErrorMessage('Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+      setLoading(false)
       return;
     }
 
     try {
-
       await userRegisterApi({ full_name: fullName, email, phone: phoneNumber, password, country, user_role: split });
       await logIn(email, password);
     } catch (err) {
       console.error(err);
-      setErrorMessage('Something Went Wrong');
+      if (err.response && err.response.data) {
+        const errorData = err.response.data;
+        if (errorData.password) {
+          setErrorMessage(errorData.password[0]);
+        } else if (errorData.email) {
+          setErrorMessage(errorData.email[0]);
+        } else if (errorData.full_name) {
+          setErrorMessage(errorData.full_name[0]);
+        } else {
+          setErrorMessage('Something Went Wrong');
+        }
+      } else {
+        setErrorMessage('Something Went Wrong');
+      }
       setLoading(false)
+
     }
   };
 
@@ -109,12 +127,15 @@ const CreateAnAcc = () => {
                     name="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setShowPasswordMessage(true)}
+                    // onBlur={() => setShowPasswordMessage(false)}
                     autoComplete="current-password"
                   />
                   <span className="flex justify-around items-center" onClick={handleToggle}>
                     <Icon className="absolute mr-14 mt-2" icon={icon} size={20} />
                   </span>
                 </div>
+                {showPasswordMessage && <p className="mt-2 text-sm text-gray-500">Must have at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character</p>}
               </label>
             </div>
             <div>
