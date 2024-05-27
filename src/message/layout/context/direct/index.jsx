@@ -43,6 +43,10 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
 
     const authUser = useAuthUser()
 
+    useEffect(() => {
+
+    }, [newConversationUserName, newConversationUserProfileImage]);
+
     useDeepCompareEffect(() => {
         setUserConversation(conversation[userId] || []);
     }, [conversation[userId]]);
