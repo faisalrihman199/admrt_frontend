@@ -29,3 +29,24 @@ export async function getChatConversation(authHeader, partner_id) {
     return [];
   }
 }
+
+export async function getChatUsersForAdmin({
+  authHeader,
+  search = "",
+  limit = 20,
+}) {
+  try {
+    const response = await apiClient.get(
+      `/chat/user/?search=${search}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: authHeader,
+        },
+      }
+    );
+    console.log("called api");
+    return response.data;
+  } catch (error) {
+    return [];
+  }
+}

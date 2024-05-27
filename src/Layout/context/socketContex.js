@@ -61,7 +61,19 @@ const socketReducer = (state, action) => {
           [action.payload.partner_id]: action.payload.conversation,
         },
       };
+    case "PUSH_CONVERSATION_LIST":
+      const doesExist = state.conversationList.some(
+        (conversation) => conversation.userId === action.payload.userId
+      );
 
+      if (!doesExist) {
+        return {
+          ...state,
+          conversationList: [action.payload, ...state.conversationList],
+        };
+      }
+
+      return state;
     case "SET_UNREAD_CONVERSATIONS":
       return { ...state, unreadConversations: action.payload };
     case "SET_CONVERSATION_LIST":
@@ -109,6 +121,17 @@ export const WebSocketProvider = ({ children }) => {
           payload: {
             userId: body.receiver_id,
             body: body,
+          },
+        });
+
+        dispatch({
+          type: "PUSH_CONVERSATION_LIST",
+          payload: {
+            userId: body.receiver_id,
+            last_message: body.text,
+            full_name: body.full_name,
+            profile_image: body.profile_image,
+            unread_messages: 0,
           },
         });
         let { text, receiver_id } = body;
