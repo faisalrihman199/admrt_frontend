@@ -42,7 +42,8 @@ function Continue() {
                       <div className="flex justify-center items-center">
                         <img class=" w-14 md:w-20" src={svg} alt="icon" />
                       </div>
-                      <p class="font-light">List your AdSpace</p>
+                      <p class="font-semibold my-2 ">AdHost</p>
+                      <p class="font-light text-sm">List your AdSpace</p>
                     </div>
                   </div>
                   <div class="relative w-full md:w-1/2 mt-2 py-3 px-3 md:py-7 rounded-xl font-medium text-gray-700">
@@ -53,7 +54,8 @@ function Continue() {
                         <div className="flex justify-center items-center">
                           <img class=" w-14 md:w-20" src={svg1} alt="icon2" />
                         </div>
-                        <p class="font-light hover:font-normal">Find the best places to advertise</p>
+                        <p class="font-semibold my-2">Advertiser</p>
+                        <p class="font-light text-sm hover:font-normal">Find the best places to advertise</p>
                       </div>
                     </div>
                   </div>
