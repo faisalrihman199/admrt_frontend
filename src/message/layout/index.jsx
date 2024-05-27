@@ -84,7 +84,7 @@ const NewMessageUserList = ({ closeSection }) => {
                     {data?.results && data?.results.map(user => (
                         <div key={user.id} className="flex items-center p-5 mb-2 border rounded shadow">
                             <img
-                                src={user.profile_image}
+                                src={user.profile_image || avatar}
                                 alt={`${user.full_name}'s profile`}
                                 className="w-12 h-12 rounded-full mr-4"
                             />
