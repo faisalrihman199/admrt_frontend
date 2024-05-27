@@ -176,9 +176,13 @@ const DirectIndexPage = ({ isMobile, conversationId, receiverId }) => {
                                     className={`flex items-center justify-center h-12 w-12 rounded-full border  flex-shrink-0 ${msg?.sender_id == authUser?.id ? 'ml-3' : 'mr-3'}`}
                                 >
                                     {msg?.sender_id == authUser?.id ? (
+                                        // <Link to={`/profile/user/${msg?.sender_id}`}>
                                         <img src={authUser?.profile_image || avatar} className='rounded-full' alt="" />
+                                        // </Link>
                                     ) : (
-                                        <img src={profile_image || conversationData?.profile_image || avatar} className='rounded-full' alt="" />
+                                        <Link to={`/profile/user/${msg?.sender_id}`}>
+                                            <img src={profile_image || conversationData?.profile_image || avatar} className='rounded-full' alt="" />
+                                        </Link>
                                     )}
                                 </div>
                                 <div className="relative flex   flex-col text-sm bg-white gap-2 py-3 px-4 shadow border rounded-md" style={{ backgroundColor: msg?.sender_id == authUser?.id ? '#CAF4FF' : '#FFF9D0' }}>

@@ -52,6 +52,7 @@ const MainFilter = () => {
       const mediaShortForms = {
         'youtube': 'yt',
         'facebook': 'fb',
+        'whatsapp': 'wa',
         'instagram': 'in',
         'tiktok': 'tt',
         'event': 'ev',
@@ -99,6 +100,7 @@ const MainFilter = () => {
         tiktok: formElements.tiktok.checked,
         instagram: formElements.instagram.checked,
         facebook: formElements.facebook.checked,
+        whatsapp: formElements.whatsApp.checked,
         transportation: formElements.transportation.checked,
         event: formElements.event.checked,
         print: formElements.print.checked,
@@ -165,7 +167,7 @@ const MainFilter = () => {
               <h1 className='font-medium'>Type of AdSpace</h1>
               <div className='flex justify-between'>
                 <div className='flex gap-5 mt-4'>
-                  {['youtube', 'tiktok', 'instagram', 'facebook', 'transportation', 'event', 'print'].map(mediaType => (
+                  {['youtube', 'tiktok', 'instagram', 'facebook', 'whatsApp', 'transportation', 'event', 'print'].map(mediaType => (
                     <label
                       className="flex hover:rounded font-medium text-gray-700 cursor-pointer peer-checked:border-blue-700 peer-checked:text-black hover:border hover:shadow-md border-transparent rounded p-2"
                       htmlFor={mediaType}

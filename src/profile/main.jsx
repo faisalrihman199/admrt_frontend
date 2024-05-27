@@ -69,6 +69,7 @@ function SiplePages() {
         user_role: data?.user_role,
         adSpaces: data?.ad_spaces,
         languages: data?.languages,
+        isVerified: data?.is_admin
 
     };
 

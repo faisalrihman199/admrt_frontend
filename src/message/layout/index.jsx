@@ -111,7 +111,10 @@ const MessageIndex = ({ isMobile = false }) => {
                                                         to={`/message/direct/${data?.userId}`} className="flex justify-between border-b hover:bg-gray-50">
                                                         <button className="py-4 flex w-full items-start justify-between cursor-pointer  hover:text-black">
                                                             <div className="flex gap-3">
-                                                                <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
+                                                                <Link to={`/profile/user/${data?.userId}`}>
+                                                                    <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
+                                                                </Link>
+                                                                {/* <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" /> */}
                                                                 <div className="m-auto">
                                                                     <span className="block text-sm text-gray-700 font-semibold text-left">{data.full_name}</span>
                                                                     <div className="flex items-center">

@@ -31,6 +31,7 @@ import { CustomSpinner } from "../components/Spinner";
 import EditBackground from '../Layout/context/editeBackground';
 import { Button } from '@material-tailwind/react';
 import { UserProfileSkeleton } from '../components/Skeleton/userProfile/userProfileSkeleton';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 function ViewsProfile() {
   const authHeader = useAuthHeader()
@@ -44,6 +45,7 @@ function ViewsProfile() {
     queryFn: otherUserProfile,
   })
 
+  const authUser = useAuthUser()
 
 
   const [advertiserProfile, setAdvertiserProfile] = useState(false);
@@ -74,7 +76,8 @@ function ViewsProfile() {
     products: data?.products,
     portfolios: data?.portfolios,
     user_role: data?.user_role,
-    adSpaces: data?.ad_spaces
+    adSpaces: data?.ad_spaces,
+    isVerified: data?.is_admin,
 
   };
   // const [loading, setLoading] = useState(true);
@@ -96,16 +99,17 @@ function ViewsProfile() {
               <div className="w-full order-2 md:w-2/3">
                 <div className={" p-2 md:p-5 rounded-xl"}>
                   <div className=' border bg-gray-50 rounded-xl'>
-
-                    <div className='m-2 flex justify-end'>
-                      <Button
-                        color="blue"
-                        ripple="light"
-                        onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
-                      >
-                        Send Message
-                      </Button>
-                    </div>
+                    {authUser && authUser.is_admin && (
+                      <div className='m-2 flex justify-end'>
+                        <Button
+                          color="blue"
+                          ripple="light"
+                          onClick={() => navigate(`/message/direct/${userId}`, { state: { newConverSationUserName: userInfo.name, newConverSationUserProfileImage: userInfo.profileImage } })}
+                        >
+                          Send Message
+                        </Button>
+                      </div>
+                    )}
                     <div className={" p-2 md:p-5 "}>
 
                       <EditBackground coverImageUrl={userInfo.coverImageUrl} />

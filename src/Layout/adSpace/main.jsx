@@ -14,6 +14,7 @@ import { FaFileDownload, FaLink } from 'react-icons/fa';
 export const MainAdSpace = ({ adSpaces }) => {
   const [modal, setModal] = useState(false);
   const [link, setLink] = useState('');
+  const [description, setDescription] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [btnText, setBtnText] = useState('Submit');
   const [data, setData] = useState({ addSpace: { link: '', type: '' } });
@@ -51,18 +52,18 @@ export const MainAdSpace = ({ adSpaces }) => {
       setBtnText('Loading...');
       if (selectedType === 'Email' && !/\S+@\S+\.\S+/.test(link)) {
         setBtnText('Please enter a valid email');
-        setModal(false);
+        // setModal(false);
         return;
       }
       if (selectedType === 'SMS' && !/^\+?[1-9]\d{1,14}$/.test(link)) {
         setBtnText('Please enter a valid phone number');
 
-        setModal(false);
+        // setModal(false);
         return;
       }
       if (selectedType !== 'Email' && selectedType !== 'SMS' && !link.startsWith('https://')) {
         setBtnText('Please enter a valid link');
-        setModal(false);
+        // setModal(false);
         return;
       }
 
@@ -70,6 +71,11 @@ export const MainAdSpace = ({ adSpaces }) => {
       let formData = new FormData();
       formData.append('space_type', selectedType);
       formData.append('url', link);
+
+      if (description) {
+        formData.append('description', description);
+      }
+
       if (file) {
         formData.append('file', file);
       }
@@ -340,12 +346,7 @@ export const MainAdSpace = ({ adSpaces }) => {
                     </div>
                     <div className='mt-6'>
                       <label className='mb-3 text-center block'>Your {selectedType} File</label>
-                      {/* <input
-                        type="file"
-                        className='w-full p-2 border rounded-lg'
-                        required
-                        onChange={(e) => setLink(e.target.files[0])}
-                      /> */}
+
                       <div
                         className={` h-40 rounded-2xl border-2 border-dashed border-blue-600 flex items-center justify-center ${fileName && 'border-green-600'}`}
                         onDrop={handleDrop}
@@ -364,6 +365,15 @@ export const MainAdSpace = ({ adSpaces }) => {
                         </label>
                         <input id="file" type="file" className="hidden"
                           onChange={handleFileChange} />
+                      </div>
+                      <div className='mt-6'>
+                        <label className='mb-3 text-center block'>Description</label>
+                        <input
+                          type="text"
+                          placeholder="Enter description..."
+                          className='w-full p-2 border rounded-lg'
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
                       </div>
                     </div>
                     <div className="flex justify-center p-6 border-t border-solid border-blue-200 rounded-b">
