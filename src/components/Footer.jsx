@@ -43,13 +43,13 @@ const Footer = ({ authenticated }) => {
                     </Link>
                   </li>
                   <li>
-                    <Link to={isAuthenticated && authUser?.user_role == 'advertiser' ? "/filter" : "/login"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                    <Link to={isAuthenticated && authUser?.user_role == 'advertiser' ? "/filter" : "/advertiser/registration"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
                       Find The Best Places To Advertise
                     </Link>
                   </li>
                   {!isAuthenticated && (
                     <li>
-                      <Link to={isAuthenticated ? "/" : "/continue"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
+                      <Link to={isAuthenticated ? "/" : "/space_host/registration"} class="text-neutral-500 text-base font-light transition hover:text-[#2B59FF]">
                         Become An Ad Host
                       </Link>
                     </li>

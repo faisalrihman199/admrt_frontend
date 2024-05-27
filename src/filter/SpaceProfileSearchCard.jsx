@@ -33,13 +33,12 @@ const SpaceProfileSearchCard = ({ profile }) => {
 
       {/* NAME AND IMAGE */}
       <div className='flex gap-3 mt-5'>
-        <div className=''>
-          {/* <img className='h-20 w-20 rounded-full' src={profile?.profile_image || avatar} alt="iconYoutuber" /> */}
-          <img className='h-20 w-20 rounded-full object-cover ' src={profile?.profile_image || avatar} alt="iconYoutuber" />
+        <div className='w-20 h-20 flex-shrink-0'>
+          <img className='h-full w-full rounded-full object-cover' src={profile?.profile_image || avatar} alt="iconYoutuber" />
         </div>
         <div className=' '>
           <h1 className='font-semibold'>{profile?.full_name}</h1>
-          <h1 className='text-gray-500 text-sm'>{profile.topics && profile.topics.map(topic => topic.title).join(', ')}</h1>
+          <h1 className='text-gray-500 text-sm'>{profile.topics && profile.topics.map(topic => topic.title).join(', ').slice(0, 110)}</h1>
         </div>
       </div>
       {/* DESCRIPTION */}
@@ -73,12 +72,11 @@ const SpaceProfileSearchCard = ({ profile }) => {
       <div className='flex gap-3   p-3  justify-between margin-top: auto mt-5 '>
         {profile?.socials && profile.socials.length > 0 && (<p className="text-sm text-gray-500">Platforms:</p>)}
         <div className='flex gap-1 justify-end'>
-          {profile?.socials && profile.socials.map(({ social_media, url }) => (
+          {profile?.socials && profile.socials.slice(0, 7).map(({ social_media, url }) => (
             <div onClick={(event) => event.stopPropagation()} className="z-1 transform hover:scale-110 transition-transform duration-200 rounded-full hover:shadow-sm">
               <SocialIcon url={url} key={social_media} network={socialMediaNetworks[social_media]} target="_blank" rel="noopener noreferrer" style={{ height: 30, width: 30 }} />
             </div>
-          ))
-          }
+          ))}
         </div>
       </div>
       {/* BUTTONS */}

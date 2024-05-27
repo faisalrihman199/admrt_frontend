@@ -7,7 +7,7 @@ import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { usersCollection, storage, db } from "../../firebase/firebase";
 import edit_svg_blue from "../../image/edit_svg_blue.svg";
 import { VscChromeClose } from "react-icons/vsc";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdVerifiedUser } from "react-icons/md";
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addProfileTopic, deleteProfileTopic, updateProfile, updateSingleImage, userProfile } from "../../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
@@ -406,7 +406,10 @@ const EditeUser = ({ userInfo }) => {
 
       <div className="flex justify-between ml-4 w-3/4 items-center">
         <div className=''>
-          <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
+          <div className='flex items-center'>
+            <h1 className='font-medium text-lg md:text-2xl'>{userInfo.name}</h1>
+            {userInfo.isVerified && <MdVerifiedUser className='ml-2' color='blue' />}
+          </div>
           <div className="flex">
             <SpaceHostViewPermission userRole={userInfo.user_role}>
               <h1 className='text-sm w-full font-medium text-blue-800'>
