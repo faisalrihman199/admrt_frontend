@@ -24,7 +24,7 @@ import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
 import { QueryCache, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userProfile } from "../service/profile";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-import { getProfileImageFromLocalStorage } from "../util/localStorageUtils";
+import { getProfileImageFromLocalStorage, getProfileNameFromLocalStorage } from "../util/localStorageUtils";
 import { IoIosLogIn, IoMdExit, IoMdHome } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 
@@ -90,18 +90,22 @@ function StickyNavbar({ authenticated }) {
   const authHeader = useAuthHeader()
 
   const [profileImage, setProfileImage] = useState(getProfileImageFromLocalStorage());
-
+  const [profileName, setProfileName] = useState(getProfileNameFromLocalStorage());
 
   console.log(profileImage)
   useEffect(() => {
     const handleStorageChange = () => {
       console.log('Storage change detected');
       setProfileImage(getProfileImageFromLocalStorage());
+      setProfileName(getProfileNameFromLocalStorage());
     };
 
     window.addEventListener('profileImageChange', handleStorageChange);
+    window.addEventListener('profileNameChange', handleStorageChange);
+
     return () => {
       window.removeEventListener('profileImageChange', handleStorageChange);
+      window.removeEventListener('profileNameChange', handleStorageChange);
     };
   }, []);
 
@@ -414,7 +418,7 @@ function StickyNavbar({ authenticated }) {
           )}
           {auth?.full_name ? (
             <>
-              <h1 className="max-[1280px]:hidden text-black text-center p-2">{auth?.full_name}</h1>
+              <h1 className="max-[1280px]:hidden text-black text-center p-2">{(profileName || auth?.full_name).substring(0, 20)}</h1>
               <img src={down} alt="" className="w-9 max-[1280px]:hidden" />
             </>
           ) : (
