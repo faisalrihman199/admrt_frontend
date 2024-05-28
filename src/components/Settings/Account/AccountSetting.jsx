@@ -99,12 +99,12 @@ const AccountSettings = () => {
                         <div>
                             <label htmlFor="birthday" className="block mb-2 text-base font-medium text-gray-900 dark:text-black">Birthday</label>
                             <input
-                                // {...register("birthday", { required: true })}
+                                {...register("birthday")}
                                 type="date"
                                 id="birthday"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 px-4 py-3 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             />
-                            {errors.birthday && <p>This field is required</p>}
+                            {/* {errors.birthday && <p>This field is required</p>} */}
                         </div>
                         <div>
                             <label htmlFor="phone" className="block mb-2 text-base font-medium text-gray-900 dark:text-black">Phone number</label>
