@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -7,22 +7,33 @@ import { updateSettings, userSettings } from '../../../service/settings';
 import { getProfileNameFromLocalStorage, setProfileNameToLocalStorage } from '../../../util/localStorageUtils';
 
 const AccountSettings = () => {
-
+    const [message, setMessage] = useState({ type: '', text: '' });
     const authHeader = useAuthHeader();
     const queryClient = useQueryClient();
     const { isError, data, error } = useQuery({
+
         queryKey: ['userSettings', { authHeader }],
         queryFn: userSettings,
         staleTime: 5 * 60 * 1000,
     })
+    useEffect(() => {
+        let timer;
+        if (message.text) {
+            timer = setTimeout(() => {
+                setMessage({ type: '', text: '' });
+            }, 7000);
+        }
+        return () => clearTimeout(timer);
+    }, [message]);
+
     const mutation = useMutation({
         mutationFn: updateSettings,
         onSuccess: () => {
             queryClient.invalidateQueries('userSettings')
-
+            setMessage({ type: 'success', text: 'Changes saved successfully!' });
         },
         onError: () => {
-            alert('Something went wrong')
+            setMessage({ type: 'error', text: 'Something went wrong' });
         }
     });
     const { mutate, isPending } = mutation;
@@ -116,6 +127,10 @@ const AccountSettings = () => {
                             {errors.phone && <p>This field is required</p>}
                         </div>
                     </div>
+                    {message.text && <div className={`border-l-4 p-4 mb-4 ${message.type === 'success' ? 'bg-green-100 border-green-500 text-green-700' : 'bg-red-100 border-red-500 text-red-700'}`} role="alert">
+                        <p className="font-bold">{message.type.charAt(0).toUpperCase() + message.type.slice(1)}</p>
+                        <p>{message.text}</p>
+                    </div>}
                     <div className="mb-6 mt-10 py-6 text-center md:text-end">
                         <button type="submit" className="w-full md:w-64 rounded-lg py-3 bg-blue-500 text-white hover:shadow-lg font-medium font-medium text-sm md:text-base shadow-indigo-700/40 text-center">
                             {isPending ? 'Loading...' : 'Save Change'}

@@ -30,7 +30,8 @@ const Home = () => {
   return (
     <div className="home-con h-full ">
       <div className="items-center max-w-screen-2xl px-4 md:px-8 py-4 mx-auto xl:px-5">
-        <div className="flex items-center my-10 md:my-20 sm:-mx-3">
+        {/* <div className="flex items-center my-10 md:my-20 sm:-mx-3"> */}
+        <div className="flex flex-col md:flex-row items-center my-10 md:my-20 sm:-mx-3">
           <div className="w-full my-20 md:w-3/5 md:px-3">
             <div className="w-full pb-6 sm:pr-5 lg:pr-0 md:pb-0">
               <h1 className="text-4xl lg:text-5xl xl:text-6xl md:max-w-3xl font-bold">Your Brand. <span className="text-blue-700 italic">Strategic</span> Spaces. One Platform </h1>
