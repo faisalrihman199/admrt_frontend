@@ -387,7 +387,7 @@ const EditeUser = ({ userInfo }) => {
             key={croppedImage}
             src={userInfo.profileImage || 'https://as2.ftcdn.net/v2/jpg/04/10/43/77/1000_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
             alt="...leading. please make refresh"
-            className="w-full h-full rounded-full border-8 border-white object-cover"
+            className="w-full h-full max-w-36 max-h-36 rounded-full border-8 border-white object-cover"
           />
         </div>
         <AuthenticatedUserViewPermission>
