@@ -35,12 +35,40 @@ const AboutHim = ({ location, website, joinDate }) => {
 
     })
 
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null);
+            }, 5000);
+
+            return () => {
+                clearTimeout(timer);
+            };
+        }
+    }, [error]);
+
+    const validateURL = (url) => {
+        try {
+            new URL(url);
+            return url.startsWith('https://');
+        } catch (_) {
+            return false;
+        }
+    }
+
     const handleSaveChanges = async () => {
         try {
 
             let data = {};
             if (locationInput) data.location = locationInput;
-            if (websiteInput) data.website = websiteInput;
+            if (websiteInput) {
+                console.log('validateURL(websiteInput)', validateURL(websiteInput))
+                if (!validateURL(websiteInput)) {
+                    setError('Please enter a valid website URL. Ex: https://yourDomain.com')
+                    return
+                }
+                data.website = websiteInput;
+            }
 
             mutation.mutate({
                 authHeader,
@@ -95,7 +123,6 @@ const AboutHim = ({ location, website, joinDate }) => {
                                         id="site"
                                         defaultValue={website}
                                         onChange={(e) => setWebsiteInput(e.target.value)}
-                                    // value={currentWebsite}
                                     />
                                 </div>
                             </div>
