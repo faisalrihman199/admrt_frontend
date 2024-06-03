@@ -14,6 +14,7 @@ import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProfile } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
+import Alert from '../../../components/allert';
 
 const AboutHim = ({ location, website, joinDate }) => {
     const [aboutHimShow, setaboutHimShow] = useState("");
@@ -126,7 +127,7 @@ const AboutHim = ({ location, website, joinDate }) => {
                                     />
                                 </div>
                             </div>
-                            {error && <p className="text-red-500 m-3 p-3">{error}</p>}
+                            {error && <Alert type="error" message={error} />}
                             <div className="flex items-center justify-end p-4 border-t border-blueGray-200 rounded-b">
                                 <button
                                     className="text-blue-700 hover:text-indigo-700 px-4 py-2 font-semibold focus:outline-none"
