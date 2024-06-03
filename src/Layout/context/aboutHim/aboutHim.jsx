@@ -56,19 +56,32 @@ const AboutHim = ({ location, website, joinDate }) => {
             return false;
         }
     }
-
+    const getDisplayUrl = (website) => {
+        try {
+            const url = new URL(website);
+            return url.hostname + url.pathname;
+        } catch (error) {
+            return website;
+        }
+    }
     const handleSaveChanges = async () => {
         try {
 
             let data = {};
             if (locationInput) data.location = locationInput;
             if (websiteInput) {
-                console.log('validateURL(websiteInput)', validateURL(websiteInput))
-                if (!validateURL(websiteInput)) {
-                    setError('Please enter a valid website URL. Ex: https://yourDomain.com')
-                    return
+                // console.log('validateURL(websiteInput)', validateURL(websiteInput))
+                // if (!validateURL(websiteInput)) {
+                //     setError('Please enter a valid website URL. Ex: https://yourDomain.com')
+                //     return
+                // }
+                let finalWebsiteInput;
+                if (websiteInput.startsWith('https://')) {
+                    finalWebsiteInput = websiteInput;
+                } else {
+                    finalWebsiteInput = 'https://' + websiteInput;
                 }
-                data.website = websiteInput;
+                data.website = finalWebsiteInput;
             }
 
             mutation.mutate({
@@ -204,7 +217,7 @@ const AboutHim = ({ location, website, joinDate }) => {
                             </div>
                             <div>
                                 {website
-                                    ? <a href={website} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{website}</a>
+                                    ? <a href={website} target="_blank" rel="noopener noreferrer" style={{ color: '#0000EE', textDecoration: 'underline' }}>{getDisplayUrl(website)}</a>
                                     : <><span>--</span>
                                         <AuthenticatedUserViewPermission>
                                             <span> Please fill your website!</span>
