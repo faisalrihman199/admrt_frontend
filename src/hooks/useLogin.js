@@ -13,7 +13,7 @@ export function useLogIn() {
 
   const logIn = async (email, password) => {
     try {
-      const data = await userLoginApi(email, password);
+      const data = await userLoginApi(email.toLowerCase(), password);
       if (data.access && data.refresh && data.user) {
         signIn({
           auth: {
