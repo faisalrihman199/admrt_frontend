@@ -56,9 +56,14 @@ const CreateAnAcc = () => {
       return;
     }
 
-    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[@$!%*#?&]/.test(password)) {
-      setErrorMessage('Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
-      setLoading(false)
+    // if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[@$!%*#?&]/.test(password)) {
+    //   setErrorMessage('Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+    //   setLoading(false)
+    //   return;
+    // }
+    if (password.length < 8) {
+      setErrorMessage('Password must be at least 8 characters long');
+      setLoading(false);
       return;
     }
 
