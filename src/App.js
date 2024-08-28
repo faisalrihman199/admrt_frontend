@@ -25,6 +25,7 @@ import DirectIndexPage from "./message/layout/context/direct/index";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
 import Chat from "./components/Test";
+import PasswordReest from "./Layout/AuthPage/passwordReset";
 
 function App() {
   const [userId, setUserId] = useState(null);
@@ -105,7 +106,7 @@ function App() {
     { id: 9, path: "/checkEmail", element: <CheckEmail /> },
     { id: 10, path: "/congratulation", element: <CreateAnAcc /> },
     { id: 11, path: "*", element: <NotFound /> },
-    // { id: 12, path: "/testChat", element: <Chat /> },
+    { id: 12, path: "/resetPassword", element: <PasswordReest /> },
   ];
 
   return (

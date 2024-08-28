@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,  useNavigate } from 'react-router-dom';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import SlideShow from '../SlideShow'
 import { auth } from '../../firebase/firebase';
+import { forgetPasswordApi } from '../../service/auth';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleResetPassword = async () => {
     try {
@@ -21,8 +23,13 @@ const ForgotPassword = () => {
         return;
       }
 
-      await sendPasswordResetEmail(auth, email);
-      setSuccessMessage('Password reset email sent. Check your inbox for further instructions.');
+      const response = await forgetPasswordApi(email);
+      if (response.status == 200) {
+        navigate("/resetPassword", { state: { email } });
+        
+      }
+      
+
     } catch (error) {
       console.error(error);
       setErrorMessage('There was an error. Please check your email address and try again.');
