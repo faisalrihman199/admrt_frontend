@@ -102,7 +102,8 @@ const Footer = ({ authenticated }) => {
             </p>
             <div class="mb-6 flex items-center text-neutral-500 ">
               <Link
-                to="/"
+                to="https://www.instagram.com/collabwithadmrt/"
+                
                 rel="noreferrer"
                 target="_blank"
                 class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full hover:text-[#2B59FF]  sm:mr-4 lg:mr-3 xl:mr-4"
@@ -120,7 +121,7 @@ const Footer = ({ authenticated }) => {
                   />
                 </svg>
               </Link>
-              <Link to=""
+              <Link target='blank' to="https://www.linkedin.com/company/addictive-ads18/"
                 class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full hover:text-[#2B59FF] sm:mr-4 lg:mr-3 xl:mr-4"
               >
                 <svg

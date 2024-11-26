@@ -16,6 +16,8 @@ import ProfileImageUploadForm from "../../components/Forms/ProfileImageUploadFor
 import AuthenticatedUserViewPermission from "../../components/Permissions/AuthenticatedUserViewPermission";
 import SpaceHostViewPermission from "../../components/Permissions/SpaceHostViewPermission";
 import { setProfileImageToLocalStorage } from "../../util/localStorageUtils";
+import { useLocation } from "react-router-dom";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 const EditeUser = ({ userInfo }) => {
   const auth = getAuth();
@@ -38,7 +40,7 @@ const EditeUser = ({ userInfo }) => {
   const [split, setSplit] = useState('');
   // const [currentProfileImageUrl, setCurrentProfileImageUrl] = useState(userInfo.profileImage);
   // const allTopics = [...userInfo.topics, ...todos];
-  console.log('userInfo.ProfileImage', userInfo.profileImage)
+  // console.log('userInfo.ProfileImage', userInfo.profileImage)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -104,7 +106,7 @@ const EditeUser = ({ userInfo }) => {
 
     },
   })
-
+  
   const authHeader = useAuthHeader()
   const handleAddTodo = () => {
     const newTodo = {
@@ -112,11 +114,13 @@ const EditeUser = ({ userInfo }) => {
       title: todoText
     };
     // setTodos([...todos, newTodo]);
-    console.log('newTodo', newTodo)
+    // console.log('newTodo', newTodo)
     setExperitise([...experitise, newTodo.text]);
+    // console.log("I think Adding here :", profile);
+    
     mutation.mutate({
       authHeader,
-      data: { title: todoText }
+      data: { title: todoText,userId:profile }
     })
     userInfo.topics.push(newTodo)
 
@@ -176,13 +180,22 @@ const EditeUser = ({ userInfo }) => {
   //     console.error('Error updating user data:', error);
   //   }
   // }
+  
+  const authe=useAuthUser();
+    const location = useLocation();
 
+    // Split the path by '/' and get the last element
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
   const handleProfilePicUpload = async (file) => {
     try {
       let data;
       if (file instanceof Blob) {
         const formData = new FormData();
         formData.append('profile_image', file, 'profile_pic.png');
+        if(authe?.user_role==='admin'){
+          formData.append("userId",profile)
+      }
         data = formData;
       } else {
         data = { profile_image: file };

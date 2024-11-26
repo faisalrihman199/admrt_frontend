@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { VscChromeClose, VscEmptyWindow } from "react-icons/vsc";
 import { auth, db, deletePortfolioFirebase, savePortfolioFirebase } from '../../../firebase/firebase'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { collection, getDocs } from 'firebase/firestore';
 import { MdDelete, MdOutlineDeleteForever } from "react-icons/md";
 import ReactPlayer from 'react-player';
@@ -14,6 +14,7 @@ import { deletePortfolio, updateProfileWithFile } from '../../../service/profile
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 
 const Portfolio = ({ userPortfolios }) => {
@@ -155,7 +156,13 @@ const Portfolio = ({ userPortfolios }) => {
   const handlePreviousButton = () => {
     setStep(1);
   }
+  
+  const authe=useAuthUser();
+    const location = useLocation();
 
+    // Split the path by '/' and get the last element
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
   const validateSubmit = () => {
     console.log('validateSubmit')
 
@@ -253,7 +260,9 @@ const Portfolio = ({ userPortfolios }) => {
       formData.append('title', title);
       formData.append('name', title);
       formData.append('description', description);
-
+      if(authe?.user_role==='admin'){
+        formData.append("userId",profile)
+    }
 
 
       if (files.length > 0) { // Use files state here
@@ -397,17 +406,7 @@ const Portfolio = ({ userPortfolios }) => {
                         </label>
                       </div> */}
                       {/* {portfolioType === 'youtube' && ( */}
-                      <>
-                        <p className='pl-1'>YouTube Link</p>
-                        <input type="text"
-                          placeholder='Enter YouTube link'
-                          className={`w-full p-2 border rounded-lg`}
-                          value={youtubeLink}
-                          onChange={(e) => setYoutubeLink(e.target.value)}
-                        />
-                        {errorYoutubeLink && <p className='text-red-600'>{errorYoutubeLink}</p>}
-
-                      </>
+                      
                       {/* )} */}
                       <div className="  items-center">
                         <p className=''>Portfolio Images</p>

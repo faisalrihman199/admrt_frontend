@@ -2,7 +2,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { VscChromeClose } from 'react-icons/vsc';
 import { auth, usersCollection } from '../../firebase/firebase';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MdModeEditOutline } from "react-icons/md";
 import deleteIcon from '../../image/Delete.svg'
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
@@ -10,6 +10,7 @@ import { addAddSpace, deleteAdSpace } from '../../service/addSpace';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { FaFileDownload, FaLink } from 'react-icons/fa';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const MainAdSpace = ({ adSpaces }) => {
   const [modal, setModal] = useState(false);
@@ -44,8 +45,14 @@ export const MainAdSpace = ({ adSpaces }) => {
     },
   })
 
-  console.log('adSpaces', adSpaces)
+  // console.log('adSpaces', adSpaces)
   const authHeader = useAuthHeader()
+  const authe=useAuthUser();
+    const location = useLocation();
+
+    // Split the path by '/' and get the last element
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
 
   const handleSend = async () => {
     try {
@@ -71,6 +78,9 @@ export const MainAdSpace = ({ adSpaces }) => {
       let formData = new FormData();
       formData.append('space_type', selectedType);
       formData.append('url', link);
+      if(authe?.user_role==='admin'){
+        formData.append("userId",profile)
+    }
 
       if (description) {
         formData.append('description', description);
@@ -83,7 +93,7 @@ export const MainAdSpace = ({ adSpaces }) => {
         authHeader,
         data: formData
       })
-      console.log('im ahere', link, selectedType)
+      // console.log('im ahere', link, selectedType)
       setBtnText("Save");
       setLink('');
       setModal(false);

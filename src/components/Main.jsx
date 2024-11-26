@@ -3,10 +3,12 @@ import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import { Outlet } from 'react-router-dom';
 import Footer from './Footer';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import AdminNavbar from './AdminNavbar';
 
 const Main = ({ authenticated, onUserSelect }) => {
   const location = useLocation(); 
-
+  const auth=useAuthUser();
   if (location.pathname.includes("message")) {
     return (
       <>
@@ -18,9 +20,17 @@ const Main = ({ authenticated, onUserSelect }) => {
 
   return (
     <>
+    {
+      auth?.user_role!=="admin" ?
       <Navbar authenticated={authenticated} onUserSelect={onUserSelect} />
+      :
+      <AdminNavbar />
+    }
       <Outlet />
-      <Footer authenticated={authenticated} />
+      {
+      auth?.user_role!=="admin" && 
+      <Footer authenticated={authenticated}/>
+    }
     </>
   );
 };

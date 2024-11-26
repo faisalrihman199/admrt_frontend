@@ -11,8 +11,6 @@ const instance = axios.create({
 // request interceptors for custom logic
 instance.interceptors.request.use(
   (config) => {
-    // Do something before request is sent
-    console.log("Request sent:", config);
     return config;
   },
 
@@ -25,7 +23,6 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
-    console.log("Response received:", response);
     return response;
   },
   (error) => {

@@ -390,3 +390,11 @@ div .textarea {
   width: 3px;
   background: #c1c3c5b4;
 }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none;  /* For Firefox */
+}

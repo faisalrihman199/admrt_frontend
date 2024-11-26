@@ -18,7 +18,7 @@ const CreateAnAcc = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState('USA');
   const [errorMessage, setErrorMessage] = useState('');
   const [type, setType] = useState('password');
   const [icon, setIcon] = useState(eyeOff);
@@ -44,7 +44,7 @@ const CreateAnAcc = () => {
     setLoading(true)
     setErrorMessage('');
 
-    if (!fullName.trim() || !email.trim() || !phoneNumber.trim() || !password.trim() || !country.trim()) {
+    if (!fullName.trim() || !email.trim() || !phoneNumber.trim() || !password.trim()  ){
       setErrorMessage('All fields are required.');
       setLoading(false)
       return;
@@ -71,7 +71,7 @@ const CreateAnAcc = () => {
     }
 
     try {
-      await userRegisterApi({ full_name: fullName, email, phone: phoneNumber, password, country, user_role: split });
+      await userRegisterApi({ full_name: fullName, email, phone: phoneNumber, password,country, user_role: split });
       await logIn(email, password);
     } catch (err) {
       console.error(err);
@@ -147,7 +147,7 @@ const CreateAnAcc = () => {
                 {showPasswordMessage && <p className="mt-2 text-sm text-gray-500">Must have at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character</p>}
               </label>
             </div>
-            <div>
+            {/* <div>
               <label htmlFor="countries" className="password-container block mt-8">
                 <h3 className="text-lg font-light md:font-normal">Country</h3>
               </label>
@@ -158,7 +158,7 @@ const CreateAnAcc = () => {
                 <option value="FR">France</option>
                 <option value="DE">Germany</option>
               </select>
-            </div>
+            </div> */}
             <div className="flex justify-center items-center mt-8">
               <div className='flex'>
                 <Checkbox defaultChecked />

@@ -12,11 +12,12 @@ import CheckMedia from './checkMedia';
 import copy from '../../../svgs/social-media/Group 1000005712.svg';
 import { auth, usersCollection } from '../../../firebase/firebase'
 import { doc, getDoc } from 'firebase/firestore';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addProfileSocials, deleteSocial } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 const SocialMedia = ({ socials }) => {
     const [selectedSocialMedia, setSelectedSocialMedia] = useState([]);
@@ -35,7 +36,13 @@ const SocialMedia = ({ socials }) => {
 
         },
     })
-    console.log('socials', socials)
+    // console.log('socials', socials)
+    
+    const authe=useAuthUser();
+    const location = useLocation();
+    // Split the path by '/' and get the last element
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
 
 
     const handleSelectSocialMedia = (addedSocial) => {
@@ -43,7 +50,7 @@ const SocialMedia = ({ socials }) => {
         try {
             mutation.mutate({
                 authHeader,
-                data: { social_media: addedSocial.social_media, url: addedSocial.url }
+                data: { social_media: addedSocial.social_media, url: addedSocial.url, userId:profile }
             })
 
             // setCurrentSocials((prevSelected) => [...prevSelected, addedSocial]);

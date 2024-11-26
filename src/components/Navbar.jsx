@@ -18,7 +18,8 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { MdMessage } from 'react-icons/md';
-import { FaAd, FaHome, FaRegUser, FaRegUserCircle, FaUserCheck } from 'react-icons/fa';
+
+import { FaAd, FaAdversal, FaHome, FaRegUser, FaRegUserCircle, FaUserAlt, FaUserCheck } from 'react-icons/fa';
 import SpaceHostViewPermission from "./Permissions/AuthenticatedUserViewPermission";
 import AdvertiserViewPermission from "./Permissions/AdvertiserViewPermission";
 import { QueryCache, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -27,6 +28,8 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { getProfileImageFromLocalStorage, getProfileNameFromLocalStorage } from "../util/localStorageUtils";
 import { IoIosLogIn, IoMdExit, IoMdHome } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
+import FloatingChat from "./FloatingChat/FloatingChat";
+import { useWebSocket } from "../Layout/context/socketContex";
 
 function StickyNavbar({ authenticated }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -43,9 +46,13 @@ function StickyNavbar({ authenticated }) {
   const [hasFalseRequests, setHasFalseRequests] = useState(false);
   const [lookingUserId, setLookingUserId] = useState(null);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+
   const signOut = useSignOut()
   const isAuthenticated = useIsAuthenticated()
   const auth = useAuthUser()
+  const [openChat, setOpenChat] = useState(false);
+  const [unreadCount, setUnread] = useState(0);
+  const { read,newMessage,setRead } = useWebSocket();
 
 
 
@@ -62,9 +69,21 @@ function StickyNavbar({ authenticated }) {
       }
     };
 
+
     document.addEventListener('click', handleDropDown);
     document.addEventListener('scroll', handleClickOutside);
   }, [profileRef]);
+
+  useEffect(() => {
+      setUnread(read)
+      
+  }, [read])
+  useEffect(()=>{
+    if(newMessage?.id){
+      setRead(1);
+    }
+  },[newMessage])
+ 
 
   useEffect(() => {
     const getImageFromStorage = async () => {
@@ -81,7 +100,9 @@ function StickyNavbar({ authenticated }) {
 
     getImageFromStorage();
   }, [userId]);
-
+  const handleChat = () => {
+    setOpenChat(!openChat);
+  }
   const navigation = [
     { title: "Profile", path: `/profile/${auth?.id}` },
     { title: "Settings", path: `/settings` },
@@ -92,10 +113,8 @@ function StickyNavbar({ authenticated }) {
   const [profileImage, setProfileImage] = useState(getProfileImageFromLocalStorage());
   const [profileName, setProfileName] = useState(getProfileNameFromLocalStorage());
 
-  console.log(profileImage)
   useEffect(() => {
     const handleStorageChange = () => {
-      console.log('Storage change detected');
       setProfileImage(getProfileImageFromLocalStorage());
       setProfileName(getProfileNameFromLocalStorage());
     };
@@ -181,12 +200,15 @@ function StickyNavbar({ authenticated }) {
       e.target.onerror = null;
       e.target.src = defaultAvate;
     }
+
     if (profileImage) {
       return <img src={profileImage} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
     }
     else if (auth?.profile_image) {
       return <img src={auth.profile_image} alt="" className="w-full h-full rounded-full" onError={handleImageError} />;
     } else if (auth?.full_name) {
+
+
       return (
         <div className="w-full h-full rounded-full flex items-center justify-center bg-orange-200 text-xl">
           {auth.full_name.charAt(0).toUpperCase()}
@@ -327,14 +349,44 @@ function StickyNavbar({ authenticated }) {
             </Link>
           </AdvertiserViewPermission>
         </Typography>
+          {
+            auth?.user_role!=='advertiser' &&
 
+            <Typography
+              as="li"
+              variant="small"
+              className={`p-1 text-black text-lg font-normal ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
+            >
+              <Link to={`/allproducts`} className="flex items-center hover:text-blue-700  ">
+                <FaAd className="mr-1 self-start" />
+                <h1>Advertisements</h1>
+              </Link>
+            </Typography>
+          }
         <Typography
           as="li"
           variant="small"
           className={`p-1 text-black text-lg font-normal ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
         >
-          <Link to={`/message`} className="flex items-center hover:text-blue-700  ">
-            <MdMessage className="mr-1 self-start" />
+          <Link to={`/profile/${auth?.id}`} className="flex items-center hover:text-blue-700  ">
+            <FaUserAlt className="mr-1 self-start" />
+            <h1>Profile</h1>
+          </Link>
+        </Typography>
+        <Typography
+          as="li"
+          variant="small"
+          className={`p-1 text-black text-lg font-normal ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
+        >
+          <Link onClick={handleChat} className="flex items-center hover:text-blue-700 relative">
+            {unreadCount > 0 && (
+              <div className="relative inline-flex items-center" style={{ marginRight: '-20px', marginTop: '-20px' }}>
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0 animate-ping"></div>
+                <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0 animate-pulse"></div>
+              </div>
+            )}
+            <MdMessage className="mr-1 self-start mt-1" />
             <h1>Messages</h1>
           </Link>
         </Typography>
@@ -418,7 +470,7 @@ function StickyNavbar({ authenticated }) {
           )}
           {auth?.full_name ? (
             <>
-              <h1 className="max-[1280px]:hidden text-black text-center p-2">{(profileName || auth?.full_name).substring(0, 20)}</h1>
+              <h1 className="max-[1280px]:hidden text-black text-center p-2">{(profileName.split(" ")[0] || auth?.full_name.split(" ")[0]).substring(0, 20)}</h1>
               <img src={down} alt="" className="w-9 max-[1280px]:hidden" />
             </>
           ) : (
@@ -466,13 +518,31 @@ function StickyNavbar({ authenticated }) {
                 </Link>
               </AdvertiserViewPermission>
             </Typography>
+            {
+            auth?.user_role!=='advertiser' &&
 
+            <Typography
+              as="li"
+              variant="small"
+              className={`p-1 text-black text-lg font-normal ${auth?.user_role === 'space_host' ? 'text-xl' : 'text-lg'}`}
+            >
+              <Link to={`/allproducts`} className="flex items-center hover:text-blue-700  ">
+                <FaAd className="mr-1 self-start" />
+                <h1>Advertisements</h1>
+              </Link>
+            </Typography>
+          }
             <Typography as="li" variant="small" className="p-1 text-black text-lg font-normal">
               <Link
-                onClick={handleNavClick}
-
-                to={`/message`} className="flex items-center hover:text-blue-700 ">
+                onClick={handleChat} className="flex items-center hover:text-blue-700 ">
                 <MdMessage className=" mr-2  " />
+                {unreadCount > 0 && (
+                  <div className="relative inline-flex items-center" style={{ marginLeft: '-10px', marginTop: '-20px' }}>
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0 animate-ping"></div>
+                    <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0 animate-pulse"></div>
+                  </div>
+                )}
                 <h1>Messages</h1>
               </Link>
             </Typography>
@@ -591,7 +661,11 @@ function StickyNavbar({ authenticated }) {
             </div>
           </div>
           {mobileMenu}
+
         </Navbar>
+        {isAuthenticated && openChat &&
+          <FloatingChat setOpenChat={setOpenChat} />
+        }
       </div>
     </div>
   );

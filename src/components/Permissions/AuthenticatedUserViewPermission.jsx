@@ -5,9 +5,10 @@ import { useParams } from 'react-router-dom';
 const AuthenticatedUserViewPermission = ({ children }) => {
     const { userId } = useParams();
     const auth = useAuthUser()
+    const storedUser=localStorage.getItem("user")
+        
 
-
-    if (auth?.id != userId) {
+    if (auth?.id != userId && auth?.user_role !== "admin" ) {
         return null;
     }
 

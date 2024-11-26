@@ -163,6 +163,8 @@ export const Specification = ({ long_term_service_availability, languages }) => 
                         <button>
                             <h1 className='text-base md:text-2xl font-semibold'>Specification</h1>
                         </button>
+                        {
+                        1===0 &&
                         <AuthenticatedUserViewPermission>
                             <div className='flex justify-center items-center m-1 p-1 rounded-sm   cursor-pointer hover:bg-gray-100'
                                 onClick={() => setModal(true)}
@@ -171,6 +173,7 @@ export const Specification = ({ long_term_service_availability, languages }) => 
                                 {/* <p className='text-blue-700'>edit</p> */}
                             </div>
                         </AuthenticatedUserViewPermission>
+                        }
 
                     </div>
                     <div className='flex justify-center items-center'>

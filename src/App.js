@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Login from "./Layout/AuthPage/Login";
 import Register from "./Layout/AuthPage/Register";
 import Continue from "./Layout/AuthPage/Continue";
@@ -26,12 +26,19 @@ import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
 import Chat from "./components/Test";
 import PasswordReest from "./Layout/AuthPage/passwordReset";
-
+import Product from "./profile/Product";
+import Admin from "./Admin/Admin";
+import { AdminProvider } from "./Context/AdminContext";
+import axios from "axios";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [userId, setUserId] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
+  const authe=useAuthUser();
+  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -66,8 +73,39 @@ function App() {
   }, [handleSuccess, setUserId, userId]);
 
   const handleUserSelect = (selectedUserUID) => {
-    console.log(selectedUserUID);
+    // console.log(selectedUserUID);
   };
+  useEffect(async()=>{
+    const server=process.env.REACT_APP_API_BASE_URL;
+    console.log("Server is :", server);
+    
+      const url=`${server}/settings/track-visitor/`
+      console.log("Requesting for :", url);
+      
+      try {
+        const res=await axios.get(url)  
+      } catch (error) {
+        console.log("Error :", error);
+        
+      }
+  },[])
+  const location = useLocation();
+
+  useEffect(async() => {
+    const params = new URLSearchParams(location.search);
+    
+    const referral = params.get('referal');
+
+    if (referral) {
+      const server=process.env.REACT_APP_API_BASE_URL;
+      try {
+        const res=await axios.get(`${server}/settings/addVisit/?link=${referral}`)  
+      } catch (error) {
+        console.log("Error :", error);
+        
+      }
+    }
+  }, []);
   const isAuthenticated = useIsAuthenticated();
 
   // useEffect(() => {}, [isAuthenticated]);
@@ -112,9 +150,20 @@ function App() {
   return (
     <div>
       <Routes>
+      <Route
+          path="/admin/*"
+          element={
+            authe?.user_role==="admin"?
+            <AdminProvider>
+              <Admin />
+            </AdminProvider>
+            :
+            <Navigate to='/' />
+          }
+        />
         <Route
           path="/"
-          element={
+          element={ 
             <Main
               authenticated={isAuthenticated}
               onUserSelect={handleUserSelect}
@@ -123,8 +172,10 @@ function App() {
         >
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+         
 
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/allproducts" element={<Product />} />
           <Route element={<AuthOutlet fallbackPath="/" />}>
             {AuthUserRoutes.map((route) => (
               <Route key={route.id} path={route.path} element={route.element} />
@@ -136,6 +187,7 @@ function App() {
                 element={<DirectIndexPage />}
               />
             </Route>
+            
           </Route>
         </Route>
         {GhostUser.map((route) => (
@@ -143,6 +195,8 @@ function App() {
         ))}
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      <ToastContainer />
     </div>
   );
 }

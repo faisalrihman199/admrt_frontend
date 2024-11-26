@@ -4,13 +4,14 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import ShowMoreText from 'react-show-more-text';
 import { BsDot } from 'react-icons/bs';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { db, saveUserDataToFirebase } from '../../firebase/firebase';
 import editeicon from '../../image/edit_svg_blue.svg';
 import { updateProfile, updateProfileSocials } from '../../service/profile';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 const IntoDescription = ({ description }) => {
     const [showModal, setShowModal] = useState(false);
@@ -23,6 +24,10 @@ const IntoDescription = ({ description }) => {
 
     const authHeader = useAuthHeader()
     const queryClient = useQueryClient();
+    const authe=useAuthUser()
+    const location = useLocation();
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
 
     const mutation = useMutation({
         mutationFn: updateProfile,
@@ -36,7 +41,10 @@ const IntoDescription = ({ description }) => {
             if (!!dialogInput.trim()) {
                 mutation.mutate({
                     authHeader,
-                    data: { description: dialogInput }
+                    data: { 
+                        description: dialogInput,
+                        userId:profile
+                    }
                 })
 
 

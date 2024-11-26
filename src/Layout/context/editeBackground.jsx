@@ -6,31 +6,36 @@ import editIcon from '../../image/blackEditeIcon.svg';
 import close from '../../image/closeBackground.svg';
 import { onAuthStateChanged } from "firebase/auth";
 import emptyBg from '../../image/image.png'
-import { Link } from 'react-router-dom'
+import { Link, useLocation,  } from 'react-router-dom'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { updateSingleImage } from '../../service/profile';
 import { Modal } from '../../components/Modal/Modal';
 import CoverImageCropper from './cropImg/CoverImageCroper';
 import AuthenticatedUserViewPermission from '../../components/Permissions/AuthenticatedUserViewPermission';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
-const EditBackground = ({ split, userId, coverImageUrl }) => {
+const EditBackground = ({ split,userId, coverImageUrl }) => {
     const [bgImage, setBgImage] = useState('');
     const [newBgImage, setNewBgImage] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    
     const [currentCoverImageUrl, setCurrentCoverImageUrl] = useState(coverImageUrl);
-
-
-
+    
     const handleEditBackground = () => {
         setIsEditing(!isEditing);
     };
+    const authe=useAuthUser();
+    const location = useLocation();
+
+    // Split the path by '/' and get the last element
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
 
     const handleUploadBackground = async (e) => {
         e.preventDefault();
-
         const file = e.target.files[0];
         if (file) {
             setNewBgImage(file);
@@ -83,22 +88,32 @@ const EditBackground = ({ split, userId, coverImageUrl }) => {
             setIsLoading(true);
 
             let data;
+            
             if (file instanceof Blob) {
                 const formData = new FormData();
+              
                 formData.append('banner_image', file, 'banner_image.png');
+                if(authe?.user_role==='admin'){
+                    formData.append("userId",profile)
+                }
                 data = formData;
+                
+                
             } else {
                 data = { banner_image: file };
             }
+            
 
             const updateResponse = await updateSingleImage({ authHeader, data });
-
+            
+            
             if (updateResponse?.banner_image) {
                 // setCurrentCoverImageUrl(updateResponse?.banner_image);
                 queryClient.invalidateQueries('loggedInUser')
 
                 setIsEditing(false);
             }
+
 
         } catch (error) {
             console.error('Error updating user data:', error);

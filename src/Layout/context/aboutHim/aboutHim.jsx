@@ -9,12 +9,13 @@ import shape3 from '../../../svgs/about/ic_date.svg';
 // import shape4 from '../../../svgs/about/ic_Working.svg';
 // import shape5 from '../../../svgs/about/ic_relationship.svg';
 import edit_svg_blue from '../../../image/edit_svg_blue.svg';
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProfile } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 import Alert from '../../../components/allert';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 const AboutHim = ({ location, website, joinDate }) => {
     const [aboutHimShow, setaboutHimShow] = useState("");
@@ -64,6 +65,13 @@ const AboutHim = ({ location, website, joinDate }) => {
             return website;
         }
     }
+    
+    const authe=useAuthUser();
+    const loc = useLocation();
+
+    // Split the path by '/' and get the last element
+    const pathSegments = loc.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
     const handleSaveChanges = async () => {
         try {
 
@@ -82,6 +90,9 @@ const AboutHim = ({ location, website, joinDate }) => {
                     finalWebsiteInput = 'https://' + websiteInput;
                 }
                 data.website = finalWebsiteInput;
+                if(authe?.user_role==='admin'){
+                    data.userId=profile;
+                }
             }
 
             mutation.mutate({

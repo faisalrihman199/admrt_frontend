@@ -43,7 +43,10 @@ function Continue() {
                         <img class=" w-14 md:w-20" src={svg} alt="icon" />
                       </div>
                       <p class="font-semibold my-2 ">AdHost</p>
-                      <p class="font-light text-sm">List your AdSpace</p>
+                      <p class="font-light text-sm">For Creators & Influencers: Monetize Your Reach</p>
+                      <p class="font-light text-sm text-gray-400" >
+                        Join as an AdHost to list your ad space, connect with brands, and start earning.
+                      </p>
                     </div>
                   </div>
                   <div class="relative w-full md:w-1/2 mt-2 py-3 px-3 md:py-7 rounded-xl font-medium text-gray-700">
@@ -54,8 +57,11 @@ function Continue() {
                         <div className="flex justify-center items-center">
                           <img class=" w-14 md:w-20" src={svg1} alt="icon2" />
                         </div>
-                        <p class="font-semibold my-2">Advertiser</p>
-                        <p class="font-light text-sm hover:font-normal">Find the best places to advertise</p>
+                        <p class="font-semibold my-2 ">Advertiser</p>
+                        <p class="font-light text-sm">For Brands & Businesses: Find Influential Ad Spaces</p>
+                        <p class="font-light text-sm text-gray-400" >
+                        Sign up as an Advertiser to find the best spaces for your ads and reach engaged audiences.
+                        </p>
                       </div>
                     </div>
                   </div>

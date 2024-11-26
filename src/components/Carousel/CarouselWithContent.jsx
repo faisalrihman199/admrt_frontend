@@ -1,7 +1,7 @@
 import { Carousel, Typography } from "@material-tailwind/react";
 
 export function CarouselWithContent({ description, imageUrls, fullScreenMode = false }) {
-    console.log('imageUrls', imageUrls)
+    // console.log('imageUrls', imageUrls)
 
     return (
         <Carousel className={`rounded-xl flex ${fullScreenMode ? 'px-4' : ''}`} autoplay={true}>
@@ -12,7 +12,8 @@ export function CarouselWithContent({ description, imageUrls, fullScreenMode = f
                         src={imageUrl}
                         alt={`image ${index + 1}`}
                         className="object-cover rounded-xl"
-                        style={{ height: fullScreenMode ? '700px' : '220px' }}
+                        
+                        style={{height:'220px', maxHeight:'90vh', width:'220px', maxWidth:'100vw'}}
                     />
                     {fullScreenMode && (
                         <div className="w-3/4 md:w-2/4 p-1 text-left">

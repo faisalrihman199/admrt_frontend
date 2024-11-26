@@ -130,21 +130,20 @@ const MessageIndex = ({ isMobile = false }) => {
     const verifyPath = location.pathname === '/message';
     const authHeader = useAuthHeader();
     const authUser = useAuthUser();
-
+    const [conversations,setCoversations]=useState([])
     const isMessageListRoute = location.pathname === '/message';
 
     const { conversationList, makeConversationRead, updateConversationList, getConverSationList } = useWebSocket();
     useEffect(() => {
         getChatConversationList(authHeader).then((data) => {
-            console.log('conversationListData:', data)
-            updateConversationList(data.conversations)
+            console.log('conversation List Data:', data)
+            updateConversationList(data);
+            setCoversations(data);
         });
-        // getConverSationList()
+        getConverSationList()
     }, []);
 
-    useEffect(() => {
-
-    }, [conversationList]);
+    
 
 
 
@@ -214,7 +213,7 @@ const MessageIndex = ({ isMobile = false }) => {
                                 <div class="flex flex-col space-y-1 mt-3  h-full rounded-xl overflow-y-auto">
                                     <div class="flex flex-col h-full w-full px-5 overflow-x-auto mb-4">
                                         <div class="my-2 py-2">
-                                            {conversationList.length === 0 && (
+                                            {conversations.length === 0 && (
                                                 <div className="text-gray-400 flex justify-center">
                                                     <div>
                                                         <VscEmptyWindow className="w-44 h-44" />
@@ -222,26 +221,28 @@ const MessageIndex = ({ isMobile = false }) => {
                                                     </div>
                                                 </div>
                                             )}
-                                            {/* <p>{JSON.stringify(conversationList)}</p> */}
+                                            {/* <p>{JSON.stringify(conversations)}</p> */}
 
-                                            {conversationList.map((data) => (
+                                            {conversations.map((data) => (
                                                 <div key={data.key} >
                                                     <Link
                                                         onClick={() => handleUnreadMessages(data?.userId)}
                                                         to={`/message/direct/${data?.userId}`} className="flex justify-between border-b hover:bg-gray-50">
                                                         <button className="py-4 flex w-full items-start justify-between cursor-pointer  hover:text-black">
                                                             <div className="flex gap-3">
+
                                                                 <Link to={`/profile/user/${data?.userId}`}>
-                                                                    <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
+                                                                    <img src={data.other_user.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" />
                                                                 </Link>
                                                                 {/* <img src={data.profile_image || avatar} className="flex-none w-12 h-12 rounded-full" alt="" /> */}
                                                                 <div className="m-auto">
-                                                                    <span className="block text-sm text-gray-700 font-semibold text-left">{data.full_name}</span>
+                                                                    <span className="block text-sm text-gray-700 font-semibold text-left">{data.other_user.full_name}</span>
+                                                                    
                                                                     <div className="flex items-center">
-                                                                        <span className="block text-sm text-gray-500">{data.lastMessage}</span>
-                                                                        {data.unread_messages > 0 && (
+                                                                        <span className="block text-sm text-gray-500">{data.last_message}</span>
+                                                                        {data.unread_messages_count > 0 && (
                                                                             <p className="bg-red-600 px-2.5 py-0.5 rounded-full text-white ml-2">
-                                                                                {data.unread_messages}
+                                                                                {data.unread_messages_count}
                                                                             </p>
                                                                         )}
                                                                     </div>

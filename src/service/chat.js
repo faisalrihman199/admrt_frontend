@@ -3,27 +3,25 @@ import apiClient from "../util/apiClient";
 export async function getChatConversationList(authHeader) {
   try {
     // const [_key, { authHeader }] = queryKey;
-    const response = await apiClient.get("/chat/", {
+    const response = await apiClient.get("/newChat/conversations/", {
       headers: {
         Authorization: authHeader,
       },
     });
-    console.log("called api");
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function getChatConversation(authHeader, partner_id) {
+export async function getChatConversation(authHeader, conversation_id) {
   try {
-    // const [_key, { authHeader, partner_id }] = queryKey;
-    const response = await apiClient.get(`/chat/?partner_id=${partner_id}`, {
+    
+    const response = await apiClient.get(`/newChat/conversation/?pk=${conversation_id}`, {
       headers: {
         Authorization: authHeader,
       },
     });
-    console.log("called api");
     return response.data;
   } catch (error) {
     return [];

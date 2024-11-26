@@ -6,15 +6,17 @@ import {
   setProfileImageToLocalStorage,
   setProfileNameToLocalStorage,
 } from "../util/localStorageUtils";
+import { toast } from "react-toastify";
 
 export function useLogIn() {
   const navigate = useNavigate();
   const signIn = useSignIn();
-
   const logIn = async (email, password) => {
     try {
-      const data = await userLoginApi(email.toLowerCase(), password);
-      if (data.access && data.refresh && data.user) {
+      let data = await userLoginApi(email.toLowerCase(), password);
+      if (data.access && data.refresh && data.user) {      
+        console.log("Logged user :", data.user.user_role);
+        
         signIn({
           auth: {
             token: data.access,
@@ -25,8 +27,19 @@ export function useLogIn() {
         });
         setProfileImageToLocalStorage(data?.user?.profile_image);
         setProfileNameToLocalStorage(data?.user?.full_name);
-        window.location.href = "/";
+        if(data?.user?.user_role==='admin'){
+          
+          window.location.href="/admin/accounts"
+        }
+        else{
+          window.location.href="/"
+        }
+        
+        
+      
+        
       } else {
+
         console.error("im here");
         throw new Error("Invalid response from server login.");
       }

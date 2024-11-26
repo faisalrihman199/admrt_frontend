@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { auth, productCollection, saveProductDataToFirebase, storage, uploadFilesToStorage } from '../../../firebase/firebase';
 import { MdDelete, MdOutlineDeleteForever } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
@@ -17,8 +17,11 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { Modal } from '../../../components/Modal/Modal';
 import AuthenticatedUserViewPermission from '../../../components/Permissions/AuthenticatedUserViewPermission';
 import { VscChromeClose } from 'react-icons/vsc';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const ProductAdventiser = ({ userProducts }) => {
+  console.log("User products to be shown :", userProducts);
+
   const { userUID } = useParams();
   const [userId, setUserId] = useState('');
   const [modal, setModal] = useState(false);
@@ -39,10 +42,13 @@ export const ProductAdventiser = ({ userProducts }) => {
   const [youtubeLink, setYoutubeLink] = useState('');
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
+  const [topics, setTopics] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isPending, setIsPending] = useState(false);
-
+  const [productType, setProductType] = useState('public');
+  const [errorMessageProductType, setErrorMessageProductType] = useState(false);
+  
 
   const productId = generatedId();
 
@@ -295,7 +301,6 @@ export const ProductAdventiser = ({ userProducts }) => {
       setError('');
     }
     console.log('processFiles files', files)
-
     const imageFiles = validFiles.map(file => URL.createObjectURL(file));
     setImages([...images, ...imageFiles]);
     setFiles(prevFiles => [...prevFiles, ...validFiles]);// Update files state
@@ -309,6 +314,14 @@ export const ProductAdventiser = ({ userProducts }) => {
     setImages(images.filter((_, i) => i !== index));
     setFiles(files.filter((_, i) => i !== index)); // Update files state
   };
+  
+  const authe=useAuthUser();
+    const location = useLocation();
+
+    // Split the path by '/' and get the last element
+    const pathSegments = location.pathname.split('/');
+    const profile = pathSegments[pathSegments.length - 1];
+
   const handleSubmit = async () => {
     setLoading(true);
 
@@ -321,9 +334,15 @@ export const ProductAdventiser = ({ userProducts }) => {
       }
       const formData = new FormData();
       formData.append('title', title);
+      if(topics){
+        formData.append('topics', topics);
+      }
       formData.append('name', title);
       formData.append('description', description);
-
+      formData.append('productType', productType)
+      if(authe?.user_role==='admin'){
+        formData.append("userId",profile)
+    }
 
 
       if (files.length > 0) { // Use files state here
@@ -351,9 +370,7 @@ export const ProductAdventiser = ({ userProducts }) => {
       setErrorMessageDescription(false);
       setError('');
       setFiles([]);
-      setLoading(files);
-
-
+      setLoading(false);
       queryClient.invalidateQueries({ queryKey: ['loggedInUser'] })
       // navigate(`/profile/${authUser?.id}`)
     } catch (error) {
@@ -368,6 +385,7 @@ export const ProductAdventiser = ({ userProducts }) => {
     setStep(1);
     setTitle('');
     setDescription('');
+    
     setImages([]);
     setPortfolioType('');
     setYoutubeLink('');
@@ -434,40 +452,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                       />
                       {errorMessageTitle && <p className='text-red-600'>Please enter portfolio title</p>}
 
-                      {/* <p className='pl-1'>Portfolio Type</p>
-                        <div className="w-full p-2 border rounded-lg">
-                          <label className="mr-4">
-                            <input
-                              type="radio"
-                              value="youtube"
-                              checked={portfolioType === 'youtube'}
-                              onChange={(e) => setPortfolioType(e.target.value)}
-                            />
-                            YouTube
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              value="image"
-                              checked={portfolioType === 'image'}
-                              onChange={(e) => setPortfolioType(e.target.value)}
-                            />
-                            Image
-                          </label>
-                        </div>
-                        {portfolioType === 'youtube' && (
-                          <>
-                            <p className='pl-1'>YouTube Link</p>
-                            <input type="text"
-                              placeholder='Enter YouTube link'
-                              className={`w-full p-2 border rounded-lg`}
-                              value={youtubeLink}
-                              onChange={(e) => setYoutubeLink(e.target.value)}
-                            />
-                            {errorYoutubeLink && <p className='text-red-600'>{errorYoutubeLink}</p>}
-
-                          </>
-                        )} */}
+                      
                     </div>
                   </div>
                 </div>
@@ -513,7 +498,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                       ))}
                     </div>
 
-                    <div className="mt-2 p-5">
+                    <div className="mt-2 ">
                       <label htmlFor="description" className="block text-gray-700">Description</label>
                       <textarea
                         id="description"
@@ -525,6 +510,34 @@ export const ProductAdventiser = ({ userProducts }) => {
                       ></textarea>
                       {errorMessageDescription && <p className='text-red-600'>Please enter a description</p>}
                     </div>
+                    <div className="mt-4">
+                      <label htmlFor="productType" className="block text-gray-700">Product Type</label>
+                      <select
+                        id="productType"
+                        className="mt-1 p-2 w-full border rounded-lg"
+                        value={productType}
+                        onChange={(e) => setProductType(e.target.value)}
+                      >
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                      </select>
+                    </div>
+                    {
+                      productType==='public' &&
+                      <div className='pt-2 my-2'>
+                      <div className="space-y-5">
+                        <input type="text"
+                          placeholder='Enter Product Topics'
+                          className={`w-full p-2 border rounded-lg `}
+                          value={topics}
+                          onChange={(e) => setTopics(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    }
+
+                    {errorMessageProductType && <p className='text-red-600'>Please select a product type</p>}
                   </div>
 
                 </div>
@@ -602,7 +615,7 @@ export const ProductAdventiser = ({ userProducts }) => {
       {/* <div className='grid grid-cols-2 gap-4 p-2 '> */}
       <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 p-2'>
 
-        {userProducts ? (
+        {userProducts.length > 0 ? (
           userProducts.map((product) => {
             const images = [product.image1, product.image2, product.image3].filter(Boolean);
             product.images = images;

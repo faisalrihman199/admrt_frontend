@@ -8,7 +8,7 @@ export async function userProfile({ queryKey }) {
         Authorization: authHeader,
       },
     });
-    console.log("called api");
+    // console.log("called api");
     return response.data;
   } catch (error) {
     throw error;
@@ -17,7 +17,7 @@ export async function userProfile({ queryKey }) {
 
 export async function addProfileTopic({ authHeader, data }) {
   try {
-    console.log("im here");
+    // console.log("im here");
 
     const response = await apiClient.post("/profile/topics/", data, {
       headers: {
@@ -33,7 +33,7 @@ export async function addProfileTopic({ authHeader, data }) {
 
 export async function deleteProfileTopic({ authHeader, id }) {
   try {
-    console.log("im here");
+    // console.log("im here");
 
     const response = await apiClient.delete(`/profile/topics/${id}/`, {
       headers: {
@@ -49,7 +49,7 @@ export async function deleteProfileTopic({ authHeader, id }) {
 
 export async function addLanguage({ authHeader, data }) {
   try {
-    console.log("im here");
+    // console.log("im here");
 
     const response = await apiClient.post("/profile/languages/", data, {
       headers: {
@@ -79,7 +79,7 @@ export async function addProfileSocials({ authHeader, data }) {
 
 export async function deleteSocial({ authHeader, id }) {
   try {
-    console.log("authHeader", authHeader);
+    // console.log("authHeader", authHeader);
     const response = await apiClient.delete(`/profile/socials/${id}/`, {
       headers: {
         Authorization: authHeader,
@@ -93,6 +93,8 @@ export async function deleteSocial({ authHeader, id }) {
 }
 
 export async function updateProfile({ authHeader, data }) {
+
+  
   try {
     const response = await apiClient.post("/profile/", data, {
       headers: {
@@ -137,6 +139,20 @@ export async function addProduct({ authHeader, formData }) {
     throw error;
   }
 }
+export async function allProducts({ authHeader }) {
+  try {
+    const response = await apiClient.get("/profile/product/", {
+      headers: {
+        Authorization: authHeader,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    alert("Something Went wrong");
+    console.log(error);
+    throw error;
+  }
+}
 
 export async function updateSingleImage({ authHeader, data }) {
   try {
@@ -148,7 +164,7 @@ export async function updateSingleImage({ authHeader, data }) {
     });
     return response.data;
   } catch (error) {
-    alert("Something Went wrong");
+    
     console.log(error);
     throw error;
   }
@@ -156,7 +172,7 @@ export async function updateSingleImage({ authHeader, data }) {
 
 export async function deletePortfolio({ authHeader, portfolioId }) {
   try {
-    console.log("authHeader", authHeader);
+    // console.log("authHeader", authHeader);
     const response = await apiClient.delete(
       `/profile/portfolios/${portfolioId}/`,
       {
@@ -173,7 +189,7 @@ export async function deletePortfolio({ authHeader, portfolioId }) {
 }
 export async function deleteProduct({ authHeader, productId }) {
   try {
-    console.log("authHeader", authHeader);
+    // console.log("authHeader", authHeader);
     const response = await apiClient.delete(`/profile/products/${productId}/`, {
       headers: {
         Authorization: authHeader,

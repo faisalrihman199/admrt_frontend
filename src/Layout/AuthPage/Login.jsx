@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useLogIn } from "../../hooks/useLogin";
 import Alert from "../../components/allert";
+import { toast } from "react-toastify";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -61,9 +62,10 @@ function Login() {
       // await signInWithEmailAndPassword(auth, email, password);
 
       await logIn(email, password)
+      
 
-      // setLoading(false)
-      // navigate(`/`);
+      setLoading(false)
+      navigate(`/`);
     } catch (error) {
       setErrorMessage("There was an error logging in. Please check your information and try again.");
       setLoading(false)
