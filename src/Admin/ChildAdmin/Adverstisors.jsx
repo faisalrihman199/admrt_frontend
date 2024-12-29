@@ -5,8 +5,9 @@ import TableView from '../../components/ChildAdmin/TableView';
 import Pagination from '../../components/ChildAdmin/Pagination';
 import LoadingSkeleton from '../../components/ChildAdmin/LoadingSkeleton';
 import { useAdmin } from '../../Context/AdminContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 const Adverstisors = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -48,13 +49,19 @@ const Adverstisors = () => {
             .catch((err) => {
                 console.log("Error :", err);
             })
-    }, [currentPage, change])
+    }, [currentPage, change]);
+    
+    
 
     return (
         pageData ?
             (
                 <div>
+                    <div className="flex justify-between items-center">
                     <h1 className='text-2xl font-semibold my-2'>Advertisers Dashboard</h1>
+                    <Link to="/admin/advertiser/registration" >Add Advertiser</Link>
+
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
                         <RegularCard
                             data={{

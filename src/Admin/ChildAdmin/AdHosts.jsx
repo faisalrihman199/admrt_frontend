@@ -5,7 +5,7 @@ import TableView from '../../components/ChildAdmin/TableView';
 import Pagination from '../../components/ChildAdmin/Pagination';
 import { useAdmin } from '../../Context/AdminContext';
 import LoadingSkeleton from '../../components/ChildAdmin/LoadingSkeleton';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const AdHosts = () => {
@@ -55,7 +55,12 @@ const AdHosts = () => {
         pageData ?
             (
                 <div>
+                    <div className="flex justify-between items-center">
+
                     <h1 className='text-2xl font-semibold my-2'>AdHosts Dashboard</h1>
+                    <Link to="/admin/space_host/registration" >Add Space Host</Link>
+
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
                         <RegularCard
                             data={{

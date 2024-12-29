@@ -375,6 +375,10 @@ export const ProductAdventiser = ({ userProducts }) => {
       // navigate(`/profile/${authUser?.id}`)
     } catch (error) {
       console.error(error);
+      setLoading(false);
+      setModal(false);
+
+
       // setSaveLoading(false);
 
     }
@@ -646,7 +650,7 @@ export const ProductAdventiser = ({ userProducts }) => {
                   )}
                 </div>
                 <h2 className="p-3 font-semibold text-center">
-                  <span className="text-gray-600 m-2 pb-3 text-sm">{product.name}</span>
+                  <span className="text-gray-600 m-2 pb-3 text-sm">{product.name} | {product.full_name}</span>
                 </h2>
                 {/* <p className="text-gray-600">
                   {truncateDescription(product.description, 35)}

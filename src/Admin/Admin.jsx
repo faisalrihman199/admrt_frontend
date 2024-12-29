@@ -9,6 +9,7 @@ import Messages from './ChildAdmin/Messages';
 import Visitors from './ChildAdmin/Visitors';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CreateAnAcc from '../Layout/AuthPage/CreateAnAcc';
 
 
 const Admin = () => {
@@ -25,6 +26,7 @@ const Admin = () => {
           <Route path="/affiliates" element={<AffiliateLinks />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/visitors" element={<Visitors />} />
+          <Route path="/:split/registration" element={<CreateAnAcc />} />
           
         </Routes>
         <ToastContainer />

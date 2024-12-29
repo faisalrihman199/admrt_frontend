@@ -7,9 +7,10 @@ import { deleteUser } from 'firebase/auth';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import AccountSettings from '../Account/AccountSetting';
 import NotificationSetting from '../Notification/NotificationSetting';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userProfile } from '../../../service/profile';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
 const Settings = () => {
   const [userId, setUserId] = useState(null);
@@ -21,6 +22,9 @@ const Settings = () => {
   const [, setIsFormValid] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false)
   // const [imageUrl, setImageUrl] = useState(null);
+  const signOut = useSignOut();
+  const queryClient = useQueryClient();
+
   const [selectedSettingsType, setSelectedSettingsType] = useState('Account');
   const navigate = useNavigate();
   const auth = useAuthUser()
@@ -83,9 +87,12 @@ const Settings = () => {
   };
 
   const handleLogout = () => {
-    auth.signOut();
-    navigate("/");
-  };
+    signOut()
+    queryClient.invalidateQueries({ queryKey: ['searchSpace', 'loggedInUser'] })
+
+    navigate("/")
+    window.location.reload();
+  }
 
   const handleDeleteAccount = async () => {
     try {

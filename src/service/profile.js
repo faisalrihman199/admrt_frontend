@@ -134,7 +134,7 @@ export async function addProduct({ authHeader, formData }) {
     });
     return response.data;
   } catch (error) {
-    alert("Something Went wrong");
+    
     console.log(error);
     throw error;
   }

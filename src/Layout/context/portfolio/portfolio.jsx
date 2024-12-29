@@ -273,9 +273,10 @@ const Portfolio = ({ userPortfolios }) => {
       } else if (portfolioType === 'youtube') {
         formData.append('youtube_url', youtubeLink);
       }
-
+      console.log("Data to be submit is :", Object.fromEntries(formData));
+      
       let response;
-      response = await updateProfileWithFile({ authHeader, formData });
+      // response = await updateProfileWithFile({ authHeader, formData });
 
       // setSaveLoading(false);
 

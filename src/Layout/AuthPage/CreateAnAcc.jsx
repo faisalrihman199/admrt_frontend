@@ -11,6 +11,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { userRegisterApi } from '../../service/auth';
 import { useLogIn } from '../../hooks/useLogin';
 import Alert from '../../components/allert';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 
 const CreateAnAcc = () => {
@@ -24,8 +25,10 @@ const CreateAnAcc = () => {
   const [icon, setIcon] = useState(eyeOff);
   const [loading, setLoading] = useState(false);
   const [showPasswordMessage, setShowPasswordMessage] = useState(false);
-
+  const authe=useAuthUser();
   const { split } = useParams();
+  console.log("Please register for :", split);
+  
   const navigate = useNavigate();
   const logIn = useLogIn();
 
@@ -93,18 +96,30 @@ const CreateAnAcc = () => {
 
     }
   };
+  const isAdmin=authe?.user_role==='admin'
 
   return (
     <div className="login-container min-h-screen md:flex">
-      <div className="md:w-1/2">
-        <SlideShow />
-      </div>
+      {
+        !isAdmin &&
+        <div className="md:w-1/2">
+          <SlideShow />
+        </div>
+      }
       <div className="w-full px-2 md:flex justify-center items-center  ">
         <div className="w-full sm:w-full p-2 md:w-auto p-2 xl:w-3/5 lg:p-2">
           <div>
             <div>
-              <h1 className="justify-center mb-2 font-normal text-3xl lg:text-5xl sm:text-3xl">Create An Account</h1>
+              <h1 className="justify-center mb-2 font-normal text-3xl lg:text-5xl sm:text-3xl">
+                {
+                  isAdmin?
+                  `Create Account for ${split && split}`:
+                  `Create an Account`
+                }</h1>
+              {
+                !isAdmin &&
               <p className="mt-2 text-base font-light md:mt-12">Already have an account?<span className="text-purple-700 font-normal cursor-pointer "><Link to="/login"> Login </Link></span></p>
+              }
             </div>
           </div>
           <form className='' onSubmit={handleConfimAuth}>
@@ -172,7 +187,7 @@ const CreateAnAcc = () => {
             )}
             <button type='submit' className="w-full mt-2 social-card bg-blue-500 text-white google border rounded-xl  py-2 text-center hover:border-blue-600  hover:shadow-md md:px-16">
               <div className="text-center text-gray-800 font-normal py-2 px-4 rounded inline-flex items-center">
-                <span className="ml-1 md:ml-2 text-white">{loading ? "Loading..." : "Sign Up"}</span>
+                <span className="ml-1 md:ml-2 text-white">{loading ? "Loading..." : "Create Account"}</span>
               </div>
             </button>
           </form>
